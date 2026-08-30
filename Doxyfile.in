@@ -1,0 +1,65 @@
+# Doxyfile.in - PDF-barát teljes konfiguráció az ucsspell projekthez
+
+PROJECT_NAME           = "ucsspell"
+PROJECT_BRIEF          = "Hunspell ICU fork (all UTF-8 & EXT-UTF-8 code paths)"
+OUTPUT_DIRECTORY       = docs_platform
+HTML_OUTPUT            = html
+INPUT                  = ./src
+FILE_PATTERNS          = *.c *.cxx *.h *.hpp *.hxx
+RECURSIVE              = YES
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+
+# Diagram generálás
+HAVE_DOT               = YES
+DOT_PATH               = /usr/bin
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+DOT_IMAGE_FORMAT       = dot
+DOTFILE_DIR            = docs_platform/flowcharts
+DOT_MULTI_TARGETS      = NO
+
+# LaTeX / PDF beállítások
+GENERATE_LATEX         = YES
+LATEX_OUTPUT           = latex
+PDF_HYPERLINKS         = YES
+LATEX_SOURCE_CODE      = YES  # csak a tényleges forráskód jelenjen meg
+USE_PDFLATEX           = YES
+
+# Felesleges HTML / PATTERN tiltás
+HTML_INCLUDE           =
+MACRO_EXPANSION        = NO
+EXPAND_ONLY_PREDEF     = NO
+
+# Egyéb dokumentációs opciók
+CLASS_DIAGRAMS         = YES
+UML_LOOK               = YES
+INLINE_SOURCES         = YES
+GENERATE_HTML          = YES
+GENERATE_TREEVIEW      = YES
+FULL_PATH_NAMES        = NO
+DOT_GRAPH_MAX_NODES  = 1000
+DOT_TRANSPARENT      = YES
+
+# Node és betűméret
+DOT_FONTNAME        = Helvetica
+DOT_FONTSIZE        = 24        # még nagyobb betűk a könnyebb olvashatóságért
+DOT_NODE_WIDTH      = 1.5       # node szélesség csökkentése
+DOT_NODE_SPACING    = 2       # node-ok közti extra hely függőlegesen
+DOT_EDGE_MIN_LENGTH = 4       # hosszabb élek → magasabb eloszlás
+DOT_GRAPH_RATIO     = auto      # a széles gráfok függőlegesen terjedjenek
+
+# Optional external prgs.
+#PLANTUML_JAR_PATH      = plantuml.jar
+#MERMAID_EXECUTABLE     = mmdc
+
+# Basic settings
+QUIET                  = NO
+WARNINGS               = YES
+GENERATE_TESTLIST      = NO
+GENERATE_BUGLIST       = NO
+GENERATE_DEPRECATEDLIST = NO
+GENERATE_RTF           = NO
+GENERATE_MAN           = NO
+GENERATE_XML           = NO

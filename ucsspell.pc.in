@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+includedir=@includedir@
+
+Name: ucsspell
+Description: ucsspell spellchecking library
+Version: @VERSION@
+Libs: -L${libdir} -lucsspell-@UCSSPELL_VERSION_MAJOR@.@UCSSPELL_VERSION_MINOR@
+Cflags: -I${includedir}/hunspell @PC_CFLAGS@
