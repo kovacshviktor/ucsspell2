@@ -12,7 +12,7 @@ libucsspell_1_7_la_SOURCES=affentry.cxx affentry.hxx affixmgr.cxx affixmgr.hxx \
 nodist_libucsspell_1_7_la_SOURCES=hunvisapi.h
 
 
-libhunspell_1_7_include_HEADERS=hunspell.hxx hunspell.h hunvisapi.h \
+libucsspell_1_7_include_HEADERS=hunspell.hxx hunspell.h hunvisapi.h \
 		                hunversion.h w_char.hxx atypes.hxx
 
 libucsspell_1_7_la_LDFLAGS=-no-undefined -version-info 0:1:0
