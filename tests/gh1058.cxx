@@ -1,10 +1,10 @@
-// Test for https://github.com/hunspell/hunspell/issues/1058
+// Test for https://github.com/ucsspell/ucsspell/issues/1058
 // suggest() must not return the input word as one of its suggestions when
 // MAP-table substitution recursion happens to reach the original word.
 #include <cstdio>
 #include <string>
 #include <vector>
-#include "../src/hunspell/hunspell.hxx"
+#include "../src/ucsspell/ucsspell.hxx"
 
 int main(int argc, char** argv) {
   if (argc < 2) {

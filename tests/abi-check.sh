@@ -1,6 +1,6 @@
 #!/bin/sh
 # ABI regression check: ensure no symbol from tests/abi-baseline.txt has
-# disappeared from the current build of libhunspell. Additions are allowed;
+# disappeared from the current build of libucsspell. Additions are allowed;
 # removals or signature changes (which alter the mangled name) fail.
 #
 # Linux/ELF only; skipped elsewhere.
@@ -24,7 +24,7 @@ if [ "$(uname -s)" != "Linux" ]; then
 fi
 
 DIR="$(dirname "$0")"
-LIB="../src/hunspell/.libs/libhunspell-1.7.so"
+LIB="../src/ucsspell/.libs/libucsspell-1.7.so"
 BASELINE="$DIR/abi-baseline.txt"
 
 if [ ! -e "$LIB" ]; then

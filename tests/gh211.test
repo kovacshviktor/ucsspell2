@@ -6,7 +6,7 @@
 DIR="$(dirname "$0")"
 SRCDIR="$(cd "$DIR" && pwd)"
 TOOLS="$SRCDIR/../src/tools"
-HUNSPELL="${HUNSPELL:-$TOOLS/hunspell}"
+HUNSPELL="${HUNSPELL:-$TOOLS/ucsspell}"
 LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
 
 if ! command -v gawk >/dev/null 2>&1; then

@@ -1,6 +1,6 @@
 #!/bin/sh
 DIR="$(dirname "$0")"
-HUNSPELL="${HUNSPELL:-$DIR/../src/tools/hunspell}"
+HUNSPELL="${HUNSPELL:-$DIR/../src/tools/ucsspell}"
 LIBTOOL="${LIBTOOL:-$DIR/../libtool}"
 out=$($LIBTOOL --mode=execute "$HUNSPELL" -d "$DIR/gh1086" -U "$DIR/gh1086.txt" 2>&1)
 rc=$?
