@@ -187,10 +187,8 @@ int HashMgr::add_word(const std::string& in_word,
     word_copy = new std::string(in_word);
 
     if (!ignorechars.empty()) {
-      if (utf8 == 1) {
+      if (utf8) {
         wcl = remove_ignored_chars_utf(*word_copy, ignorechars_utf16);
-      } else if (utf8 == 2){
-        wcl = remove_ignored_chars_utf32(*word_copy, ignorechars_utf32);
       } else {
         remove_ignored_chars(*word_copy, ignorechars);
       }
@@ -1084,7 +1082,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
      * characters */
     if (line.compare(0, 6, "IGNORE", 6) == 0) {
       if (!parse_array(line, ignorechars, ignorechars_utf16,
-                       utf8, afflst->getlinenum(),ignorechars_utf32)) {
+                       utf8, afflst->getlinenum())) {
         delete afflst;
         return 1;
       }

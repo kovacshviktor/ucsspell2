@@ -113,7 +113,6 @@ SuggestMgr::SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* ap
     if (pAMgr->get_maxngramsugs() >= 0)
       maxngramsugs = pAMgr->get_maxngramsugs();
     utf8 = pAMgr->get_utf8();
-    has_smp = pAMgr->get_has_smp();
     if (pAMgr->get_maxcpdsugs() >= 0)
       maxcpdsugs = pAMgr->get_maxcpdsugs();
     if (!utf8) {
@@ -124,12 +123,6 @@ SuggestMgr::SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* ap
 
   if (!ckey.empty()) {
     if (utf8) {
-      if (has_smp){
-      int len = ucs::u8_u32(ckey_smp_comp, ckey);
-      if (len != -1){
-        ckeyl = len;
-      }
-      } else {
       int len = u8_u16(ckey_utf, ckey);
       if (len != -1) {
         ckeyl = len;
@@ -143,16 +136,9 @@ SuggestMgr::SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* ap
   ctry = tryme;
   if (!ctry.empty()) {
     if (utf8) {
-      if (has_smp){
-        int len = u8_u32(ctry_smp_comp, ctry);
-        if (len != -1){
-          ctryl = len;
-        }
-      } else {
       int len = u8_u16(ctry_utf, ctry);
       if (len != -1) {
         ctryl = len;
-    }
   }
     } else {
       ctryl = ctry.size();
@@ -1997,21 +1983,9 @@ std::string SuggestMgr::suggest_gen(const std::vector<std::string>& desc, const 
       std::string result;
 
       // add compound word parts (except the last one)
-      const char* s = k.c_str();
-      const char* part = strstr(s, MORPH_PART);
-      if (part) {
-        const char* nextpart = strstr(part + 1, MORPH_PART);
-        while (nextpart) {
-          std::string field;
-          copy_field(field, part, MORPH_PART);
-          result.append(field);
-          part = nextpart;
-          nextpart = strstr(part + 1, MORPH_PART);
-        }
-        s = part;
-      }
-
-      std::string tok(s);
+      const size_t lastpart = append_compound_parts(k, result);
+      const char* s = k.c_str() + lastpart;
+      std::string tok(k, lastpart);
       size_t pos = tok.find(" | ");
       while (pos != std::string::npos) {
         tok[pos + 1] = MSEP_ALT;

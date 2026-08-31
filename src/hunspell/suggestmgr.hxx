@@ -97,18 +97,16 @@ class SuggestMgr {
   std::string ckey;
   size_t ckeyl;
   std::vector<w_char> ckey_utf;
-  std::vector<char32_t> ckey_smp_comp;
+
   std::string ctry;
   size_t ctryl;
   std::vector<w_char> ctry_utf;
-  std::vector<char32_t> ctry_smp_comp;
   bool lang_with_dash_usage;
 
   AffixMgr* pAMgr;
   unsigned int maxSug;
   const struct cs_info* csconv;
   int utf8;
-  bool has_smp;
   int langnum;
   int nosplitsugs;
   int maxngramsugs;
