@@ -274,8 +274,7 @@ LIBHUNSPELL_DLL_EXPORTED bool parse_array(const std::string& line,
                  std::string& out,
                  std::vector<w_char>& out_utf16,
                  int utf8,
-                 int ln,
-                 std::vector<char32_t>& out_utf32);
+                 int ln);
 
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char* r);
 
