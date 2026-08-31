@@ -4681,6 +4681,8 @@ bool AffixMgr::parse_affix(const std::string& line,
   unsigned short aflag = 0;  // affix char identifier
 
   char ff = 0;
+  char xprod = 0;
+  int headerline = af->getlinenum();
   entries_container affentries(at, this);
 
   int i = 0;
@@ -4953,8 +4955,8 @@ bool AffixMgr::parse_affix(const std::string& line,
     }
 
     entry->line = ruleline;
-    //entry->headerline = headerline;
-    //entry->xprod = xprod;
+    entry->headerline = headerline;
+    entry->xprod = xprod;
 
 #ifdef DEBUG
     // detect unnecessary fields, excepting comments
