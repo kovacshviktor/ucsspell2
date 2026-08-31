@@ -141,9 +141,6 @@ AffixMgr::AffixMgr(const char* affpath,
   // register hash manager and load affix data from aff file
   csconv = nullptr;
   utf8 = 0;
-  has_smp = false;
-  smp_pre_parsed = false;
-  utf8_prechecked = false;
   complexprefixes = 0;
   parsedmaptable = false;
   parsedbreaktable = false;
@@ -248,21 +245,6 @@ AffixMgr::AffixMgr(const char* affpath,
 
   if (cpdmin == -1)
     cpdmin = MINCPDLEN;
-}
-
-bool AffixMgr::detect_smp_sequence(const std::string& line) {
-  for (char c : line) {
-    unsigned char uc = static_cast<unsigned char>(c);
-    // Detect SMP (4-byte UTF-8) lesding (0xF0 - 0xF7)
-    if ((uc & 0xF8) == 0xF0) {
-      return true; // Azonnali kilépés és visszatérés, nem olvassa tovább a sort!
-    }
-  }
-  return false; // Ha végigért és nem talált semmit
-}
-
-bool AffixMgr::get_has_smp() const{
-  return this->has_smp;
 }
 
 AffixMgr::~AffixMgr() {
@@ -2151,7 +2133,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 (
                     // test CHECKCOMPOUNDPATTERN
                     checkcpdtable.empty() || scpd != 0 ||
-                    (i < word.size() && !cpdpat_check(word, i, rv_first, rv, 0))) &&
+                    (i < word.size() && !cpdpat_check(word, i, rv_first, rv, 0, t, rv_first_pfx, rv_first_sfx, nullptr, nullptr))) &&
                 ((!checkcompounddup || (rv != rv_first)))
                 // test CHECKCOMPOUNDPATTERN conditions
                 &&
