@@ -8,7 +8,7 @@ check_PROGRAMS = gh1032 gh1058
 gh1032_SOURCES = gh1032.cxx
 gh1032_LDADD = $(top_builddir)/src/hunspell/libucsspell-1.7.la
 gh1058_SOURCES = gh1058.cxx
-gh1058_LDADD = $(top_builddir)/src/hunspell/libhunspell-1.7.la
+gh1058_LDADD = $(top_builddir)/src/hunspell/libucsspell-1.7.la
 
 TEST_EXTENSIONS = .dic
 AM_TESTS_ENVIRONMENT = export HUNSPELL=$(top_builddir)/src/tools/hunspell; \
