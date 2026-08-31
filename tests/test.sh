@@ -63,18 +63,18 @@ if [[ "$1" == "-i" && -n "$2" ]]; then
 fi
 shopt -s expand_aliases
 
-[[ "$HUNSPELL" = "" ]] && HUNSPELL="$(dirname $0)"/../src/tools/ucsspell
+[[ "$HUNSPELL" = "" ]] && HUNSPELL="$(dirname $0)"/../src/tools/hunspell
 [[ "$ANALYZE" = "" ]] && ANALYZE="$(dirname $0)"/../src/tools/analyze
 [[ "$LIBTOOL" = "" ]] && LIBTOOL="$(dirname $0)"/../libtool
 libtool=($LIBTOOL)
-alias ucsspell='"${libtool[@]}" --mode=execute "$HUNSPELL"'
+alias hunspell='"${libtool[@]}" --mode=execute "$HUNSPELL"'
 alias analyze='"${libtool[@]}" --mode=execute "$ANALYZE"'
 
 if [[ "$VALGRIND" != "" ]]; then
 	mkdir $TEMPDIR 2> /dev/null || :
 	rm -f $TEMPDIR/test.pid* || :
 	mkdir $TEMPDIR/badlogs 2> /dev/null || :
-	alias ucsspell='"${libtool[@]}" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$HUNSPELL"'
+	alias hunspell='"${libtool[@]}" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$HUNSPELL"'
 	alias analyze='"${libtool[@]}" --mode=execute valgrind --tool=$VALGRIND --leak-check=yes --show-reachable=yes --log-file=$TEMPDIR/test.pid "$ANALYZE"'
 fi
 
@@ -90,7 +90,7 @@ fi
 in_file="$in_dict.good"
 
 if [[ -f $in_file ]]; then
-	out=$(ucsspell -l -i "$ENCODING" "$@" -d "$in_dict" < "$in_file" \
+	out=$(hunspell -l -i "$ENCODING" "$@" -d "$in_dict" < "$in_file" \
 	      | tr -d "$CR")
 	if [[ $? -ne 0 ]]; then exit 2; fi
 	if [[ "$out" != "" ]]; then
@@ -107,7 +107,7 @@ check_valgrind_log "good words"
 in_file="$in_dict.wrong"
 
 if [[ -f $in_file ]]; then
-	out=$(ucsspell -G -i "$ENCODING" "$@" -d "$in_dict" < "$in_file" \
+	out=$(hunspell -G -i "$ENCODING" "$@" -d "$in_dict" < "$in_file" \
 	      | tr -d "$CR") #strip carriage return for mingw builds
 	if [[ $? -ne 0 ]]; then exit 2; fi
 	if [[ "$out" != "" ]]; then
@@ -126,7 +126,7 @@ expected_file="$in_dict.root"
 
 if [[ -f $expected_file ]]; then
         # Extract the root words of the affixed words, after '+'
-        out=$(ucsspell -d "$in_dict" < "$in_file" | grep -a '^+ ' \
+        out=$(hunspell -d "$in_dict" < "$in_file" | grep -a '^+ ' \
               | sed 's/^+ //')
 	if [[ $? -ne 0 ]]; then exit 2; fi
 	expected=$(<"$expected_file")
@@ -165,7 +165,7 @@ in_file=$in_dict.wrong
 expected_file=$in_dict.sug
 
 if [[ -f $expected_file ]]; then
-	out=$(ucsspell -i "$ENCODING" "$@" -a -d "$in_dict" <"$in_file" | \
+	out=$(hunspell -i "$ENCODING" "$@" -a -d "$in_dict" <"$in_file" | \
 	      { grep -a '^&' || true; } | sed 's/^[^:]*: //')
 	if [[ $? -ne 0 ]]; then exit 2; fi
 	expected=$(<"$expected_file")

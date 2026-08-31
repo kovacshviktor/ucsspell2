@@ -1,9 +1,9 @@
-// Test for https://github.com/ucsspell/ucsspell/issues/1032
+// Test for https://github.com/hunspell/hunspell/issues/1032
 // HashMgr::remove double delete[] when add_with_affix shares astr pointer with
 // aliased flags (AF directive present).
 #include <cstdio>
 #include <string>
-#include "../src/ucsspell/hunspell.hxx"
+#include "../src/hunspell/hunspell.hxx"
 
 int main(int argc, char** argv) {
   if (argc < 2) {
