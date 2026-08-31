@@ -119,7 +119,7 @@ std::string codepoint_to_utf8(char32_t cp) {
     );
 
     std::vector<uint16_t> utfsmp_reserved_codes = std::vector<uint16_t>(
-        SMP_RESERVED_LOWER_CODEPOINTS, SMP_RESERVED_LOWER_CODEPOINTS + NUM_SMP_RESERVED
+        SMP_RESERVED_LOWER16_CODEPOINTS, SMP_RESERVED_LOWER16_CODEPOINTS + NUM_SMP_RESERVED
     );
 
 bool is_reserved_code(char32_t cp) {
