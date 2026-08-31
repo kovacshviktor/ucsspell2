@@ -123,9 +123,6 @@ class AffixMgr {
   std::string encoding;
   const struct cs_info* csconv;
   int utf8;
-  bool has_smp;
-  bool smp_pre_parsed;
-  bool utf8_prechecked;
   int complexprefixes;
   FLAG compoundflag;
   FLAG compoundbegin;
