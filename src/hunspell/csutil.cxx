@@ -2782,17 +2782,13 @@ bool parse_array(const std::string& line,
                  std::string& out,
                  std::vector<w_char>& out_utf16,
                  int utf8,
-                 int ln,
-                 std::vector<char32_t>& out_utf32) {
+                 int ln) {
   if (!parse_string(line, out, ln))
     return false;
 
-  if (utf8 == 1) {
+  if (utf8) {
     u8_u16(out_utf16, out);
     std::sort(out_utf16.begin(), out_utf16.end());
-  } else if (utf8 == 2) {
-    ucs::u8_u32(out_utf32, out);
-    std::sort(out_utf32.begin(), out_utf32.end());
   }
   return true;
 }
