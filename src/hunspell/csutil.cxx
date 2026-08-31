@@ -392,20 +392,13 @@ void line_uniq(std::string& text, char breakchar)
   if (lines.empty()) {
     return;
   }
+
+  drop_repeated_lines(lines);
+
   text = lines[0];
   for (size_t i = 1; i < lines.size(); ++i) {
-    bool dup = false;
-    for (size_t j = 0; j < i; ++j) {
-      if (lines[i] == lines[j]) {
-        dup = true;
-        break;
-      }
-    }
-    if (!dup) {
-      if (!text.empty())
         text.push_back(breakchar);
       text.append(lines[i]);
-    }
   }
 }
 
@@ -420,21 +413,8 @@ void line_uniq_app(std::string& text, char breakchar) {
   if (lines.empty()) {
     return;
   }
-  text = lines[0];
-  for (size_t i = 1; i < lines.size(); ++i) {
-    bool dup = false;
-    for (size_t j = 0; j < i; ++j) {
-      if (lines[i] == lines[j]) {
-        dup = true;
-        break;
-      }
-    }
-    if (!dup) {
-      if (!text.empty())
-        text.push_back(breakchar);
-      text.append(lines[i]);
-    }
-  }
+
+  drop_repeated_lines(lines);
 
   if (lines.size() == 1) {
     text = lines[0];

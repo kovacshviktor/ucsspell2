@@ -45,11 +45,11 @@
   
     #define HUNSPELL_WARNING fprintf
   #else
+// empty inline function to switch off warnings (instead of the C99 standard
+// variadic macros)
     static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
   #endif
 #endif
-
-
 
 // HUNSTEM def.
 #define HUNSTEM
@@ -69,6 +69,9 @@
 #define aeALIASF (1 << 2)
 #define aeALIASM (1 << 3)
 #define aeLONGCOND (1 << 4)
+// the rule wrote a condition that the stripping already forces, so the
+// condition was dropped and the rule now matches anything
+#define aeREDUNDANTCOND (1 << 5)
 
 // compound options
 #define IN_CPD_NOT 0
@@ -109,6 +112,9 @@
 #define MINTIMER 100
 #define MAXPLUSTIMER 100
 
+// ceiling on the accumulated compound morph analysis string
+#define MAXMORPHRESULT (4 * 1024 * 1024)
+
 struct guessword {
   char* word;
   bool allow;
@@ -134,19 +140,6 @@ struct patentry {
     : cond(FLAG_NULL)
     , cond2(FLAG_NULL) {
   }
-};
-
-// Reusable scratch tmpwords for the affix-matching path, passed though
-// through compound_check[_morph] -> prefix_check[_*] / suffix_check[_*]
-// -> Pfx/SfxEntry::checkword[_*]. Each slot is owned by the entry
-// method named in its comment.
-// Passing them around for reuse is both faster than recreating repeatedly
-// and avoids asan running out of quarantine memory
-struct AffixScratch {
-  std::string pfx_check_word;    // PfxEntry::checkword / check_morph
-  std::string pfx_check_twosfx;  // PfxEntry::check_twosfx[_morph]
-  std::string sfx_check_word;    // SfxEntry::checkword
-  std::string sfx_check_twosfx;  // SfxEntry::check_twosfx[_morph]
 };
 
 #endif
