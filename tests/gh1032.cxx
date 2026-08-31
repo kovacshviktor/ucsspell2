@@ -3,7 +3,7 @@
 // aliased flags (AF directive present).
 #include <cstdio>
 #include <string>
-#include "../src/ucsspell/ucsspell.hxx"
+#include "../src/ucsspell/hunspell.hxx"
 
 int main(int argc, char** argv) {
   if (argc < 2) {

@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <string>
 #include <vector>
-#include "../src/ucsspell/ucsspell.hxx"
+#include "../src/ucsspell/hunspell.hxx"
 
 int main(int argc, char** argv) {
   if (argc < 2) {
