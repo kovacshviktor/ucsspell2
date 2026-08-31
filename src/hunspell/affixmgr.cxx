@@ -2315,7 +2315,7 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
 
                   if ((checkcompoundrep && cpdrep_check(st, i + rv->blen, scratch, timelimit_exceeded, clock_time_start)) ||
                       cpdwordpair_check(st, i + rv->blen, scratch, timelimit_exceeded, clock_time_start)) {
-                    st[ + i + rv->blen] = r;
+                    st[i + rv->blen] = r;
                     continue;
                   }
 
@@ -4872,8 +4872,6 @@ bool AffixMgr::parse_affix(const std::string& line,
             if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8 == 1) {
                 remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
-              } else if (utf8 == 2) {
-                remove_ignored_chars_utf32(entry->appnd, ignorechars_utf32);
               } else {
                 remove_ignored_chars(entry->appnd, ignorechars);
               }
@@ -4906,7 +4904,7 @@ bool AffixMgr::parse_affix(const std::string& line,
           }
           if (!entry->strip.empty() && chunk != "." &&
               redundant_condition(at, entry->strip, chunk,
-                                  af->getlinenum()))
+                                  af->getlinenum())){
             chunk = ".";
             entry->opts |= aeREDUNDANTCOND;
           }
@@ -4956,8 +4954,8 @@ bool AffixMgr::parse_affix(const std::string& line,
     }
 
     entry->line = ruleline;
-    entry->headerline = headerline;
-    entry->xprod = xprod;
+    //entry->headerline = headerline;
+    //entry->xprod = xprod;
 
 #ifdef DEBUG
     // detect unnecessary fields, excepting comments
