@@ -3140,7 +3140,6 @@ std::string AffixMgr::suffix_check_twosfx_morph(const std::string& word,
                                                 PfxEntry* ppfx,
                                                 AffixScratch& scratch,
                                                 const FLAG needflag) {
-  std::string result;
   std::string result2;
   std::string result3;
   // the second suffix runs the whole suffix table again for every first suffix
