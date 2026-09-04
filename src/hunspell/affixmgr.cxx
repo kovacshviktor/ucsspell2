@@ -1510,8 +1510,8 @@ int AffixMgr::cpdcase_check(const std::string& word, int pos) {
     for (p = wordp + pos - 1; p > wordp && is_utf8_cont(*p); p--)
       ;
     std::string pair(p);
-    std::vector<w_char> pair_u;
-    u8_u16(pair_u, pair);
+    std::vector<unsigned short> pair_u;
+    ucs::u8_u16(pair_u, pair,false);
     unsigned short a = pair_u.size() > 1 ? (unsigned short)pair_u[1] : 0,
                    b = !pair_u.empty() ? (unsigned short)pair_u[0] : 0;
     if (((unicodetoupper(a, langnum) == a && unicodetolower(a, langnum) != a) ||
@@ -1699,10 +1699,10 @@ short AffixMgr::get_syllable(const std::string& word) {
             return std::binary_search(cpdvowels.begin(), cpdvowels.end(), c);
           });
   } else if (!cpdvowels_utf16.empty()) {
-    std::vector<w_char> w;
-    u8_u16(w, word);
+    std::vector<unsigned short> w;
+    ucs::u8_u16(w, word,false);
     num = (short)std::count_if(w.begin(), w.end(),
-          [&](w_char wc) {
+          [&](unsigned short wc) {
             return std::binary_search(cpdvowels_utf16.begin(), cpdvowels_utf16.end(), wc);
           });
   }
@@ -3816,7 +3816,7 @@ const char* AffixMgr::get_ignore() const {
 }
 
 // return the preferred ignore string for suggestions
-const std::vector<w_char>& AffixMgr::get_ignore_utf16() const {
+const std::vector<unsigned short>& AffixMgr::get_ignore_utf16() const {
   return ignorechars_utf16;
 }
 
@@ -3837,7 +3837,7 @@ const std::string& AffixMgr::get_wordchars() const {
   return wordchars;
 }
 
-const std::vector<w_char>& AffixMgr::get_wordchars_utf16() const {
+const std::vector<unsigned short>& AffixMgr::get_wordchars_utf16() const {
   return wordchars_utf16;
 }
 
@@ -3990,7 +3990,7 @@ bool AffixMgr::parse_cpdsyllable(const std::string& line, FileMgr* af) {
           std::sort(cpdvowels.begin(), cpdvowels.end());
         } else {
           std::string piece(start_piece, iter);
-          u8_u16(cpdvowels_utf16, piece);
+          ucs::u8_u16(cpdvowels_utf16, piece, false);
           std::sort(cpdvowels_utf16.begin(), cpdvowels_utf16.end());
         }
         np++;
