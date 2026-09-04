@@ -100,15 +100,16 @@ namespace ucs {
 
     // Macros for future use
     #define UCS_IS_SURROGATE(c)  (((c)>= 0xd800) && ((c) <= 0xdfff)) 
-    #define UCS_IS_SINGLE(c)     ((c) < 0xd800)
+    #define UCS_IS_SINGLE(c)     (((c) < 0xd800) || ((c) > 0xdfff)) 
     #define UCS_IS_LEAD(c)       (((c) >= 0xd800) && ((c) <= 0xdbff))
     #define UCS_IS_TRAIL(c)      (((c) >= 0xdc00) && ((c) <= 0xdfff))
-    #define UCS_GET_SUPPLEMENTARY(l, t) (char32_t)((((l) - 0xd800) << 10) | (((t) - 0xdc00) + 0x10000))
+    #define UCS_GET_SUPPLEMENTARY(l, t) (char32_t)((((static_cast<uint32_t>(l) - 0xd800) << 10) | (static_cast<uint32_t>(t) - 0xdc00)) + 0x10000)
     #define UCS_LEAD(c)  ((uint16_t)((((c) - 0x10000) >> 10) + 0xD800))
     #define UCS_TRAIL(c) ((uint16_t)((((c) - 0x10000) & 0x3FF) + 0xDC00))
     #define UCS_IS_UNICODE_CHAR(c) (((c) >= 0 ) && ((c) <= 0x10ffff))
     #define UCS_FROM_LEAD(l) (char32_t)((((l) - 0xd800) << 10) + 0x10000)
-    #define UCS_ADD_TRAIL(cp,t) (char32_t)(((cp)) | ((t) - 0xdc00))    
+    #define UCS_ADD_TRAIL(cp,t) (char32_t)(((cp)) | ((t) - 0xdc00)) 
+    #define UCS_IS_ERROR(c) ((c) == 0xfffd)   
     
     inline w_char uchar_to_w_char(char16_t uni16) {
         w_char u16;

@@ -152,55 +152,12 @@ void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mod
 #endif
 
 std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
-  dest.clear();
-  dest.reserve(src.size()); // SMP esetén a UTF-8 hosszabb lehet, érdemes kicsit többet foglalni
-  
-  for (size_t i = 0; i < src.size(); ++i) {
-    uint32_t cp = (static_cast<uint16_t>(src[i].h) << 8) | src[i].l;
-    
-    // Detect unexpected low surrogate
-    if (cp >= 0xDC00 && cp <= 0xDFFF) {
-        HUNSPELL_WARNING(stderr, "UCSPELL WARNING: Orphaned Low Surrogate detected!\n");
-        cp = 0xFFFD; 
-    }
-    // Check high surrogate (0xD800 - 0xDBFF)
-    else if (cp >= 0xD800 && cp <= 0xDBFF && (i + 1) < src.size()) {
-      uint32_t low = (static_cast<uint16_t>(src[i+1].h) << 8) | src[i+1].l;
-      // Check low surrogate (0xDC00 - 0xDFFF)
-      if (low >= 0xDC00 && low <= 0xDFFF) {
-        // Convert UTF-16 surrogate pair to codepoint
-        cp = 0x10000 + ((cp - 0xD800) << 10) + (low - 0xDC00);
-        ++i; // Jump over low surrogate
-      } else if (UCS_IS_LEAD(cp)){
-        HUNSPELL_WARNING(stderr, "UCSPELL WARNING: Orphaned High Surrogate detected!\n");
-        cp = 0xFFFD; 
-      } else {
-        HUNSPELL_WARNING(stderr, "UCSPELL WARNING: missing Low Surrogate!\n");
-        cp = 0xFFFD;       
-      }
-    }
-  
-    // UTF-8 encoding true by codepoint
-    if (cp < 0x80) {
-      dest.push_back(static_cast<char>(cp));
-    } else if (cp < 0x800) {
-      dest.push_back(static_cast<char>(0xc0 | (cp >> 6)));
-      dest.push_back(static_cast<char>(0x80 | (cp & 0x3f)));
-    } else if (cp < 0x10000) { // JAVÍTVA: különben szintaktikai hiba!
-      dest.push_back(static_cast<char>(0xe0 | (cp >> 12)));
-      dest.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3f)));
-      dest.push_back(static_cast<char>(0x80 | (cp & 0x3f)));
-    } else {
-      // 4 UTF-8 for SMP characters      
-      dest.push_back(static_cast<char>(0xf0 | (cp >> 18)));
-      dest.push_back(static_cast<char>(0x80 | ((cp >> 12) & 0x3f)));
-      dest.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3f)));
-      dest.push_back(static_cast<char>(0x80 | (cp & 0x3f)));
-    }
-
-  }
+  std::vector<unsigned short> ushort_shadow;
+  ucs::w_char_ushort(ushort_shadow,src);
+  ucs::u16_u8(dest,ushort_shadow);
   return dest;
 }
+
 static void warn_missing_cont(const std::string& src, std::string::const_iterator p) {
   HUNSPELL_WARNING(stderr,
                    "UTF-8 encoding error. Missing continuation byte in "
@@ -210,110 +167,10 @@ static void warn_missing_cont(const std::string& src, std::string::const_iterato
 }
 
 int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_first_letter) {
-  // faster to oversize initially, assign to elements and resize to what's used
-  // than to reserve and push_back
-  dest.resize(only_convert_first_letter ? 1 : src.size());
-  auto out = dest.begin();
-  auto p = src.begin(), end = src.end();
-
-  while (p < end) {
-    uint8_t b0 = static_cast<uint8_t>(*p);
-    uint32_t cp; // 32 bitesre cserélve, hogy az SMP kódpont is elférjen az átalakítás alatt
-
-    if (b0 < 0x80) {
-      // 1-byte ASCII
-      cp = b0;
-    } else if (b0 < 0xc0) {
-      // continuation byte at lead position
-      HUNSPELL_WARNING(stderr,
-                       "UTF-8 encoding error. Unexpected continuation bytes "
-                       "in %ld. character position\n%s\n",
-                       static_cast<long>(std::distance(src.begin(), p)),
-                       src.c_str());
-      cp = 0xfffd;
-    } else if (b0 < 0xe0) {
-      // 2-byte sequence: 110xxxxx 10yyyyyy
-      if (p + 1 < end && is_utf8_cont(p[1])) {
-        cp = ((b0 & 0x1f) << 6) | (static_cast<uint8_t>(p[1]) & 0x3f);
-        ++p;  // step past lead; loop bottom steps past cont
-      } else {
-        warn_missing_cont(src, p);
-        cp = 0xfffd;
-      }
-    } else if (b0 < 0xf0) {
-      // 3-byte sequence: 1110xxxx 10yyyyyy 10zzzzzz
-      if (p + 1 < end && is_utf8_cont(p[1])) {
-        uint8_t b1 = static_cast<uint8_t>(p[1]);
-        ++p;  // step past lead
-        if (p + 1 < end && is_utf8_cont(p[1])) {
-          cp = ((b0 & 0x0f) << 12) | ((b1 & 0x3f) << 6) | (static_cast<uint8_t>(p[1]) & 0x3f);
-          ++p;  // step past first cont; loop bottom steps past second cont
-        } else {
-          warn_missing_cont(src, p);
-          cp = 0xfffd;
-        }
-      } else {
-        warn_missing_cont(src, p);
-        cp = 0xfffd;
-      }
-    } else if (b0 < 0xf5) {
-      // 4-byte sequence: 11110xxx 10yyyyyy 10zzzzzz 10wwwwww (U+10000 - U+10FFFF)
-      if (p + 1 < end && is_utf8_cont(p[1])) {
-        uint8_t b1 = static_cast<uint8_t>(p[1]);
-        ++p;
-        if (p + 1 < end && is_utf8_cont(p[1])) {
-          uint8_t b2 = static_cast<uint8_t>(p[1]);
-          ++p;
-          if (p + 1 < end && is_utf8_cont(p[1])) {
-            cp = ((b0 & 0x07) << 18) | ((b1 & 0x3f) << 12) | ((b2 & 0x3f) << 6) | (static_cast<uint8_t>(p[1]) & 0x3f);
-            ++p;
-    } else {
-            warn_missing_cont(src, p);
-            cp = 0xfffd;
-          }
-        } else {
-          warn_missing_cont(src, p);
-          cp = 0xfffd;
-        }
-      } else {
-        warn_missing_cont(src, p);
-        cp = 0xfffd;
-      }
-    } else {
-      // Érvénytelen UTF-8 lead byte (0xF5 felett)
-      cp = 0xfffd;
-    }
-
-    // Kiírás a dest vektorba
-    if (cp < 0x10000) {
-      // Normál BMP karakter (elfér 1 db w_char-ban)
-    out->h = static_cast<unsigned char>(cp >> 8);
-    out->l = static_cast<unsigned char>(cp);
-    ++out;
-    } else {
-      // SMP characte -> UTF-16 Surrogate párként bontjuk szét 2 db w_char-ba
-      uint16_t high = static_cast<uint16_t>(((cp - 0x10000) >> 10) + 0xD800);
-      uint16_t low  = static_cast<uint16_t>(((cp - 0x10000) & 0x3FF) + 0xDC00);
-
-      // High surrogate kiírása
-      out->h = static_cast<unsigned char>(high >> 8);
-      out->l = static_cast<unsigned char>(high);
-      ++out;
-
-      // Low surrogate kiírása
-      out->h = static_cast<unsigned char>(low >> 8);
-      out->l = static_cast<unsigned char>(low);
-      ++out;
-    }
-
-    if (only_convert_first_letter)
-      break;
-    ++p;  // consume lead byte
-  }
-
-  int size = static_cast<int>(out - dest.begin());
-  dest.resize(size);
-  return size;
+  std::vector<unsigned short> ushort_shadow;
+  int ushort_length = ucs::u8_u16(ushort_shadow,src,only_convert_first_letter);
+  ucs::ushort_w_char(dest,ushort_shadow);
+  return ushort_length;
 }
 
 namespace {
