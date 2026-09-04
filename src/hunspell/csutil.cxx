@@ -158,6 +158,10 @@ std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   return dest;
 }
 
+std::string& u16_u8(std::string& dest, const std::vector<unsigned short>& src){
+  return ucs::u16_u8(dest,src);
+}
+
 static void warn_missing_cont(const std::string& src, std::string::const_iterator p) {
   HUNSPELL_WARNING(stderr,
                    "UTF-8 encoding error. Missing continuation byte in "
@@ -171,6 +175,10 @@ int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_
   int ushort_length = ucs::u8_u16(ushort_shadow,src,only_convert_first_letter);
   ucs::ushort_w_char(dest,ushort_shadow);
   return ushort_length;
+}
+
+int u8_u16(std::vector<unsigned short>& dest,const std::string& src, bool only_convert_first_letter){
+  return ucs::u8_u16(dest,src,only_convert_first_letter);
 }
 
 namespace {

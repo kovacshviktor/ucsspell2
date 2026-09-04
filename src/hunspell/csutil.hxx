@@ -132,13 +132,20 @@ LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
                                      std::ios_base::openmode mode);
 
 // convert UTF-16 characters to UTF-8
+[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
                                              const std::vector<w_char>& src);
 
+LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,const std::vector<unsigned short>& src);                                             
 // convert UTF-8 characters to UTF-16
+[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
                                     const std::string& src,
                                     bool only_convert_first_letter = false);
+
+LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<unsigned short>& dest,
+                              const std::string& src,
+                              bool only_convert_first_letter = false);                                    
 
 inline bool is_utf8_cont(char c) {
   return (static_cast<unsigned char>(c) & 0xc0) == 0x80;
@@ -197,6 +204,7 @@ struct cs_info {
 
 LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetoupper(unsigned short c,
                                                        int langnum);
+
 LIBHUNSPELL_DLL_EXPORTED w_char upper_utf(w_char u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED w_char lower_utf(w_char u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetolower(unsigned short c,
@@ -227,21 +235,30 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mkinitsmall(std::string& s,
 LIBHUNSPELL_DLL_EXPORTED std::string& mkinitcap(std::string& s,
                                                 const struct cs_info* csconv);
 
-// convert first letter of UTF-8 string to capital
+[[deprecated("Use std::vector<unsigned short>& overload instead.")]]// convert first letter of UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitcap_utf(std::vector<w_char>& u, int langnum);
 
+LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
+mkinitcap_utf(std::vector<unsigned short>& u, int langnum);
 // convert UTF-8 string to little
+[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallsmall_utf(std::vector<w_char>& u, int langnum);
 
+LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
+mkallsmall_utf(std::vector<unsigned short>& u, int langnum);
 // convert first letter of UTF-8 string to little
+[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitsmall_utf(std::vector<w_char>& u, int langnum);
-
+LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
+mkinitsmall_utf(std::vector<unsigned short>& u, int langnum);
 // convert UTF-8 string to capital
+[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
+
 
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(const std::string& q, const cs_info*);
