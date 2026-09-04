@@ -100,7 +100,7 @@ class HashMgr {
   std::string lang;
   const struct cs_info* csconv;
   std::string ignorechars;
-  std::vector<w_char> ignorechars_utf16;
+  std::vector<unsigned short> ignorechars_utf16;
   std::vector<char32_t> ignorechars_utf32;
   std::vector<unsigned short*> aliasf; // flag vector `compression' with aliases
   std::vector<unsigned short> aliasflen;
@@ -134,7 +134,7 @@ class HashMgr {
 
  private:
   int get_clen_and_captype(const std::string& word, int* captype);
-  int get_clen_and_captype(const std::string& word, int* captype, std::vector<w_char> &workbuf);
+  int get_clen_and_captype(const std::string& word, int* captype, std::vector<unsigned short> &workbuf);
   int load_tables(const char* tpath, const char* key);
   int add_word(const std::string& word,
                int wcl,
