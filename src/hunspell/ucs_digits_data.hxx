@@ -6,7 +6,7 @@
 
 #include <cstddef>
 
-namespace ucs {
+
 
 // Total number code points: 1924
 constexpr char32_t UNICODE_DIGITS[] = {
@@ -1938,6 +1938,6 @@ constexpr char32_t UNICODE_DIGITS[] = {
 
 constexpr size_t NUM_UNICODE_DIGITS = sizeof(UNICODE_DIGITS) / sizeof(UNICODE_DIGITS[0]);
 
-} // namespace ucs
+
 
 #endif // UCS_DIGITS_DATA_HXX

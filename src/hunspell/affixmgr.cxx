@@ -1511,7 +1511,7 @@ int AffixMgr::cpdcase_check(const std::string& word, int pos) {
       ;
     std::string pair(p);
     std::vector<unsigned short> pair_u;
-    ucs::u8_u16(pair_u, pair,false);
+    u8_u16(pair_u, pair,false);
     unsigned short a = pair_u.size() > 1 ? (unsigned short)pair_u[1] : 0,
                    b = !pair_u.empty() ? (unsigned short)pair_u[0] : 0;
     if (((unicodetoupper(a, langnum) == a && unicodetolower(a, langnum) != a) ||
@@ -1700,7 +1700,7 @@ short AffixMgr::get_syllable(const std::string& word) {
           });
   } else if (!cpdvowels_utf16.empty()) {
     std::vector<unsigned short> w;
-    ucs::u8_u16(w, word,false);
+    u8_u16(w, word,false);
     num = (short)std::count_if(w.begin(), w.end(),
           [&](unsigned short wc) {
             return std::binary_search(cpdvowels_utf16.begin(), cpdvowels_utf16.end(), wc);
@@ -3990,7 +3990,7 @@ bool AffixMgr::parse_cpdsyllable(const std::string& line, FileMgr* af) {
           std::sort(cpdvowels.begin(), cpdvowels.end());
         } else {
           std::string piece(start_piece, iter);
-          ucs::u8_u16(cpdvowels_utf16, piece, false);
+          u8_u16(cpdvowels_utf16, piece, false);
           std::sort(cpdvowels_utf16.begin(), cpdvowels_utf16.end());
         }
         np++;

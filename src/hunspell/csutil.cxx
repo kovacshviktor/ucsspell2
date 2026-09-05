@@ -153,14 +153,11 @@ void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mod
 
 std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   std::vector<unsigned short> ushort_shadow;
-  ucs::w_char_ushort(ushort_shadow,src);
-  ucs::u16_u8(dest,ushort_shadow);
+  w_char_ushort(ushort_shadow,src);
+  u16_u8(dest,ushort_shadow);
   return dest;
 }
 
-std::string& u16_u8(std::string& dest, const std::vector<unsigned short>& src){
-  return ucs::u16_u8(dest,src);
-}
 
 static void warn_missing_cont(const std::string& src, std::string::const_iterator p) {
   HUNSPELL_WARNING(stderr,
@@ -172,14 +169,11 @@ static void warn_missing_cont(const std::string& src, std::string::const_iterato
 
 int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_first_letter) {
   std::vector<unsigned short> ushort_shadow;
-  int ushort_length = ucs::u8_u16(ushort_shadow,src,only_convert_first_letter);
-  ucs::ushort_w_char(dest,ushort_shadow);
+  int ushort_length = u8_u16(ushort_shadow,src,only_convert_first_letter);
+  ushort_w_char(dest,ushort_shadow);
   return ushort_length;
 }
 
-int u8_u16(std::vector<unsigned short>& dest,const std::string& src, bool only_convert_first_letter){
-  return ucs::u8_u16(dest,src,only_convert_first_letter);
-}
 
 namespace {
 class is_any_of {
@@ -544,7 +538,7 @@ std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u, int langnum) {
 // Convert all UTF-32 characters in vector to lowercase in-place
 std::vector<char32_t>& mkallsmall_u32(std::vector<char32_t>& u) {
   for (auto& cp : u) {
-    cp = ucs::uc_tolower(cp);
+    cp = uc_tolower(cp);
   }
   return u;
 }
@@ -559,7 +553,7 @@ std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
 // Convert all UTF-32 characters in vector to uppercase in-place
 std::vector<char32_t>& mkallcap_u32(std::vector<char32_t>& u) {
   for (auto& cp : u) {
-    cp = ucs::uc_toupper(cp);
+    cp = uc_toupper(cp);
   }
   return u;
 }
@@ -581,7 +575,7 @@ std::vector<w_char>& mkinitcap_utf(std::vector<w_char>& u, int langnum) {
 // Convert first UTF-32 character of the vector to uppercase in-place
 std::vector<char32_t>& mkinitcap_u32(std::vector<char32_t>& u) {
   if (!u.empty()) {
-    u[0] = ucs::uc_toupper(u[0]);
+    u[0] = uc_toupper(u[0]);
   }
   return u;
 }
@@ -602,7 +596,7 @@ std::vector<w_char>& mkinitsmall_utf(std::vector<w_char>& u, int langnum) {
 
 std::vector<char32_t>& mkinitsmall_u32(std::vector<char32_t>& u){
   if(!u.empty()){
-    u[0] = ucs::uc_tolower(u[0]);
+    u[0] = uc_tolower(u[0]);
   }
   return u;
 }
@@ -2545,16 +2539,16 @@ int get_captype_utf32(const std::vector<char32_t>& word) {
   auto it = word.begin(), it_end = word.end();
   while (it != it_end) {
     const auto idx = *it;
-    const auto lwridx = ucs::uc_tolower(idx);
+    const auto lwridx = uc_tolower(idx);
     if (idx != lwridx)
       ncap++;
-    if (ucs::uc_toupper(idx) == lwridx)
+    if (uc_toupper(idx) == lwridx)
       nneutral++;
     ++it;
   }
   if (ncap) {
     const auto idx = word[0];
-    firstcap = (idx != ucs::uc_tolower(idx));
+    firstcap = (idx != uc_tolower(idx));
   }
 
   // now finally set the captype

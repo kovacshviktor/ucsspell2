@@ -66,7 +66,7 @@
 
 
 
-namespace ucs {
+
     const unsigned char w_char_error_high = 0xff;
     const unsigned char w_char_error_low = 0xfd;
     
@@ -229,10 +229,8 @@ namespace ucs {
     int u8_u32(std::vector<char32_t>& dest, const std::string& src);
     std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<unsigned short>& src);
     std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest, const std::vector<w_char>& src);
-    int u8_u16(std::vector<unsigned short>& dest,const std::string& src,bool only_convert_first_letter);
-    std::string& u16_u8(std::string& dest, const std::vector<unsigned short>& src);
     uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data);
     uint32_t fnv1a_32_utf8(const std::string& str);
-} // namespace ucs
+
 
 #endif // UCSSPELL_UCS2_HXX

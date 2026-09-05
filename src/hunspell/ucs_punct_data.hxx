@@ -6,7 +6,7 @@
 
 #include <cstddef>
 
-namespace ucs {
+
 
 // Total punctuation code points: 856
 constexpr char32_t UNICODE_PUNCTUATIONS[] = {
@@ -870,6 +870,5 @@ constexpr char32_t UNICODE_PUNCTUATIONS[] = {
 
 constexpr size_t NUM_UNICODE_PUNCT = sizeof(UNICODE_PUNCTUATIONS) / sizeof(UNICODE_PUNCTUATIONS[0]);
 
-} // namespace ucsspell
 
 #endif // UCSSPELL_PUNCT_DATA_HXX

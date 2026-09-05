@@ -69,7 +69,7 @@
 using namespace std;
 
 
-namespace ucs {
+
 
 std::string codepoint_to_utf8(char32_t cp) {
     std::string out;
@@ -521,5 +521,3 @@ uint32_t fnv1a_32_utf8(const std::string& str) {
     }
     return hash;
 }
-
-} // namespace ucs
