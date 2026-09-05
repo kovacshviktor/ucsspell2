@@ -85,7 +85,7 @@
 #include <memory>
 #include <string>
 
-using namespace ucs;
+;
 
 #define MAXWORDUTF8LEN (MAXWORDLEN * 3)
 #define MAXWORDSMPLEN (MAXWORDLEN * 4)

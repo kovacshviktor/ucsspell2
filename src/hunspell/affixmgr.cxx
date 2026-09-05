@@ -89,7 +89,7 @@
 
 #include "csutil.hxx"
 #include "ucs2.hxx"
-using namespace ucs;
+;
 namespace {
   // the distinct records of one analysis, in the order they were first added. a record is a run of
   // text between two breakchar separators

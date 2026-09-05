@@ -79,7 +79,7 @@
 #include "htypes.hxx"
 #include "csutil.hxx"
 #include "ucs2.hxx"
-using namespace ucs;
+;
 const w_char W_VLINE = {'\0', '|'};
 
 #define MAX_CHAR_DISTANCE 4

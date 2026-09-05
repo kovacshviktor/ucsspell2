@@ -119,7 +119,6 @@
 #endif
 
 using namespace std;
-using namespace ucs;
 
 #ifdef MOZILLA_CLIENT
 #include "nsCOMPtr.h"
