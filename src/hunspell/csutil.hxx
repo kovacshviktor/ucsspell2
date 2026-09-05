@@ -127,6 +127,9 @@
 #define FORBIDDENWORD 65510
 #define ONLYUPCASEFLAG 65511
 
+#define UCS_TO_LOWER true
+#define UCS_TO_UPPER false
+
 // fix long pathname problem of WIN32 by using w_char std::fstream::open override
 LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
                                      std::ios_base::openmode mode);
@@ -204,11 +207,14 @@ struct cs_info {
 
 LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetoupper(unsigned short c,
                                                        int langnum);
+LIBHUNSPELL_DLL_EXPORTED char32_t uc_toupper(char32_t cp);
 
 LIBHUNSPELL_DLL_EXPORTED w_char upper_utf(w_char u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED w_char lower_utf(w_char u, int langnum);
+
 LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetolower(unsigned short c,
                                                        int langnum);
+LIBHUNSPELL_DLL_EXPORTED char32_t uc_toupper(char32_t cp);
 LIBHUNSPELL_DLL_EXPORTED int unicodeisalpha(unsigned short c);
 
 LIBHUNSPELL_DLL_EXPORTED const struct cs_info* get_current_cs(const std::string& es);
@@ -245,7 +251,10 @@ mkinitcap_ucs16(std::vector<unsigned short>& u, int langnum);
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallsmall_utf(std::vector<w_char>& u, int langnum);
-
+LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
+mkinitcase_ucs16(std::vector<unsigned short>& u, int langnum, bool uc_to_lower);
+LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
+mkallcase_ucs16(std::vector<unsigned short>& u, int langnum, bool uc_to_lower);
 LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
 mkallsmall_ucs16(std::vector<unsigned short>& u, int langnum);
 // convert first letter of UTF-8 string to little

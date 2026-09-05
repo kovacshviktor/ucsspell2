@@ -511,6 +511,172 @@ uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data) {
     return hash;
 }
 
+std::vector<char32_t>& mkallsmall_u32(std::vector<char32_t>& u) {
+  for (auto& cp : u) {
+    cp = uc_tolower(cp);
+  }
+  return u;
+}
+ 
+std::vector<char32_t>& mkallcap_u32(std::vector<char32_t>& u) {
+  for (auto& cp : u) {
+    cp = uc_toupper(cp);
+  }
+  return u;
+}
+
+std::vector<char32_t>& mkinitcap_u32(std::vector<char32_t>& u) {
+  if (!u.empty()) {
+    u[0] = uc_toupper(u[0]);
+  }
+  return u;
+}
+
+std::vector<char32_t>& mkinitsmall_u32(std::vector<char32_t>& u){
+  if(!u.empty()){
+    u[0] = uc_tolower(u[0]);
+  }
+  return u;
+}
+
+std::vector<unsigned short>& mkallcase_ucs16(std::vector<unsigned short>& u, int langnum, bool uc_to_lower){
+    if(!u.empty()){
+        char32_t cp = 0;
+        for(size_t i=0; i < u.size(); i++){
+            if(UCS_IS_SINGLE(u[i])){
+                cp = static_cast<char32_t>(u[i]);
+                if (uc_to_lower){
+                    cp = uc_tolower(cp);
+                } else { 
+                    cp = uc_toupper(cp);
+                }
+                u[i] = static_cast<unsigned short>(cp);
+            } else if (UCS_IS_LEAD(u[i])){
+                cp = UCS_FROM_LEAD(u[i]);
+                if(i+1 < u.size()){
+                    i++;
+                    if(UCS_IS_TRAIL(u[i])){
+                    cp = UCS_ADD_TRAIL(cp,u[i]);
+                    if (uc_to_lower){
+                        cp = uc_tolower(cp);
+                    } else { 
+                        cp = uc_toupper(cp);
+                    }
+                        u[i-1] = UCS_LEAD(cp);
+                        u[i] = UCS_TRAIL(cp);
+                    } else if(UCS_IS_SINGLE(u[i])){
+                        HUNSPELL_WARNING(stderr,"Encoding error:UTF-16 tail required, but simple UTF-16 data found");
+                        u[i-1] = 0xfffd;
+                        u[i] = 0xfffd;
+                        break;
+                    } else if(UCS_IS_LEAD(u[i])){
+                        HUNSPELL_WARNING(stderr,"Encoding error:UTF-16 tail required, but UTF-16 lead found");
+                        u[i-1] = 0xfffd;
+                        u[i] = 0xfffd;
+                        break;                        
+                    }
+                } else {
+                    HUNSPELL_WARNING(stderr,"Encoding error:UTF-16 tail required, but the stream is truncated.");
+                    u[i] = 0xfffd;
+                    break;
+                }
+            } else if (UCS_IS_TRAIL(u[i])){
+                HUNSPELL_WARNING(stderr,"Encoding error:UTF-16 tail without lead data");
+                u[i] = 0xfffd;
+                break;
+            }
+        }
+    }
+    return u;
+    
+}
+
+std::vector<unsigned short>& mkinitcase_ucs16(std::vector<unsigned short>& u, int langnum, bool uc_to_lower){
+    if(!u.empty()){
+        if(UCS_IS_SINGLE(u[0])){
+            char32_t cp = static_cast<char32_t>(u[0]);
+            if (uc_to_lower){
+                    cp = uc_tolower(cp);
+                } else { 
+                    cp = uc_toupper(cp);
+                }
+            u[0] = static_cast<unsigned short>(cp);
+        } else {
+            if(u.size() > 1){
+            if(UCS_IS_LEAD(u[0])) {
+                if(UCS_IS_TRAIL(u[1])){
+                    char32_t cp = UCS_GET_SUPPLEMENTARY(u[0],u[1]);
+                    if (uc_to_lower){
+                    cp = uc_tolower(cp);
+                } else { 
+                    cp = uc_toupper(cp);
+                }
+                    u[0] = UCS_LEAD(cp);
+                    u[1] = UCS_TRAIL(cp);
+                } else if (UCS_IS_SINGLE(u[1])){
+                    HUNSPELL_WARNING(stderr,"Encoding error:UTF-16 tail required, but simple UTF-16 data found");
+                } else if (UCS_IS_LEAD(u[1])){
+                    HUNSPELL_WARNING(stderr,"Encoding error:UTF-16 tail required, but UTF-16 lead found");
+                }
+                }
+            } else if (UCS_IS_LEAD(u[0])) {
+                HUNSPELL_WARNING(stderr,"Encoding error:UTF-16 tail required, but the stream truncated");
+            } else if (UCS_IS_TRAIL(u[0])){
+                HUNSPELL_WARNING(stderr,"Encoding error:standalone UTF-16 tail data");
+            }
+
+        }
+   
+    }
+    return u;
+}
+
+std::vector<unsigned short>& mkinitsmall_ucs16(std::vector<unsigned short>& u, int langnum){
+    return mkinitcase_ucs16(u,langnum,UCS_TO_LOWER);
+}
+
+std::vector<unsigned short>& mkallsmall_ucs16(std::vector<unsigned short>& u, int langnum){
+    return mkallcase_ucs16(u,langnum,UCS_TO_LOWER);
+}
+
+std::vector<unsigned short>& mkinitcap_ucs16(std::vector<unsigned short>& u, int langnum){
+    return mkinitcase_ucs16(u,langnum,UCS_TO_UPPER);
+}
+
+std::vector<unsigned short>& mkallcap_ucs16(std::vector<unsigned short>& u, int langnum){
+    return mkallcase_ucs16(u,langnum,UCS_TO_UPPER);
+}
+
+
+char32_t uc_toupper(char32_t cp) {
+    // BMP
+    if (cp < 0x10000) {
+        return static_cast<char32_t>(unicodetoupper(static_cast<unsigned short>(cp), LANG_xx));
+    }
+    // SMP area upper bound check
+    if (cp > 0x1ffff) {
+        return cp;
+    }
+    //SMP
+    size_t index = cp & 0xffff;
+    return 0x10000 | ucs_to_upper[index];
+}
+
+char32_t uc_tolower(char32_t cp) {
+    // BMP    
+    if (cp < 0x10000) {
+        return static_cast<char32_t>(unicodetolower(static_cast<unsigned short>(cp), LANG_xx));
+    }
+    // SMP area upper bound check
+    if (cp > 0x1ffff) {
+        return cp;
+    }
+    // SMP
+    size_t index = cp & 0xffff;
+    return 0x10000 + ucs_to_lower[index];
+}
+
+
 uint32_t fnv1a_32_utf8(const std::string& str) {
     const uint32_t FNV_prime = 0x01000193;
     uint32_t hash = 0x811C9DC5;

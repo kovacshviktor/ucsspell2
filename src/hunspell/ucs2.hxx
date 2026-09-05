@@ -125,96 +125,67 @@
  * Advances the source pointer (src) to the beginning of the next character.
  * Returns the replacement character (0xFFFD) if an invalid UTF-8 sequence is encountered.
  */
-    inline char32_t utf8_to_utf32_step(const char*& src) {
-        if (!src || *src == '\0') return 0;
+inline char32_t utf8_to_utf32_step(const char*& src) {
+    if (!src || *src == '\0') return 0;
 
-        uint8_t b1 = static_cast<uint8_t>(*src++);
-        
-        // 1-byte ASCII sequence (0xxxxxxx)
-        if (b1 < 0x80) {
-            return b1;
-        }
-        
-        // 2-byte UTF-8 sequence (110xxxxx 10xxxxxx)
-        if ((b1 & 0xE0) == 0xC0) {
-            if ((static_cast<uint8_t>(*src) & 0xC0) != 0x80) return 0xFFFD; // Invalid continuation byte
-            uint8_t b2 = static_cast<uint8_t>(*src++);
-            
-            char32_t cp = ((b1 & 0x1F) << 6) | (b2 & 0x3F);
-            return (cp < 0x80) ? 0xFFFD : cp; // Filter overlong encoding
-        }
-        
-        // 3-byte UTF-8 sequence (1110xxxx 10xxxxxx 10xxxxxx)
-        if ((b1 & 0xF0) == 0xE0) {
-            if ((static_cast<uint8_t>(src[0]) & 0xC0) != 0x80 || 
-                (static_cast<uint8_t>(src[1]) & 0xC0) != 0x80) {
-                return 0xFFFD; // Invalid continuation bytes
-            }
-            uint8_t b2 = static_cast<uint8_t>(*src++);
-            uint8_t b3 = static_cast<uint8_t>(*src++);
-            
-            char32_t cp = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
-            
-            // Filter overlong encoding (< 0x800) and UTF-16 surrogates (0xD800 - 0xDFFF)
-            if (cp < 0x800 || (cp >= 0xD800 && cp <= 0xDFFF)) return 0xFFFD;
-            return cp;
-        }
-        
-        // 4-byte UTF-8 sequence - SMP area (11110xxx 10xxxxxx 10xxxxxx 10xxxxxx)
-        if ((b1 & 0xF8) == 0xF0) {
-            if ((static_cast<uint8_t>(src[0]) & 0xC0) != 0x80 || 
-                (static_cast<uint8_t>(src[1]) & 0xC0) != 0x80 || 
-                (static_cast<uint8_t>(src[2]) & 0xC0) != 0x80) {
-                return 0xFFFD; // Invalid continuation bytes
-            }
-            uint8_t b2 = static_cast<uint8_t>(*src++);
-            uint8_t b3 = static_cast<uint8_t>(*src++);
-            uint8_t b4 = static_cast<uint8_t>(*src++);
-            
-            char32_t cp = ((b1 & 0x07) << 18) | ((b2 & 0x3F) << 12) | ((b3 & 0x3F) << 6) | (b4 & 0x3F);
-            
-            // Filter overlong encoding (< 0x10000) and values above Unicode limit (0x10FFFF)
-            if (cp < 0x10000 || cp > 0x10FFFF) return 0xFFFD;
-            return cp;
-        }
-
-        // Invalid lead byte (e.g., standalone continuation byte 0x80-0xBF or out-of-range 0xF5-0xFF)
-        return 0xFFFD;
+    uint8_t b1 = static_cast<uint8_t>(*src++);
+    
+    // 1-byte ASCII sequence (0xxxxxxx)
+    if (b1 < 0x80) {
+        return b1;
     }
-    inline char32_t cast_from_wchrs(w_char lead, w_char trail){
-        char16_t h = (char16_t)lead;
-        char16_t l = (char16_t)trail;
-        return UCS_GET_SUPPLEMENTARY(h,l);
+    
+    // 2-byte UTF-8 sequence (110xxxxx 10xxxxxx)
+    if ((b1 & 0xE0) == 0xC0) {
+        if ((static_cast<uint8_t>(*src) & 0xC0) != 0x80) return 0xFFFD; // Invalid continuation byte
+        uint8_t b2 = static_cast<uint8_t>(*src++);
+        
+        char32_t cp = ((b1 & 0x1F) << 6) | (b2 & 0x3F);
+        return (cp < 0x80) ? 0xFFFD : cp; // Filter overlong encoding
+    }
+    
+    // 3-byte UTF-8 sequence (1110xxxx 10xxxxxx 10xxxxxx)
+    if ((b1 & 0xF0) == 0xE0) {
+        if ((static_cast<uint8_t>(src[0]) & 0xC0) != 0x80 || 
+            (static_cast<uint8_t>(src[1]) & 0xC0) != 0x80) {
+            return 0xFFFD; // Invalid continuation bytes
+        }
+        uint8_t b2 = static_cast<uint8_t>(*src++);
+        uint8_t b3 = static_cast<uint8_t>(*src++);
+        
+        char32_t cp = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
+        
+        // Filter overlong encoding (< 0x800) and UTF-16 surrogates (0xD800 - 0xDFFF)
+        if (cp < 0x800 || (cp >= 0xD800 && cp <= 0xDFFF)) return 0xFFFD;
+        return cp;
+    }
+    
+    // 4-byte UTF-8 sequence - SMP area (11110xxx 10xxxxxx 10xxxxxx 10xxxxxx)
+    if ((b1 & 0xF8) == 0xF0) {
+        if ((static_cast<uint8_t>(src[0]) & 0xC0) != 0x80 || 
+            (static_cast<uint8_t>(src[1]) & 0xC0) != 0x80 || 
+            (static_cast<uint8_t>(src[2]) & 0xC0) != 0x80) {
+            return 0xFFFD; // Invalid continuation bytes
+        }
+        uint8_t b2 = static_cast<uint8_t>(*src++);
+        uint8_t b3 = static_cast<uint8_t>(*src++);
+        uint8_t b4 = static_cast<uint8_t>(*src++);
+        
+        char32_t cp = ((b1 & 0x07) << 18) | ((b2 & 0x3F) << 12) | ((b3 & 0x3F) << 6) | (b4 & 0x3F);
+        
+        // Filter overlong encoding (< 0x10000) and values above Unicode limit (0x10FFFF)
+        if (cp < 0x10000 || cp > 0x10FFFF) return 0xFFFD;
+        return cp;
     }
 
-    inline char32_t uc_toupper(char32_t cp) {
-        // BMP
-        if (cp < 0x10000) {
-            return static_cast<char32_t>(unicodetoupper(static_cast<unsigned short>(cp), LANG_xx));
-        }
-        // SMP area upper bound check
-        if (cp > 0x1ffff) {
-            return cp;
-        }
-        //SMP
-        size_t index = cp & 0xffff;
-        return 0x10000 | ucs_to_upper[index];
-    }
-
-    inline char32_t uc_tolower(char32_t cp) {
-        // BMP    
-        if (cp < 0x10000) {
-            return static_cast<char32_t>(unicodetolower(static_cast<unsigned short>(cp), LANG_xx));
-        }
-        // SMP area upper bound check
-        if (cp > 0x1ffff) {
-            return cp;
-        }
-        // SMP
-        size_t index = cp & 0xffff;
-        return 0x10000 + ucs_to_lower[index];
-    }
-
+    // Invalid lead byte (e.g., standalone continuation byte 0x80-0xBF or out-of-range 0xF5-0xFF)
+    return 0xFFFD;
+}
+inline char32_t cast_from_wchrs(w_char lead, w_char trail){
+    char16_t h = (char16_t)lead;
+    char16_t l = (char16_t)trail;
+    return UCS_GET_SUPPLEMENTARY(h,l);
+}
     std::vector<std::string> init_utf8_vector(const char32_t* data, size_t count);
     std::string codepoint_to_utf8(char32_t cp);
     extern std::vector<std::string> utf8punctuation_marks;

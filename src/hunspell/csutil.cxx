@@ -535,12 +535,6 @@ std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u, int langnum) {
 }
 
 // Convert all UTF-32 characters in vector to lowercase in-place
-std::vector<char32_t>& mkallsmall_u32(std::vector<char32_t>& u) {
-  for (auto& cp : u) {
-    cp = uc_tolower(cp);
-  }
-  return u;
-}
 
 std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
   for (auto& i : u) {
@@ -550,12 +544,6 @@ std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
 }
 
 // Convert all UTF-32 characters in vector to uppercase in-place
-std::vector<char32_t>& mkallcap_u32(std::vector<char32_t>& u) {
-  for (auto& cp : u) {
-    cp = uc_toupper(cp);
-  }
-  return u;
-}
 
 std::string& mkinitcap(std::string& s, const struct cs_info* csconv) {
   if (!s.empty()) {
@@ -572,12 +560,6 @@ std::vector<w_char>& mkinitcap_utf(std::vector<w_char>& u, int langnum) {
 }
 
 // Convert first UTF-32 character of the vector to uppercase in-place
-std::vector<char32_t>& mkinitcap_u32(std::vector<char32_t>& u) {
-  if (!u.empty()) {
-    u[0] = uc_toupper(u[0]);
-  }
-  return u;
-}
 
 std::string& mkinitsmall(std::string& s, const struct cs_info* csconv) {
   if (!s.empty()) {
@@ -593,12 +575,6 @@ std::vector<w_char>& mkinitsmall_utf(std::vector<w_char>& u, int langnum) {
   return u;
 }
 
-std::vector<char32_t>& mkinitsmall_u32(std::vector<char32_t>& u){
-  if(!u.empty()){
-    u[0] = uc_tolower(u[0]);
-  }
-  return u;
-}
 
 // conversion function for protected memory
 void store_pointer(char* dest, char* source) {
