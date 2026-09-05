@@ -214,7 +214,7 @@ LIBHUNSPELL_DLL_EXPORTED w_char lower_utf(w_char u, int langnum);
 
 LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetolower(unsigned short c,
                                                        int langnum);
-LIBHUNSPELL_DLL_EXPORTED char32_t uc_toupper(char32_t cp);
+LIBHUNSPELL_DLL_EXPORTED char32_t uc_tolower(char32_t cp);
 LIBHUNSPELL_DLL_EXPORTED int unicodeisalpha(unsigned short c);
 
 LIBHUNSPELL_DLL_EXPORTED const struct cs_info* get_current_cs(const std::string& es);
