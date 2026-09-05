@@ -252,23 +252,23 @@ mkinitcap_ucs16(std::vector<unsigned short>& u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallsmall_utf(std::vector<w_char>& u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitcase_ucs16(std::vector<unsigned short>& u, int langnum, bool uc_to_lower);
+mkinitcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower);
 LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallcase_ucs16(std::vector<unsigned short>& u, int langnum, bool uc_to_lower);
+mkallcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower);
 LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallsmall_ucs16(std::vector<unsigned short>& u, int langnum);
+mkallsmall_ucs16(std::vector<unsigned short>& u);
 // convert first letter of UTF-8 string to little
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitsmall_utf(std::vector<w_char>& u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitsmall_ucs16(std::vector<unsigned short>& u, int langnum);
+mkinitsmall_ucs16(std::vector<unsigned short>& u);
 // convert UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallcap_ucs16(std::vector<unsigned short>&u, int langnum);
+mkallcap_ucs16(std::vector<unsigned short>&u);
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(const std::string& q, const cs_info*);
 
