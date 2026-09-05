@@ -246,7 +246,7 @@ LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitcap_utf(std::vector<w_char>& u, int langnum);
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitcap_ucs16(std::vector<unsigned short>& u, int langnum);
+mkinitcap_ucs16(std::vector<unsigned short>& u);
 // convert UTF-8 string to little
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
