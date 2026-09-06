@@ -2505,7 +2505,7 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   return HUHCAP;
 }
 
-int get_captype_utf32(const std::vector<char32_t>& word) {
+int get_captype_utf32(const std::u32string& word) {
   // now determine the capitalization type of the first nl letters
   size_t ncap = 0;
   size_t nneutral = 0;
@@ -2556,7 +2556,7 @@ size_t remove_ignored_chars_utf(std::string& word,
 }
 
 size_t remove_ignored_chars_utf32(std::string& word,
-                                const std::vector<char32_t>& ignored_chars) {
+                                const std::u32string& ignored_chars) {
   std::u32string w;
   std::u32string w2;
   u8_u32(w, word);

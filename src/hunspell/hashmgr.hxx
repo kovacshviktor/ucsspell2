@@ -101,7 +101,7 @@ class HashMgr {
   const struct cs_info* csconv;
   std::string ignorechars;
   std::vector<unsigned short> ignorechars_utf16;
-  std::vector<char32_t> ignorechars_utf32;
+  std::u32string ignorechars_utf32;
   std::vector<unsigned short*> aliasf; // flag vector `compression' with aliases
   std::vector<unsigned short> aliasflen;
   std::vector<char*> aliasm; // morphological desciption `compression' with aliases

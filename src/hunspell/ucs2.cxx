@@ -145,7 +145,7 @@ bool is_u16_simple_only(const std::vector<w_char>& src){
     return true;
 }
 
-std::string& u32_u8(std::string& dest, const std::vector<char32_t>& src){
+std::string& u32_u8(std::string& dest, const std::u32string& src){
     dest.clear();
     dest.reserve(src.size());
     auto u32 = src.begin(), u32_max = src.end();
@@ -178,7 +178,7 @@ std::string& u32_u8(std::string& dest, const std::vector<char32_t>& src){
     return dest;
 }
 
-int u8_u32(std::vector<char32_t>& dest, const std::string& src){
+int u8_u32(std::u32string& dest, const std::string& src){
     dest.clear();
     dest.reserve(src.size());
     size_t ix = 0;
@@ -511,28 +511,28 @@ uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data) {
     return hash;
 }
 
-std::vector<char32_t>& mkallsmall_u32(std::vector<char32_t>& u) {
+std::u32string& mkallsmall_u32(std::u32string& u) {
   for (auto& cp : u) {
     cp = uc_tolower(cp);
   }
   return u;
 }
  
-std::vector<char32_t>& mkallcap_u32(std::vector<char32_t>& u) {
+std::u32string& mkallcap_u32(std::u32string& u) {
   for (auto& cp : u) {
     cp = uc_toupper(cp);
   }
   return u;
 }
 
-std::vector<char32_t>& mkinitcap_u32(std::vector<char32_t>& u) {
+std::u32string& mkinitcap_u32(std::u32string& u) {
   if (!u.empty()) {
     u[0] = uc_toupper(u[0]);
   }
   return u;
 }
 
-std::vector<char32_t>& mkinitsmall_u32(std::vector<char32_t>& u){
+std::u32string& mkinitsmall_u32(std::u32string& u){
   if(!u.empty()){
     u[0] = uc_tolower(u[0]);
   }

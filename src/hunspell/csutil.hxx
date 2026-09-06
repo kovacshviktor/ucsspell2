@@ -277,7 +277,7 @@ LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const std::vector<w_char>& q, int 
 LIBHUNSPELL_DLL_EXPORTED int get_captype_ucs16(const std::vector<unsigned short>& q, int langnum);
 
 //get type of capitalization (BMP & SMP)
-LIBHUNSPELL_DLL_EXPORTED int get_captype_utf32(const std::vector<char32_t>& word);
+LIBHUNSPELL_DLL_EXPORTED int get_captype_utf32(const std::u32string& word);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf(
@@ -293,7 +293,7 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
 
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf32(
   std::string& word, 
-  const std::vector<char32_t>& ignored_chars);
+  const std::u32string& ignored_chars);
 
 LIBHUNSPELL_DLL_EXPORTED bool parse_string(const std::string& line,
                                            std::string& out,
@@ -326,10 +326,10 @@ LIBHUNSPELL_DLL_EXPORTED void store_pointer(char* dest, char* source);
 // conversion function for protected memory
 LIBHUNSPELL_DLL_EXPORTED char* get_stored_pointer(const char* s);
 // utf-32 type small/capital conversions
-LIBHUNSPELL_DLL_EXPORTED std::vector<char32_t>& mkinitcap_u32(std::vector<char32_t>& u);
-LIBHUNSPELL_DLL_EXPORTED std::vector<char32_t>& mkinitsmall_u32(std::vector<char32_t>& u);
-LIBHUNSPELL_DLL_EXPORTED std::vector<char32_t>& mkallsmall_u32(std::vector<char32_t>& u);
-LIBHUNSPELL_DLL_EXPORTED std::vector<char32_t>& mkallcap_u32(std::vector<char32_t>& u);
+LIBHUNSPELL_DLL_EXPORTED std::u32string& mkinitcap_u32(std::u32string& u);
+LIBHUNSPELL_DLL_EXPORTED std::u32string& mkinitsmall_u32(std::u32string& u);
+LIBHUNSPELL_DLL_EXPORTED std::u32string& mkallsmall_u32(std::u32string& u);
+LIBHUNSPELL_DLL_EXPORTED std::u32string& mkallcap_u32(std::u32string& u);
 
 // to avoid unnecessary string copies and Unicode conversions
 // we simply check the ignored_chars characters in the word
