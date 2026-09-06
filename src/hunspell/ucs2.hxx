@@ -200,10 +200,10 @@ inline char32_t cast_from_wchrs(w_char lead, w_char trail){
     extern std::vector<uint16_t> utfsmp_reserved_codes;
     bool is_reserved_code(char32_t cp);
     bool is_u16_simple_only(const std::vector<w_char>& src);
-    std::vector<char32_t>& u16_u32(std::vector<char32_t>& dest, const std::vector<w_char>& src);
-    std::vector<w_char>& u32_u16(std::vector<w_char>& dest, const std::vector<char32_t>& src);
-    std::string& u32_u8(std::string& dest, const std::vector<char32_t>& src);
-    int u8_u32(std::vector<char32_t>& dest, const std::string& src);
+    std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>& src);
+    std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::u32string& src);
+    std::string& u32_u8(std::string& dest, const std::u32string& src);
+    int u8_u32(std::u32string& dest, const std::string& src);
     std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<unsigned short>& src);
     std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest, const std::vector<w_char>& src);
     uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data);

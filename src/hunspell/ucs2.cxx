@@ -235,7 +235,7 @@ int u8_u32(std::vector<char32_t>& dest, const std::string& src){
     return dest.size();
 }
 
-std::vector<char32_t>& u16_u32(std::vector<char32_t>& dest, const std::vector<w_char>& src){
+std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>& src){
     dest.clear();
     auto u16 = src.begin();
     auto u16_end = src.end();
@@ -277,7 +277,7 @@ std::vector<char32_t>& u16_u32(std::vector<char32_t>& dest, const std::vector<w_
     return dest;
 }
 
-std::vector<w_char>& u32_u16(std::vector<w_char> & dest, const std::vector<char32_t>& src) {
+std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::u32string& src) {
     dest.clear();
     auto u32 = src.begin();
     auto u32_end = src.end();
