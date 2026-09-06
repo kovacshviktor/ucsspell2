@@ -5079,12 +5079,12 @@ int AffixMgr::redundant_condition(char ft,
   return 0;
 }
 
-std::vector<std::string> AffixMgr::get_suffix_words(short unsigned* suff,
+std::vector<std::string> AffixMgr::get_suffix_words(char16_t* suff,
                                int len,
                                const std::string& root_word) {
   std::vector<std::string> slst;
   AffixScratch scratch;
-  short unsigned* start_ptr = suff;
+  char16_t* start_ptr = suff;
   for (auto ptr : sStart) {
     while (ptr) {
       suff = start_ptr;

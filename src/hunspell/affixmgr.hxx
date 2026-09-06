@@ -353,7 +353,7 @@ class AffixMgr {
                            const std::string* partresult,
                            AffixScratch& scratch);
 
-  std::vector<std::string> get_suffix_words(short unsigned* suff,
+  std::vector<std::string> get_suffix_words(char16_t* suff,
                        int len,
                        const std::string& root_word);
 
