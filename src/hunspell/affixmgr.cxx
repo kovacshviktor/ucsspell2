@@ -4836,7 +4836,7 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8) {
-                remove_ignored_chars_uc16(entry->appnd, ignorechars_utf16);
+                remove_ignored_chars_ucs16(entry->appnd, ignorechars_utf16);
               } else { 
                 remove_ignored_chars(entry->appnd, ignorechars);
               }
@@ -4872,7 +4872,7 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8 == 1) {
-                remove_ignored_chars_uc16(entry->appnd, ignorechars_utf16);
+                remove_ignored_chars_ucs16(entry->appnd, ignorechars_utf16);
               } else {
                 remove_ignored_chars(entry->appnd, ignorechars);
               }

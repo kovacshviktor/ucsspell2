@@ -2570,12 +2570,12 @@ size_t remove_ignored_chars_utf32(std::string& word,
   return w2.size();
 }
 
-size_t remove_ignored_chars_uc16(std::string& word,
+size_t remove_ignored_chars_ucs16(std::string& word,
   const std::vector<unsigned short>& ignored_chars){
     std::u32string shadow_u32;
     std::u32string shadow2_u32;
     std::u32string shadow_u32_ignored_chars;
-    std::vector<unsigned short> shadow_uc16;
+    std::vector<unsigned short> shadow_ucs16;
     u16_u32(shadow_u32_ignored_chars,ignored_chars);
     u8_u32(shadow_u32,word);
 
@@ -2585,8 +2585,8 @@ size_t remove_ignored_chars_uc16(std::string& word,
     });
     
     u32_u8(word,shadow2_u32);
-    u32_u16(shadow_uc16,shadow2_u32);
-    return shadow_uc16.size();
+    u32_u16(shadow_ucs16,shadow2_u32);
+    return shadow_ucs16.size();
 }
 
 // strip all ignored characters in the string
