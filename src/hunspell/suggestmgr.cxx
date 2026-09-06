@@ -2138,8 +2138,8 @@ int SuggestMgr::leftcommonsubstring(
     if (l1 && l2 && su1[l1 - 1] == su2[l2 - 1])
       return 1;
   } else {
-    unsigned short idx = su2.empty() ? 0 : (unsigned short)(su2[0]),
-                   otheridx = su1.empty() ? 0 : (unsigned short)(su1[0]);
+    char16_t idx = su2.empty() ? 0 : (char16_t)(su2[0]),
+                   otheridx = su1.empty() ? 0 : (char16_t)(su1[0]);
     if (otheridx != idx && (otheridx != unicodetolower(idx, langnum)))
       return 0;
     int i;

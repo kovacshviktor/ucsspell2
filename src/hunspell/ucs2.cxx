@@ -235,7 +235,7 @@ int u8_u32(std::u32string& dest, const std::string& src){
     return dest.size();
 }
 
-std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>& src){
+std::u32string& u16_u32(std::u32string& dest, const std::vector<char16_t>& src){
     dest.clear();
     auto u16 = src.begin();
     auto u16_end = src.end();
@@ -277,7 +277,7 @@ std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>&
     return dest;
 }
 
-std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::u32string& src) {
+std::vector<char16_t>& u32_u16(std::vector<char16_t>& dest, const std::u32string& src) {
     dest.clear();
     auto u32 = src.begin();
     auto u32_end = src.end();
@@ -297,7 +297,7 @@ std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const st
     return dest;
 }
 
-std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<unsigned short>& src){
+std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<char16_t>& src){
     w_char dest_w_char;
     dest.clear();
     dest.reserve(src.size());
@@ -309,7 +309,7 @@ std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<
     return dest;
 } 
 
-int u8_u16(std::vector<unsigned short>& dest, const std::string& src, bool only_convert_first_letter) {
+int u8_u16(std::vector<char16_t>& dest, const std::string& src, bool only_convert_first_letter) {
     if (src.empty()) {
         dest.clear();
         return 0;
@@ -414,11 +414,11 @@ int u8_u16(std::vector<unsigned short>& dest, const std::string& src, bool only_
 
         // Write code points
         if (cp < 0x10000) {
-            *out++ = static_cast<unsigned short>(cp);
+            *out++ = static_cast<char16_t>(cp);
         } else {
             // Encode SMP code point as UTF-16 surrogate pair
-            *out++ = static_cast<unsigned short>(UCS_LEAD(cp));
-            *out++ = static_cast<unsigned short>(UCS_TRAIL(cp));
+            *out++ = static_cast<char16_t>(UCS_LEAD(cp));
+            *out++ = static_cast<char16_t>(UCS_TRAIL(cp));
         }
 
         if (only_convert_first_letter)
@@ -431,17 +431,17 @@ int u8_u16(std::vector<unsigned short>& dest, const std::string& src, bool only_
     return size;
 }
 
-std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest,const std::vector<w_char>& src){
+std::vector<char16_t>& w_char_ushort(std::vector<char16_t>& dest,const std::vector<w_char>& src){
     dest.clear();
     dest.reserve(src.size());
     for(const auto& item: src){
         //overrided casting operator exists
-        dest.push_back((unsigned short)item);
+        dest.push_back((char16_t)item);
     }
     return dest;
 }
 
-std::string& u16_u8(std::string& dest, const std::vector<unsigned short>& src) {
+std::string& u16_u8(std::string& dest, const std::vector<char16_t>& src) {
   dest.clear();
   dest.reserve(src.size() * 3 / 2); // Approximate UTF-8 byte estimate
 
@@ -539,13 +539,13 @@ std::u32string& mkinitsmall_u32(std::u32string& u){
   return u;
 }
 
-std::vector<unsigned short>& mkcase_indexed_ucs16(std::vector<unsigned short>& u, size_t& index, bool uc_to_lower){
+std::vector<char16_t>& mkcase_indexed_ucs16(std::vector<char16_t>& u, size_t& index, bool uc_to_lower){
     char32_t cp;
     if((index < u.size()) && (!u.empty())){
         if(UCS_IS_SINGLE(u[index])){
             cp = static_cast<char32_t>(u[index]);
             cp = uc_to_case(cp,uc_to_lower);
-            u[index] = static_cast<unsigned short>(cp);
+            u[index] = static_cast<char16_t>(cp);
         } else if (UCS_IS_LEAD(u[index])){
             if((index + 1) < u.size()){
                 cp = UCS_FROM_LEAD(u[index]);
@@ -576,7 +576,7 @@ std::vector<unsigned short>& mkcase_indexed_ucs16(std::vector<unsigned short>& u
     return u;    
 }
 
-std::vector<unsigned short>& mkallcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower){
+std::vector<char16_t>& mkallcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower){
     if(!u.empty()){
         for(size_t i=0; i < u.size(); i++){
             u = mkcase_indexed_ucs16(u, i, uc_to_lower);
@@ -585,7 +585,7 @@ std::vector<unsigned short>& mkallcase_ucs16(std::vector<unsigned short>& u, boo
     return u; 
 }
 
-std::vector<unsigned short>& mkinitcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower){
+std::vector<char16_t>& mkinitcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower){
     size_t i = 0;
     if(!u.empty()){
         u = mkcase_indexed_ucs16(u, i, uc_to_lower);
@@ -593,19 +593,19 @@ std::vector<unsigned short>& mkinitcase_ucs16(std::vector<unsigned short>& u, bo
     return u;
 }
 
-std::vector<unsigned short>& mkinitsmall_ucs16(std::vector<unsigned short>& u){
+std::vector<char16_t>& mkinitsmall_ucs16(std::vector<char16_t>& u){
     return mkinitcase_ucs16(u, UCS_TO_LOWER);
 }
 
-std::vector<unsigned short>& mkallsmall_ucs16(std::vector<unsigned short>& u){
+std::vector<char16_t>& mkallsmall_ucs16(std::vector<char16_t>& u){
     return mkallcase_ucs16(u, UCS_TO_LOWER);
 }
 
-std::vector<unsigned short>& mkinitcap_ucs16(std::vector<unsigned short>& u){
+std::vector<char16_t>& mkinitcap_ucs16(std::vector<char16_t>& u){
     return mkinitcase_ucs16(u, UCS_TO_UPPER);
 }
 
-std::vector<unsigned short>& mkallcap_ucs16(std::vector<unsigned short>& u){
+std::vector<char16_t>& mkallcap_ucs16(std::vector<char16_t>& u){
     return mkallcase_ucs16(u, UCS_TO_UPPER);
 }
 
@@ -613,7 +613,7 @@ std::vector<unsigned short>& mkallcap_ucs16(std::vector<unsigned short>& u){
 char32_t uc_toupper(char32_t cp) {
     // BMP
     if (cp < 0x10000) {
-        return static_cast<char32_t>(unicodetoupper(static_cast<unsigned short>(cp), LANG_xx));
+        return static_cast<char32_t>(unicodetoupper(static_cast<char16_t>(cp), LANG_xx));
     }
     // SMP area upper bound check
     if (cp > 0x1ffff) {
@@ -627,7 +627,7 @@ char32_t uc_toupper(char32_t cp) {
 char32_t uc_tolower(char32_t cp) {
     // BMP    
     if (cp < 0x10000) {
-        return static_cast<char32_t>(unicodetolower(static_cast<unsigned short>(cp), LANG_xx));
+        return static_cast<char32_t>(unicodetolower(static_cast<char16_t>(cp), LANG_xx));
     }
     // SMP area upper bound check
     if (cp > 0x1ffff) {

@@ -163,7 +163,7 @@ class AffixMgr {
   int cpdwordmax;
   int cpdmaxsyllable;
   std::string cpdvowels; // vowels (for calculating of Hungarian compounding limit,
-  std::vector<unsigned short> cpdvowels_utf16; //vowels for UTF-8 encoding
+  std::vector<char16_t> cpdvowels_utf16; //vowels for UTF-8 encoding
   std::string cpdsyllablenum; // syllable count incrementing flag
   const char* pfxappnd;  // BUG: not stateless
   const char* sfxappnd;  // BUG: not stateless
@@ -174,9 +174,9 @@ class AffixMgr {
   PfxEntry* pfx;         // BUG: not stateless
   int checknum;
   std::string wordchars; // letters + spec. word characters
-  std::vector<unsigned short> wordchars_utf16;
+  std::vector<char16_t> wordchars_utf16;
   std::string ignorechars; // letters + spec. word characters
-  std::vector<unsigned short> ignorechars_utf16;
+  std::vector<char16_t> ignorechars_utf16;
   std::string version;   // affix and dictionary file version string
   std::string lang; // language
   int langnum;
@@ -206,7 +206,7 @@ class AffixMgr {
                              int start,
                              int len,
                              AffixScratch& scratch,
-                             const unsigned short needflag = (unsigned short)0,
+                             const char16_t needflag = (char16_t)0,
                              char in_compound = IN_CPD_NOT,
                              const FLAG avoidflag = FLAG_NULL,
                              PfxEntry** found_pfx = nullptr,
@@ -282,8 +282,8 @@ class AffixMgr {
 
   std::string morphgen(const char* ts,
                        int wl,
-                       const unsigned short* ap,
-                       unsigned short al,
+                       const char16_t* ap,
+                       char16_t al,
                        const char* morph,
                        const char* targetmorph,
                        int level,
@@ -293,8 +293,8 @@ class AffixMgr {
                       int maxn,
                       const char* ts,
                       int wl,
-                      const unsigned short* ap,
-                      unsigned short al,
+                      const char16_t* ap,
+                      char16_t al,
                       const char* bad,
                       int,
                       const char*);
@@ -369,9 +369,9 @@ class AffixMgr {
   const std::string& get_key_string();
   const std::string& get_try_string() const;
   const std::string& get_wordchars() const;
-  const std::vector<unsigned short>& get_wordchars_utf16() const;
+  const std::vector<char16_t>& get_wordchars_utf16() const;
   const char* get_ignore() const;
-  const std::vector<unsigned short>& get_ignore_utf16() const;
+  const std::vector<char16_t>& get_ignore_utf16() const;
   int get_compound() const;
   FLAG get_compoundflag() const;
   FLAG get_forbiddenword() const;
@@ -398,12 +398,12 @@ class AffixMgr {
   FLAG get_warn() const;
   int get_forbidwarn() const;
   int get_checksharps() const;
-  std::string encode_flag(unsigned short aflag) const;
+  std::string encode_flag(char16_t aflag) const;
   int get_fullstrip() const;
 
  private:
   int parse_file(const char* affpath, const char* key);
-  bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
+  bool parse_flag(const std::string& line, char16_t* out, FileMgr* af);
   bool parse_num(const std::string& line, int* out, FileMgr* af);
   bool parse_cpdsyllable(const std::string& line, FileMgr* af);
   bool parse_convtable(const std::string& line,
@@ -425,7 +425,7 @@ class AffixMgr {
                          char in_compound,
                          const TraceCtx* t) const;
 
-  std::string& debugflag(std::string& result, unsigned short flag);
+  std::string& debugflag(std::string& result, char16_t flag);
   int condlen(const std::string& s);
   int encodeit(AffEntry& entry, const std::string& cs);
   int build_pfxtree(PfxEntry* pfxptr);

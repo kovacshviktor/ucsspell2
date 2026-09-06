@@ -1053,7 +1053,7 @@ int AffixMgr::process_sfx_order() {
 }
 
 // add flags to the result for dictionary debugging
-std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
+std::string& AffixMgr::debugflag(std::string& result, char16_t flag) {
   std::string st = encode_flag(flag);
   result.push_back(MSEP_FLD);
   result.append(MORPH_FLAG);
@@ -1510,10 +1510,10 @@ int AffixMgr::cpdcase_check(const std::string& word, int pos) {
     for (p = wordp + pos - 1; p > wordp && is_utf8_cont(*p); p--)
       ;
     std::string pair(p);
-    std::vector<unsigned short> pair_u;
+    std::vector<char16_t> pair_u;
     u8_u16(pair_u, pair,false);
-    unsigned short a = pair_u.size() > 1 ? (unsigned short)pair_u[1] : 0,
-                   b = !pair_u.empty() ? (unsigned short)pair_u[0] : 0;
+    char16_t a = pair_u.size() > 1 ? (char16_t)pair_u[1] : 0,
+                   b = !pair_u.empty() ? (char16_t)pair_u[0] : 0;
     if (((unicodetoupper(a, langnum) == a && unicodetolower(a, langnum) != a) ||
          (unicodetoupper(b, langnum) == b && unicodetolower(b, langnum) != b)) &&
         (a != '-') && (b != '-'))
@@ -1699,10 +1699,10 @@ short AffixMgr::get_syllable(const std::string& word) {
             return std::binary_search(cpdvowels.begin(), cpdvowels.end(), c);
           });
   } else if (!cpdvowels_utf16.empty()) {
-    std::vector<unsigned short> w;
+    std::vector<char16_t> w;
     u8_u16(w, word,false);
     num = (short)std::count_if(w.begin(), w.end(),
-          [&](unsigned short wc) {
+          [&](char16_t wc) {
             return std::binary_search(cpdvowels_utf16.begin(), cpdvowels_utf16.end(), wc);
           });
   }
@@ -2028,10 +2028,10 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 (rv = affix_check(st, 0, i, scratch)) &&
                 (sfx && sfx->getCont() &&
                  (  // XXX hardwired Hungarian dic. codes
-                     TESTAFF(sfx->getCont(), (unsigned short)'x',
+                     TESTAFF(sfx->getCont(), (char16_t)'x',
                              sfx->getContLen()) ||
                      TESTAFF(
-                         sfx->getCont(), (unsigned short)'%',
+                         sfx->getCont(), (char16_t)'%',
                          sfx->getContLen()))))) {  // first word is ok condition
 
           // LANG_hu section: spec. Hungarian rule
@@ -2625,8 +2625,8 @@ int AffixMgr::compound_check_morph(const std::string& word,
           // LANG_hu section: spec. Hungarian rule
           || ((!rv) && (langnum == LANG_hu) && hu_mov_rule && (rv = affix_check(st, 0, i, scratch)) &&
               (sfx && sfx->getCont() &&
-               (TESTAFF(sfx->getCont(), (unsigned short)'x', sfx->getContLen()) ||
-                TESTAFF(sfx->getCont(), (unsigned short)'%', sfx->getContLen()))))
+               (TESTAFF(sfx->getCont(), (char16_t)'x', sfx->getContLen()) ||
+                TESTAFF(sfx->getCont(), (char16_t)'%', sfx->getContLen()))))
           // END of LANG_hu section
       ) {
         // LANG_hu section: spec. Hungarian rule
@@ -3494,8 +3494,8 @@ static int morphcmp(const char* s, const char* t) {
 
 std::string AffixMgr::morphgen(const char* ts,
                                int wl,
-                               const unsigned short* ap,
-                               unsigned short al,
+                               const char16_t* ap,
+                               char16_t al,
                                const char* morph,
                                const char* targetmorph,
                          int level,
@@ -3598,8 +3598,8 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
                               int maxn,
                               const char* ts,
                               int wl,
-                              const unsigned short* ap,
-                              unsigned short al,
+                              const char16_t* ap,
+                              char16_t al,
                               const char* bad,
                               int badl,
                               const char* phon) {
@@ -3804,7 +3804,7 @@ int AffixMgr::get_checksharps() const {
   return checksharps;
 }
 
-std::string AffixMgr::encode_flag(unsigned short aflag) const {
+std::string AffixMgr::encode_flag(char16_t aflag) const {
   return pHMgr->encode_flag(aflag);
 }
 
@@ -3816,7 +3816,7 @@ const char* AffixMgr::get_ignore() const {
 }
 
 // return the preferred ignore string for suggestions
-const std::vector<unsigned short>& AffixMgr::get_ignore_utf16() const {
+const std::vector<char16_t>& AffixMgr::get_ignore_utf16() const {
   return ignorechars_utf16;
 }
 
@@ -3837,7 +3837,7 @@ const std::string& AffixMgr::get_wordchars() const {
   return wordchars;
 }
 
-const std::vector<unsigned short>& AffixMgr::get_wordchars_utf16() const {
+const std::vector<char16_t>& AffixMgr::get_wordchars_utf16() const {
   return wordchars_utf16;
 }
 
@@ -3937,7 +3937,7 @@ int AffixMgr::get_sugswithdots() const {
 }
 
 /* parse flag */
-bool AffixMgr::parse_flag(const std::string& line, unsigned short* out, FileMgr* af) {
+bool AffixMgr::parse_flag(const std::string& line, char16_t* out, FileMgr* af) {
   if (*out != FLAG_NULL && !(*out >= DEFAULTFLAGS)) {
     HUNSPELL_WARNING(
         stderr,
@@ -4636,7 +4636,7 @@ public:
     entries.clear();
   }
   void initialize(int numents,
-                  char opts, unsigned short aflag) {
+                  char opts, char16_t aflag) {
     entries.reserve(std::min(numents, 16384));
 
     if (m_at == 'P') {
@@ -4678,7 +4678,7 @@ bool AffixMgr::parse_affix(const std::string& line,
                           char* dupflags) {
   int numents = 0;  // number of AffEntry structures to parse
 
-  unsigned short aflag = 0;  // affix char identifier
+  char16_t aflag = 0;  // affix char identifier
 
   char ff = 0;
   char xprod = 0;
@@ -4851,20 +4851,20 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (pHMgr->is_aliasf()) {
               int index = atoi(dash_str.c_str());
-              entry->contclasslen = (unsigned short)pHMgr->get_aliasf(
+              entry->contclasslen = (char16_t)pHMgr->get_aliasf(
                   index, &(entry->contclass), af);
               if (!entry->contclasslen)
                 HUNSPELL_WARNING(stderr,
                                  "error: bad affix flag alias: \"%s\"\n",
                                  dash_str.c_str());
             } else {
-              entry->contclasslen = (unsigned short)pHMgr->decode_flags(
+              entry->contclasslen = (char16_t)pHMgr->decode_flags(
                   &(entry->contclass), dash_str, af);
               std::sort(entry->contclass, entry->contclass + entry->contclasslen);
             }
 
             havecontclass = 1;
-            for (unsigned short _i = 0; _i < entry->contclasslen; _i++) {
+            for (char16_t _i = 0; _i < entry->contclasslen; _i++) {
               contclasses[(entry->contclass)[_i]] = 1;
             }
           } else {

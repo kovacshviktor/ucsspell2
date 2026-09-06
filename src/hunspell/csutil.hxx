@@ -135,18 +135,18 @@ LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
                                      std::ios_base::openmode mode);
 
 // convert UTF-16 characters to UTF-8
-[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
+[[deprecated("Use std::vector<char16_t>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
                                              const std::vector<w_char>& src);
 
-LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,const std::vector<unsigned short>& src);                                             
+LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,const std::vector<char16_t>& src);                                             
 // convert UTF-8 characters to UTF-16
-[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
+[[deprecated("Use std::vector<char16_t>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
                                     const std::string& src,
                                     bool only_convert_first_letter = false);
 
-LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<unsigned short>& dest,
+LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<char16_t>& dest,
                               const std::string& src,
                               bool only_convert_first_letter = false);                                    
 
@@ -205,17 +205,17 @@ struct cs_info {
   unsigned char cupper;
 };
 
-LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetoupper(unsigned short c,
+LIBHUNSPELL_DLL_EXPORTED char16_t unicodetoupper(char16_t c,
                                                        int langnum);
 LIBHUNSPELL_DLL_EXPORTED char32_t uc_toupper(char32_t cp);
 
 LIBHUNSPELL_DLL_EXPORTED w_char upper_utf(w_char u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED w_char lower_utf(w_char u, int langnum);
 
-LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetolower(unsigned short c,
+LIBHUNSPELL_DLL_EXPORTED char16_t unicodetolower(char16_t c,
                                                        int langnum);
 LIBHUNSPELL_DLL_EXPORTED char32_t uc_tolower(char32_t cp);
-LIBHUNSPELL_DLL_EXPORTED int unicodeisalpha(unsigned short c);
+LIBHUNSPELL_DLL_EXPORTED int unicodeisalpha(char16_t c);
 
 LIBHUNSPELL_DLL_EXPORTED const struct cs_info* get_current_cs(const std::string& es);
 
@@ -245,36 +245,36 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mkinitcap(std::string& s,
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitcap_utf(std::vector<w_char>& u, int langnum);
 
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitcap_ucs16(std::vector<unsigned short>& u);
+LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
+mkinitcap_ucs16(std::vector<char16_t>& u);
 // convert UTF-8 string to little
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallsmall_utf(std::vector<w_char>& u, int langnum);
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower);
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower);
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallsmall_ucs16(std::vector<unsigned short>& u);
+LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
+mkinitcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower);
+LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
+mkallcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower);
+LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
+mkallsmall_ucs16(std::vector<char16_t>& u);
 // convert first letter of UTF-8 string to little
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitsmall_utf(std::vector<w_char>& u, int langnum);
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitsmall_ucs16(std::vector<unsigned short>& u);
+LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
+mkinitsmall_ucs16(std::vector<char16_t>& u);
 // convert UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
 
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallcap_ucs16(std::vector<unsigned short>&u);
+LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
+mkallcap_ucs16(std::vector<char16_t>&u);
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(const std::string& q, const cs_info*);
 
 // get type of capitalization (UTF-8)
 LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const std::vector<w_char>& q, int langnum);
-LIBHUNSPELL_DLL_EXPORTED int get_captype_ucs16(const std::vector<unsigned short>& q, int langnum);
+LIBHUNSPELL_DLL_EXPORTED int get_captype_ucs16(const std::vector<char16_t>& q, int langnum);
 
 //get type of capitalization (BMP & SMP)
 LIBHUNSPELL_DLL_EXPORTED int get_captype_utf32(const std::u32string& word);
@@ -285,7 +285,7 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf(
     const std::vector<w_char>& ignored_chars);
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_ucs16(
   std::string& word,
-  const std::vector<unsigned short>& ignored_chars);
+  const std::vector<char16_t>& ignored_chars);
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
     std::string& word,
@@ -297,7 +297,7 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf32(
 
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_ucs16(
   std::string& word,
-  const std::vector<unsigned short> ignored_chars);
+  const std::vector<char16_t> ignored_chars);
 
 LIBHUNSPELL_DLL_EXPORTED bool parse_string(const std::string& line,
                                            std::string& out,
@@ -310,7 +310,7 @@ LIBHUNSPELL_DLL_EXPORTED bool parse_array(const std::string& line,
 
 LIBHUNSPELL_DLL_EXPORTED bool parse_array_ucs16(const std::string& line,
   std::string& out,
-  std::vector<unsigned short> out_utf16,
+  std::vector<char16_t> out_utf16,
   int utf8,
   int ln);
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char* r);

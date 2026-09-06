@@ -166,12 +166,12 @@ void trace(const TraceCtx& context, TRACE_FORMAT const char* format, ...)
 // Formats one flag in the dictionary's own flag syntax. The flag hunspell
 // keeps for itself, the one on the hidden capitalised form of a word, prints
 // as (onlyupcase).
-std::string trace_flag(const AffixMgr* pAMgr, unsigned short flag);
+std::string trace_flag(const AffixMgr* pAMgr, char16_t flag);
 
 // Formats a flag list in the dictionary's own flag syntax. An empty list
 // prints as (none).
 std::string trace_flags(const AffixMgr* pAMgr,
-                        const unsigned short* astr,
+                        const char16_t* astr,
                         int alen);
 
 // Opens an affix rule with the verb given, pfx or sfx. The fields of the rule
@@ -190,9 +190,9 @@ void trace_affix(const TraceCtx& context,
 void trace_test(const TraceCtx& context,
                 const char* name,
                 const AffixMgr* pAMgr,
-                unsigned short flag,
+                char16_t flag,
                 const char* where,
-                const unsigned short* astr,
+                const char16_t* astr,
                 int alen,
                 const char* outcome);
 
@@ -203,7 +203,7 @@ void trace_test(const TraceCtx& context,
 // continuation flags, because the test treats the two alike.
 void trace_circumfix(const TraceCtx& context,
                      const AffixMgr* pAMgr,
-                     unsigned short flag,
+                     char16_t flag,
                      PfxEntry* pfx,
                      SfxEntry* sfx,
                      bool in_prefix,

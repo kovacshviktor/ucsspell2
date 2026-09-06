@@ -151,7 +151,7 @@ void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mod
 #endif
 
 std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
-  std::vector<unsigned short> ushort_shadow;
+  std::vector<char16_t> ushort_shadow;
   w_char_ushort(ushort_shadow,src);
   u16_u8(dest,ushort_shadow);
   return dest;
@@ -167,7 +167,7 @@ static void warn_missing_cont(const std::string& src, std::string::const_iterato
 }
 
 int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_first_letter) {
-  std::vector<unsigned short> ushort_shadow;
+  std::vector<char16_t> ushort_shadow;
   int ushort_length = u8_u16(ushort_shadow,src,only_convert_first_letter);
   ushort_w_char(dest,ushort_shadow);
   return ushort_length;
@@ -472,15 +472,15 @@ w_char upper_utf(w_char u, int langnum) {
 //maybe use inline asm for g++?
 
 #if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
-  return std::bit_cast<w_char>(unicodetoupper((unsigned short)u, langnum));
+  return std::bit_cast<w_char>(unicodetoupper((char16_t)u, langnum));
 #else
-  const auto us = unicodetoupper((unsigned short)u, langnum);
-  memcpy(&u, &us, sizeof(unsigned short));
+  const auto us = unicodetoupper((char16_t)u, langnum);
+  memcpy(&u, &us, sizeof(char16_t));
   return u;
 #endif
 
 #else
-  const auto us = unicodetoupper((unsigned short)u, langnum);
+  const auto us = unicodetoupper((char16_t)u, langnum);
   u.h = (unsigned char)(us >> 8);
   u.l = (unsigned char)(us & 0xff);
   return u;
@@ -496,15 +496,15 @@ w_char lower_utf(w_char u, int langnum) {
 //maybe use inline asm for g++?
 
 #if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
-  return std::bit_cast<w_char>(unicodetolower((unsigned short)u, langnum));
+  return std::bit_cast<w_char>(unicodetolower((char16_t)u, langnum));
 #else
-  const auto us = unicodetolower((unsigned short)u, langnum);
-  memcpy(&u, &us, sizeof(unsigned short));
+  const auto us = unicodetolower((char16_t)u, langnum);
+  memcpy(&u, &us, sizeof(char16_t));
   return u;
 #endif
 
 #else
-  const auto us = unicodetolower((unsigned short)u, langnum);
+  const auto us = unicodetolower((char16_t)u, langnum);
   u.h = (unsigned char)(us >> 8);
   u.l = (unsigned char)(us & 0xff);
   return u;
@@ -2393,44 +2393,44 @@ int get_lang_num(const std::string& lang) {
   return LANG_xx;
 }
 
-unsigned short unicodetoupper(unsigned short c, int langnum) {
+char16_t unicodetoupper(char16_t c, int langnum) {
   // In Azeri and Turkish, I and i dictinct letters:
   // There are a dotless lower case i pair of upper `I',
   // and an upper I with dot pair of lower `i'.
   if (c == 0x0069 && ((langnum == LANG_az) || (langnum == LANG_tr) || (langnum == LANG_crh)))
     return 0x0130;
 #ifdef OPENOFFICEORG
-  return static_cast<unsigned short>(u_toupper(c));
+  return static_cast<char16_t>(u_toupper(c));
 #else
 #ifdef MOZILLA_CLIENT
   return ToUpperCase((char16_t)c);
 #else
-  unsigned short up = utf_pages[utf_page_index[c >> 8]][c & 0xFF].cupper;
+  char16_t up = utf_pages[utf_page_index[c >> 8]][c & 0xFF].cupper;
   return up ? up : c;
 #endif
 #endif
 }
 
-unsigned short unicodetolower(unsigned short c, int langnum) {
+char16_t unicodetolower(char16_t c, int langnum) {
   // In Azeri and Turkish, I and i dictinct letters:
   // There are a dotless lower case i pair of upper `I',
   // and an upper I with dot pair of lower `i'.
   if (c == 0x0049 && ((langnum == LANG_az) || (langnum == LANG_tr) || (langnum == LANG_crh)))
     return 0x0131;
 #ifdef OPENOFFICEORG
-  return static_cast<unsigned short>(u_tolower(c));
+  return static_cast<char16_t>(u_tolower(c));
 #else
 #ifdef MOZILLA_CLIENT
   return ToLowerCase((char16_t)c);
 #else
-  unsigned short lo = utf_pages[utf_page_index[c >> 8]][c & 0xFF].clower;
+  char16_t lo = utf_pages[utf_page_index[c >> 8]][c & 0xFF].clower;
   return lo ? lo : c;
 #endif
 #endif
 }
 
 
-int unicodeisalpha(unsigned short c) {
+int unicodeisalpha(char16_t c) {
 #ifdef OPENOFFICEORG
   return u_isalpha(c);
 #else
@@ -2479,7 +2479,7 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
 
   auto it = word.begin(), it_end = word.end();
   while (it != it_end) {
-    const auto idx = (unsigned short)*it;
+    const auto idx = (char16_t)*it;
     const auto lwridx = unicodetolower(idx, langnum);
     if (idx != lwridx)
       ncap++;
@@ -2488,7 +2488,7 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
     ++it;
   }
   if (ncap) {
-    const auto idx = (unsigned short)word[0];
+    const auto idx = (char16_t)word[0];
     firstcap = (idx != unicodetolower(idx, langnum));
   }
 
@@ -2571,11 +2571,11 @@ size_t remove_ignored_chars_utf32(std::string& word,
 }
 
 size_t remove_ignored_chars_ucs16(std::string& word,
-  const std::vector<unsigned short>& ignored_chars){
+  const std::vector<char16_t>& ignored_chars){
     std::u32string shadow_u32;
     std::u32string shadow2_u32;
     std::u32string shadow_u32_ignored_chars;
-    std::vector<unsigned short> shadow_ucs16;
+    std::vector<char16_t> shadow_ucs16;
     u16_u32(shadow_u32_ignored_chars,ignored_chars);
     u8_u32(shadow_u32,word);
 
@@ -2648,7 +2648,7 @@ bool parse_array(const std::string& line,
 
 bool parse_array_ucs16(const std::string& line,
   std::string& out,
-  std::vector<unsigned short>& out_utf16,
+  std::vector<char16_t>& out_utf16,
   int utf8,
   int ln){
     std::u32string shadow_32;

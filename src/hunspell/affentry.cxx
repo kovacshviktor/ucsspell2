@@ -1103,7 +1103,7 @@ The structure affentry is defined as follows:
 
 struct affentry
 {
-   unsigned short aflag;    // ID used to represent the affix
+   char16_t aflag;    // ID used to represent the affix
    std::string strip;       // string to strip before adding affix
    std::string appnd;       // the affix string to add
    char numconds;           // the number of conditions that must be met

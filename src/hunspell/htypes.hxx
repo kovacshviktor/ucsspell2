@@ -68,11 +68,11 @@
 // on 64-bit (vs 40), which adds up to several MB on large dictionaries
 // (e.g. Bulgarian, ~700K entries).
 struct hentry {
-  unsigned short* astr;         // affix flag vector
+  char16_t* astr;         // affix flag vector
   struct hentry* next;          // next word with same hash code
   struct hentry* next_homonym;  // next homonym word (with same hash code)
-  unsigned short blen;   // word length in bytes
-  unsigned short clen;   // word length in characters (different for UTF-8 enc.)
+  char16_t blen;   // word length in bytes
+  char16_t clen;   // word length in characters (different for UTF-8 enc.)
   short alen;            // length of affix flag vector
   char var;      // bit vector of H_OPT hentry options
   char word[1];  // variable-length word (8-bit or UTF-8 encoding)

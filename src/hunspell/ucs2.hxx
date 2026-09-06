@@ -200,13 +200,13 @@ inline char32_t cast_from_wchrs(w_char lead, w_char trail){
     extern std::vector<uint16_t> utfsmp_reserved_codes;
     bool is_reserved_code(char32_t cp);
     bool is_u16_simple_only(const std::vector<w_char>& src);
-    std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>& src);
-    std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::u32string& src);
+    std::u32string& u16_u32(std::u32string& dest, const std::vector<char16_t>& src);
+    std::vector<char16_t>& u32_u16(std::vector<char16_t>& dest, const std::u32string& src);
     std::string& u32_u8(std::string& dest, const std::u32string& src);
     int u8_u32(std::u32string& dest, const std::string& src);
-    std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<unsigned short>& src);
-    std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest, const std::vector<w_char>& src);
+    std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<char16_t>& src);
+    std::vector<char16_t>& w_char_ushort(std::vector<char16_t>& dest, const std::vector<w_char>& src);
     uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data);
     uint32_t fnv1a_32_utf8(const std::string& str);
-    std::vector<unsigned short>& mkcase_indexed_ucs16(std::vector<unsigned short>& u,size_t& index,bool uc_to_lower);
+    std::vector<char16_t>& mkcase_indexed_ucs16(std::vector<char16_t>& u,size_t& index,bool uc_to_lower);
 #endif // UCSSPELL_UCS2_HXX

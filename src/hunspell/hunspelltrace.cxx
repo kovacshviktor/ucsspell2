@@ -97,7 +97,7 @@ void trace(const TraceCtx& context, const char* format, ...) {
   context.emit(line);
 }
 
-std::string trace_flag(const AffixMgr* pAMgr, unsigned short flag) {
+std::string trace_flag(const AffixMgr* pAMgr, char16_t flag) {
   // hunspell marks the hidden capitalised form of a word with a flag of its
   // own, which no affix file ever writes. Give that one a name, because the
   // character it encodes to is not one a reader can look up
@@ -107,7 +107,7 @@ std::string trace_flag(const AffixMgr* pAMgr, unsigned short flag) {
 }
 
 std::string trace_flags(const AffixMgr* pAMgr,
-                        const unsigned short* astr,
+                        const char16_t* astr,
                         int alen) {
   if (!pAMgr || !astr || alen <= 0)
     return "(none)";
@@ -142,9 +142,9 @@ void trace_affix(const TraceCtx& context,
 void trace_test(const TraceCtx& context,
                 const char* name,
                 const AffixMgr* pAMgr,
-                unsigned short flag,
+                char16_t flag,
                 const char* where,
-                const unsigned short* astr,
+                const char16_t* astr,
                 int alen,
                 const char* outcome) {
   trace(context, "test %s flag=%s in=%s have=%s -> %s", name,
@@ -154,7 +154,7 @@ void trace_test(const TraceCtx& context,
 
 void trace_circumfix(const TraceCtx& context,
                      const AffixMgr* pAMgr,
-                     unsigned short flag,
+                     char16_t flag,
                      PfxEntry* pfx,
                      SfxEntry* sfx,
                      bool in_prefix,
