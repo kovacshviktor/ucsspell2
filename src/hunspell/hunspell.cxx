@@ -250,7 +250,7 @@ void HunspellImpl::clean_ignore(std::string& dest,
     if (utf8) {
       const std::vector<char16_t>& ignoredchars_utf16 =
           pAMgr->get_ignore_utf16();
-      remove_ignored_chars_utf(dest, ignoredchars_utf16);
+      remove_ignored_chars_ucs16(dest, ignoredchars_utf16);
     } else {
       remove_ignored_chars(dest, ignoredchars);
     }
@@ -2178,7 +2178,7 @@ std::vector<std::string> HunspellImpl::suffix_suggest(const std::string& root_wo
     if (utf8 == 1) {
       const std::vector<char16_t>& ignoredchars_utf16 =
           pAMgr->get_ignore_utf16();
-      remove_ignored_chars_utf(w2, ignoredchars_utf16);
+      remove_ignored_chars_ucs16(w2, ignoredchars_utf16);
     } else {
       remove_ignored_chars(w2, ignoredchars);
     }

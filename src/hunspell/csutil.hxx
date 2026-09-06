@@ -295,9 +295,6 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf32(
   std::string& word, 
   const std::u32string& ignored_chars);
 
-LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_ucs16(
-  std::string& word,
-  const std::vector<char16_t> ignored_chars);
 
 LIBHUNSPELL_DLL_EXPORTED bool parse_string(const std::string& line,
                                            std::string& out,
