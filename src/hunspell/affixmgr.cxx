@@ -571,7 +571,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the extra word characters */
     if (line.compare(0, 9, "WORDCHARS", 9) == 0) {
-      if (!parse_array(line, wordchars, wordchars_utf16,
+      if (!parse_array_ucs16(line, wordchars, wordchars_utf16,
                        utf8, afflst->getlinenum())) {
         finishFileMgr(afflst);
         return 1;
@@ -581,7 +581,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     /* parse in the ignored characters (for example, Arabic optional diacretics
      * charachters */
     if (line.compare(0, 6, "IGNORE", 6) == 0) {
-      if (!parse_array(line, ignorechars, ignorechars_utf16,
+      if (!parse_array_ucs16(line, ignorechars, ignorechars_utf16,
                        utf8, afflst->getlinenum())) {
         finishFileMgr(afflst);
         return 1;
@@ -4836,7 +4836,7 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8) {
-                remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
+                remove_ignored_chars_uc16(entry->appnd, ignorechars_utf16);
               } else { 
                 remove_ignored_chars(entry->appnd, ignorechars);
               }
@@ -4872,7 +4872,7 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8 == 1) {
-                remove_ignored_chars_utf(entry->appnd, ignorechars_utf16);
+                remove_ignored_chars_uc16(entry->appnd, ignorechars_utf16);
               } else {
                 remove_ignored_chars(entry->appnd, ignorechars);
               }
