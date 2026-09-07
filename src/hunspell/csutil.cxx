@@ -543,6 +543,8 @@ std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int langnum) {
   return u;
 }
 
+
+
 // Convert all UTF-32 characters in vector to uppercase in-place
 
 std::string& mkinitcap(std::string& s, const struct cs_info* csconv) {

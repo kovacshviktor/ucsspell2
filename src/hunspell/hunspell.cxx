@@ -304,7 +304,7 @@ size_t HunspellImpl::cleanword2(std::string& dest,
   nl = dest.size();
   if (utf8) {
     u8_u16(dest_utf, dest,false);
-    *pcaptype = get_captype_utf8(dest_utf, langnum);
+    *pcaptype = get_captype_ucs16(dest_utf, langnum);
   } else {
     *pcaptype = get_captype(dest, csconv);
   }
@@ -392,7 +392,8 @@ void HunspellImpl::mkallcap(std::string& u8) {
   if (utf8) {
     std::vector<char16_t> u16;
     u8_u16(u16, u8,false);
-    ::mkallcap_utf(u16, langnum);
+    
+    ::mkallcap_ucs16(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkallcap(u8, csconv);
@@ -401,7 +402,7 @@ void HunspellImpl::mkallcap(std::string& u8) {
 
 int HunspellImpl::mkallsmall2(std::string& u8, std::vector<char16_t>& u16) {
   if (utf8) {
-    ::mkallsmall_utf(u16, langnum);
+    ::mkallsmall_ucs16(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkallsmall(u8, csconv);
@@ -1334,7 +1335,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         if (utf8) {
           std::vector<char16_t> postdotu;
           u8_u16(postdotu, postdot,false);
-          captype_ = get_captype_utf8(postdotu, langnum);
+          captype_ = get_captype_ucs16(postdotu, langnum);
         } else {
           captype_ = get_captype(postdot, csconv);
         }
@@ -1611,7 +1612,7 @@ void HunspellImpl::mkinitcap(std::string& u8) {
   if (utf8) {
     std::vector<char16_t> u16;
     u8_u16(u16, u8, false);
-    ::mkinitcap_utf(u16, langnum);
+    ::mkinitcap_ucs16(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkinitcap(u8, csconv);
@@ -1620,7 +1621,7 @@ void HunspellImpl::mkinitcap(std::string& u8) {
 
 int HunspellImpl::mkinitcap2(std::string& u8, std::vector<char16_t>& u16) {
   if (utf8) {
-    ::mkinitcap_utf(u16, langnum);
+    ::mkinitcap_ucs16(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkinitcap(u8, csconv);
@@ -1630,7 +1631,7 @@ int HunspellImpl::mkinitcap2(std::string& u8, std::vector<char16_t>& u16) {
 
 int HunspellImpl::mkinitsmall2(std::string& u8, std::vector<char16_t>& u16) {
   if (utf8) {
-    ::mkinitsmall_utf(u16, langnum);
+    ::mkinitsmall_ucs16(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkinitsmall(u8, csconv);

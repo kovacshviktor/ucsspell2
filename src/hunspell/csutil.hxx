@@ -130,6 +130,23 @@
 #define UCS_TO_LOWER true
 #define UCS_TO_UPPER false
 
+#if defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__) || defined(_M_ARM64) || \
+    defined(__powerpc__) || defined(__ppc__) || defined(__PPC__)
+    // 64-bit platforms and PowerPC pass parameters in registers automatically
+    #define UCS_FASTCALL
+#elif defined(__GNUC__) && defined(__i386__)
+    // 32-bit x86 GCC/Clang
+    #define UCS_FASTCALL __attribute__((regparm(3)))
+#elif defined(_MSC_VER) && defined(_M_IX86)
+    // 32-bit x86 MSVC
+    #define UCS_FASTCALL __fastcall
+#elif defined(__m68k__)
+    // Motorola 68k architecture: standard stack-based or compiler-default
+    #define UCS_FASTCALL
+#else
+    #define UCS_FASTCALL
+#endif
+
 // fix long pathname problem of WIN32 by using w_char std::fstream::open override
 LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
                                      std::ios_base::openmode mode);
@@ -246,29 +263,29 @@ LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitcap_utf(std::vector<w_char>& u, int langnum);
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
-mkinitcap_ucs16(std::vector<char16_t>& u);
+mkinitcap_ucs16(std::vector<char16_t>& u, int langnum);
 // convert UTF-8 string to little
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallsmall_utf(std::vector<w_char>& u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
-mkinitcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower);
+mkinitcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower, int langnum);
 LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
-mkallcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower);
+mkallcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower, int langnum);
 LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
-mkallsmall_ucs16(std::vector<char16_t>& u);
+mkallsmall_ucs16(std::vector<char16_t>& u, int langnum);
 // convert first letter of UTF-8 string to little
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitsmall_utf(std::vector<w_char>& u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
-mkinitsmall_ucs16(std::vector<char16_t>& u);
+mkinitsmall_ucs16(std::vector<char16_t>& u, int langnum);
 // convert UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<char16_t>&
-mkallcap_ucs16(std::vector<char16_t>&u);
+mkallcap_ucs16(std::vector<char16_t>&u, int langnum);
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(const std::string& q, const cs_info*);
 

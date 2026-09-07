@@ -539,20 +539,22 @@ std::u32string& mkinitsmall_u32(std::u32string& u){
   return u;
 }
 
-std::vector<char16_t>& mkcase_indexed_ucs16(std::vector<char16_t>& u, size_t& index, bool uc_to_lower){
+std::vector<char16_t>& mkcase_indexed_ucs16(std::vector<char16_t>& u, size_t& index, bool uc_to_lower,int langnum){
     char32_t cp;
     if((index < u.size()) && (!u.empty())){
         if(UCS_IS_SINGLE(u[index])){
-            cp = static_cast<char32_t>(u[index]);
-            cp = uc_to_case(cp,uc_to_lower);
-            u[index] = static_cast<char16_t>(cp);
+            if (uc_to_lower){
+                u[index] = unicodetolower(u[index],langnum);
+            } else {
+                u[index] = unicodetoupper(u[index],langnum);
+            }
         } else if (UCS_IS_LEAD(u[index])){
             if((index + 1) < u.size()){
                 cp = UCS_FROM_LEAD(u[index]);
                 index++;
                 if(UCS_IS_TRAIL(u[index])){
                     cp = UCS_ADD_TRAIL(cp,u[index]);
-                    cp = uc_to_case(cp,uc_to_lower);
+                    cp = uc_to_case(cp,uc_to_lower,langnum);
                     u[index-1] = UCS_LEAD(cp);
                     u[index] = UCS_TRAIL(cp);
                 } else if (UCS_IS_SINGLE(u[index])){
@@ -576,37 +578,37 @@ std::vector<char16_t>& mkcase_indexed_ucs16(std::vector<char16_t>& u, size_t& in
     return u;    
 }
 
-std::vector<char16_t>& mkallcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower){
+std::vector<char16_t>& mkallcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower, int langnum){
     if(!u.empty()){
         for(size_t i=0; i < u.size(); i++){
-            u = mkcase_indexed_ucs16(u, i, uc_to_lower);
+            u = mkcase_indexed_ucs16(u, i, uc_to_lower, langnum);
         }
     }
     return u; 
 }
 
-std::vector<char16_t>& mkinitcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower){
+std::vector<char16_t>& mkinitcase_ucs16(std::vector<char16_t>& u, bool uc_to_lower, int langnum){
     size_t i = 0;
     if(!u.empty()){
-        u = mkcase_indexed_ucs16(u, i, uc_to_lower);
+        u = mkcase_indexed_ucs16(u, i, uc_to_lower, langnum);
     }
     return u;
 }
 
-std::vector<char16_t>& mkinitsmall_ucs16(std::vector<char16_t>& u){
-    return mkinitcase_ucs16(u, UCS_TO_LOWER);
+std::vector<char16_t>& mkinitsmall_ucs16(std::vector<char16_t>& u,int langnum){
+    return mkinitcase_ucs16(u, UCS_TO_LOWER,langnum);
 }
 
-std::vector<char16_t>& mkallsmall_ucs16(std::vector<char16_t>& u){
-    return mkallcase_ucs16(u, UCS_TO_LOWER);
+std::vector<char16_t>& mkallsmall_ucs16(std::vector<char16_t>& u, int langnum){
+    return mkallcase_ucs16(u, UCS_TO_LOWER,langnum);
 }
 
-std::vector<char16_t>& mkinitcap_ucs16(std::vector<char16_t>& u){
-    return mkinitcase_ucs16(u, UCS_TO_UPPER);
+std::vector<char16_t>& mkinitcap_ucs16(std::vector<char16_t>& u, int langnum){
+    return mkinitcase_ucs16(u, UCS_TO_UPPER, langnum);
 }
 
-std::vector<char16_t>& mkallcap_ucs16(std::vector<char16_t>& u){
-    return mkallcase_ucs16(u, UCS_TO_UPPER);
+std::vector<char16_t>& mkallcap_ucs16(std::vector<char16_t>& u,int  langnum){
+    return mkallcase_ucs16(u, UCS_TO_UPPER, langnum);
 }
 
 

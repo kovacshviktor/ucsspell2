@@ -186,8 +186,11 @@ inline char32_t cast_from_wchrs(w_char lead, w_char trail){
     char16_t l = (char16_t)trail;
     return UCS_GET_SUPPLEMENTARY(h,l);
 }
-    inline char32_t uc_to_case(char32_t cp, bool uc_to_lower){
+    inline char32_t uc_to_case(char32_t cp, bool uc_to_lower, int langnum){
         if(uc_to_lower){
+            if(UCS_IS_SINGLE(cp)){
+                
+            }
             return uc_tolower(cp);
         }
         return uc_toupper(cp);

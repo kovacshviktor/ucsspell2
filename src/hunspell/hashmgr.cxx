@@ -320,8 +320,8 @@ int HashMgr::add_word(const std::string& in_word,
               std::string ph_capitalized;
               if (utf8) {
                 u8_u16(w, ph);
-                if (get_captype_utf8(w, langnum) == NOCAP) {
-                  mkinitcap_utf(w, langnum);
+                if (get_captype_ucs16(w, langnum) == NOCAP) {
+                  mkinitcap_ucs16(w, langnum);
                   u16_u8(ph_capitalized, w);
                 }
               } else if (get_captype(ph, csconv) == NOCAP)
@@ -342,7 +342,7 @@ int HashMgr::add_word(const std::string& in_word,
                   std::string wordpart_lower(wordpart);
                   if (utf8) {
                     u8_u16(w, wordpart_lower);
-                    mkallsmall_utf(w, langnum);
+                    mkallsmall_ucs16(w, langnum);
                     u16_u8(wordpart_lower, w);
                   } else {
                     mkallsmall(wordpart_lower, csconv);
@@ -471,8 +471,8 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
       std::string st;
       std::vector<char16_t> w;
       u8_u16(w, word);
-      mkallsmall_utf(w, langnum);
-      mkinitcap_utf(w, langnum);
+      mkallsmall_ucs16(w, langnum);
+      mkinitcap_ucs16(w, langnum);
       u16_u8(st, w);
       return add_word(st, wcl, flags2, flagslen + 1, dp, true, INITCAP, false);
     } else {
@@ -1081,7 +1081,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
     /* parse in the ignored characters (for example, Arabic optional diacritics
      * characters */
     if (line.compare(0, 6, "IGNORE", 6) == 0) {
-      if (!parse_array(line, ignorechars, ignorechars_utf16,
+      if (!parse_array_ucs16(line, ignorechars, ignorechars_utf16,
                        utf8, afflst->getlinenum())) {
         delete afflst;
         return 1;
