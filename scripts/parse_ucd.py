@@ -45,7 +45,6 @@ def generate_cpp_header(punct_list, output_file="../src/hunspell/ucs_punct_data.
         f.write("#ifndef UCS_PUNCT_DATA_HXX\n")
         f.write("#define UCS_PUNCT_DATA_HXX\n\n")
         f.write("#include <cstddef>\n\n")
-        f.write("namespace ucs {\n\n")
         f.write(f"// Total punctuation code points: {len(punct_list)}\n")
         f.write("constexpr char32_t UNICODE_PUNCTUATIONS[] = {\n")
         
@@ -55,7 +54,6 @@ def generate_cpp_header(punct_list, output_file="../src/hunspell/ucs_punct_data.
         f.write("};\n\n")
         f.write("constexpr size_t NUM_UNICODE_PUNCT = ")
         f.write("sizeof(UNICODE_PUNCTUATIONS) / sizeof(UNICODE_PUNCTUATIONS[0]);\n\n")
-        f.write("} // namespace ucs\n\n")
         f.write("#endif // UCS_PUNCT_DATA_HXX\n")
 
     print(f"Done! C++ header written to '{output_file}'.")
