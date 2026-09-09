@@ -111,7 +111,7 @@
     #define UCS_ADD_TRAIL(cp,t) (char32_t)(((cp)) | ((t) - 0xdc00)) 
     #define UCS_IS_ERROR(c) ((c) == 0xfffd)   
     
-    inline w_char uchar_to_w_char(char16_t uni16) {
+    inline w_char uchar_to_w_char(unsigned short uni16) {
         w_char u16;
         u16.h = static_cast<unsigned char>((uni16 & 0xff00) >> 8);
         u16.l = static_cast<unsigned char>(uni16 & 0x00ff);
@@ -182,8 +182,8 @@ inline char32_t utf8_to_utf32_step(const char*& src) {
     return 0xFFFD;
 }
 inline char32_t cast_from_wchrs(w_char lead, w_char trail){
-    char16_t h = (char16_t)lead;
-    char16_t l = (char16_t)trail;
+    unsigned short h = (unsigned short)lead;
+    unsigned short l = (unsigned short)trail;
     return UCS_GET_SUPPLEMENTARY(h,l);
 }
     inline char32_t uc_to_case(char32_t cp, bool uc_to_lower, int langnum){
@@ -203,13 +203,13 @@ inline char32_t cast_from_wchrs(w_char lead, w_char trail){
     extern std::vector<uint16_t> utfsmp_reserved_codes;
     bool is_reserved_code(char32_t cp);
     bool is_u16_simple_only(const std::vector<w_char>& src);
-    std::u32string& u16_u32(std::u32string& dest, const std::vector<char16_t>& src);
-    std::vector<char16_t>& u32_u16(std::vector<char16_t>& dest, const std::u32string& src);
+    std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>& src);
+    std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::u32string& src);
     std::string& u32_u8(std::string& dest, const std::u32string& src);
     int u8_u32(std::u32string& dest, const std::string& src);
-    std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<char16_t>& src);
-    std::vector<char16_t>& w_char_ushort(std::vector<char16_t>& dest, const std::vector<w_char>& src);
+    std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<unsigned short>& src);
+    std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest, const std::vector<w_char>& src);
     uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data);
     uint32_t fnv1a_32_utf8(const std::string& str);
-    std::vector<char16_t>& mkcase_indexed_ucs16(std::vector<char16_t>& u,size_t& index,bool uc_to_lower);
+    std::vector<unsigned short>& mkcase_indexed_ucs16(std::vector<unsigned short>& u,size_t& index,bool uc_to_lower);
 #endif // UCSSPELL_UCS2_HXX

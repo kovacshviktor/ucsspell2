@@ -46,8 +46,8 @@
 
 struct unicode_info {
   bool cletter;
-  char16_t cupper;
-  char16_t clower;
+  unsigned short cupper;
+  unsigned short clower;
 };
 
 // clang-format off

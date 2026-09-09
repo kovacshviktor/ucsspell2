@@ -4,7 +4,7 @@
 #include <cstdint>
 
 /* SMP uppercase/lowercase offsets, indexes and values are offsets from 0x10000 codepoint */
-static char16_t ucs_to_lower[65536] = {
+static unsigned short ucs_to_lower[65536] = {
  0x0000,
  0x0001,
  0x0002,
@@ -65543,7 +65543,7 @@ static char16_t ucs_to_lower[65536] = {
  0xffff
 };
 
-static char16_t ucs_to_upper[65536] = {
+static unsigned short ucs_to_upper[65536] = {
  0x0000,
  0x0001,
  0x0002,
