@@ -45,7 +45,7 @@
 #define MAXLNLEN 8192
 #endif
 
-#include "../hunspell/unsigned short.hxx"
+#include "../hunspell/w_char.hxx"
 
 #include <vector>
 
