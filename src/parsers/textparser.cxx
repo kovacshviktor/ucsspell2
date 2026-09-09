@@ -134,9 +134,9 @@ void TextParser::init(const unsigned short* wc_utf8, int len) {
   // build a cache for the simple cases
   wordcharacters.resize(0x80);
   unsigned short wc2;
-  wc2.h = 0;
+  wc2 & 0xff;
   for (unsigned char idx = 0; idx < 0x80; ++idx) {
-    wc2.l = idx;
+    wc2 = idx;
     int cache = unicodeisalpha(idx) ||
                 (wordchars_utf16 &&
                  std::binary_search(wordchars_utf16, wordchars_utf16 + wclen, wc2));
