@@ -70,12 +70,12 @@ class AffEntry {
     } l;
   } c;
   char* morphcode;
-  char16_t* contclass;
+  char32_t* contclass;
   // .aff line of the rule, and of the header line of its affix class
   int line;
   int headerline;
-  char16_t aflag;
-  char16_t contclasslen;
+  char32_t aflag;
+  char32_t contclasslen;
   unsigned char numconds;
   char opts;
   // the cross product character of the header line, as the file writes it. Any

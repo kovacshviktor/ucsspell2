@@ -109,7 +109,7 @@ HashMgr::HashMgr(const char* tpath, const char* apath, const char* key)
   }
 }
 
-void HashMgr::release_flags(char16_t* astr, bool owned) {
+void HashMgr::release_flags(char32_t* astr, bool owned) {
   if (owned)
     delete[] astr;
 }
@@ -132,7 +132,7 @@ void HashMgr::free_table() {
 HashMgr::~HashMgr() {
   free_table();
 
-  static_assert(std::is_trivially_destructible<char16_t>::value,
+  static_assert(std::is_trivially_destructible<char32_t>::value,
                 "arena_free replaces delete[]; aliasf elements must have trivial destructors");
   for (auto& j : aliasf)
     arena_free(j);
@@ -165,7 +165,7 @@ struct hentry* HashMgr::lookup(const char* word, size_t len) const {
 // add a word to the hash table (private)
 int HashMgr::add_word(const std::string& in_word,
                       int wcl,
-                      char16_t* aff,
+                      char32_t* aff,
                       int al,
                       const std::string* in_desc,
                       bool onlyupcase,
@@ -217,7 +217,7 @@ int HashMgr::add_word(const std::string& in_word,
   }
 
   // limit of hp->blen
-  if (word->size() > std::numeric_limits<char16_t>::max()) {
+  if (word->size() > std::numeric_limits<char32_t>::max()) {
     HUNSPELL_WARNING(stderr, "error: word len %ld is over max limit\n", word->size());
     delete desc_copy;
     delete word_copy;
@@ -244,8 +244,8 @@ int HashMgr::add_word(const std::string& in_word,
 
   int i = hash(hpw, word->size());
 
-  hp->blen = (char16_t)word->size();
-  hp->clen = (char16_t)wcl;
+  hp->blen = (char32_t)word->size();
+  hp->clen = (char32_t)wcl;
   hp->alen = (short)al;
   hp->astr = aff;
   hp->next = nullptr;
@@ -276,7 +276,7 @@ int HashMgr::add_word(const std::string& in_word,
         if (std::string(start_piece, iter).find(MORPH_PHON) == 0) {
           std::string ph = std::string(start_piece, iter).substr(sizeof MORPH_PHON - 1);
           if (!ph.empty()) {
-            std::vector<char16_t> w;
+            std::vector<char32_t> w;
             size_t strippatt;
             std::string wordpart;
             // dictionary based REP replacement, separated by "->"
@@ -447,7 +447,7 @@ int HashMgr::add_word(const std::string& in_word,
 
 int HashMgr::add_hidden_capitalized_word(const std::string& word,
                                          int wcl,
-                                         char16_t* flags,
+                                         char32_t* flags,
                                          int flagslen,
                                          const std::string* dp,
                                          int captype) {
@@ -460,16 +460,16 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
   if (((captype == HUHCAP) || (captype == HUHINITCAP) ||
        ((captype == ALLCAP) && (flagslen != 0))) &&
       !((flagslen != 0) && TESTAFF(flags, forbiddenword, flagslen))) {
-    auto flags2 = (char16_t*)arena_alloc((flagslen + 1) * sizeof(char16_t),
-                                                alignof(char16_t));
+    auto flags2 = (char32_t*)arena_alloc((flagslen + 1) * sizeof(char32_t),
+                                                alignof(char32_t));
     flags2[flagslen] = ONLYUPCASEFLAG;
     if (flagslen) {
-      memcpy(flags2, flags, flagslen * sizeof(char16_t));
+      memcpy(flags2, flags, flagslen * sizeof(char32_t));
       std::sort(flags2, flags2 + flagslen + 1);
     }
     if (utf8) {
       std::string st;
-      std::vector<char16_t> w;
+      std::vector<char32_t> w;
       u8_u16(w, word);
       mkallsmall_ucs16(w, langnum);
       mkinitcap_ucs16(w, langnum);
@@ -487,7 +487,7 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
 }
 
 // detect captype and modify word length for UTF-8 encoding
-int HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::vector<char16_t> &workbuf) {
+int HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::vector<char32_t> &workbuf) {
   int len;
   if (utf8) {
     len = u8_u16(workbuf, word);
@@ -500,7 +500,7 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::ve
 }
 
 int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
-  std::vector<char16_t> workbuf;
+  std::vector<char32_t> workbuf;
   return get_clen_and_captype(word, captype, workbuf);
 }
 
@@ -509,7 +509,7 @@ int HashMgr::remove(const std::string& word) {
   struct hentry* dp = lookup(word.c_str(), word.size());
   while (dp) {
     if (dp->alen == 0 || !TESTAFF(dp->astr, forbiddenword, dp->alen)) {
-      auto flags = new char16_t[dp->alen + 1];
+      auto flags = new char32_t[dp->alen + 1];
       for (int i = 0; i < dp->alen; i++)
         flags[i] = dp->astr[i];
       flags[dp->alen] = forbiddenword;
@@ -537,7 +537,7 @@ void HashMgr::remove_forbidden_flag(const std::string& word) {
         dp->alen = 0;
         dp->var &= ~H_OPT_OWNFLAGS;
       } else {
-        auto newflags = new char16_t[dp->alen - 1];
+        auto newflags = new char32_t[dp->alen - 1];
         int j = 0;
         for (int i = 0; i < dp->alen; i++) {
           if (dp->astr[i] != forbiddenword)
@@ -557,7 +557,7 @@ void HashMgr::remove_forbidden_flag(const std::string& word) {
 int HashMgr::add(const std::string& word) {
   remove_forbidden_flag(word);
   int captype, al = 0;
-  char16_t* flags = nullptr;
+  char32_t* flags = nullptr;
   int wcl = get_clen_and_captype(word, &captype);
   if (add_word(word, wcl, flags, al, nullptr, false, captype, true))
     return 1;
@@ -567,7 +567,7 @@ int HashMgr::add(const std::string& word) {
 int HashMgr::add_with_flags(const std::string& word, const std::string& flags, const std::string& desc) {
   remove_forbidden_flag(word);
   int captype;
-  char16_t *df;
+  char32_t *df;
   int al = decode_flags(&df, flags, nullptr);
   int wcl = get_clen_and_captype(word, &captype);
   if (add_word(word, wcl, df, al, &desc, false, captype, true))
@@ -582,8 +582,8 @@ int HashMgr::add_with_affix(const std::string& word, const std::string& example)
   if (dp && dp->astr) {
     int captype;
     int wcl = get_clen_and_captype(word, &captype);
-    auto flags = new char16_t[dp->alen];
-    memcpy(flags, dp->astr, dp->alen * sizeof(char16_t));
+    auto flags = new char32_t[dp->alen];
+    memcpy(flags, dp->astr, dp->alen * sizeof(char32_t));
     if (add_word(word, wcl, flags, dp->alen, nullptr, false, captype, true))
       return 1;
     return add_hidden_capitalized_word(word, wcl, flags, dp->alen, nullptr, captype);
@@ -651,7 +651,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
   // loop through all words on much list and add to hash
   // table and create word and affix strings
 
-  std::vector<char16_t> workbuf;
+  std::vector<char32_t> workbuf;
 
   int nLineCount(0);
   while (dict->getline(ts)) {
@@ -706,7 +706,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
       ap_pos = ts.find('/', ap_pos);
     }
 
-    char16_t* flags;
+    char32_t* flags;
     int al;
     if (ap_pos != std::string::npos && ap_pos != ts.size()) {
       std::string ap(ts.substr(ap_pos + 1));
@@ -771,15 +771,15 @@ int HashMgr::hash(const char* word, size_t len) const {
   return (unsigned long)hv % tableptr.size();
 }
 
-int HashMgr::decode_flags(char16_t** result, const std::string& flags, FileMgr* af) const {
+int HashMgr::decode_flags(char32_t** result, const std::string& flags, FileMgr* af) const {
   return decode_flags(result, flags, af, /* arena = */ false);
 }
 
-int HashMgr::decode_flags(char16_t** result, const std::string& flags, FileMgr* af, bool use_arena) const {
-  auto alloc = [&](int n) -> char16_t* {
-    return use_arena ? (char16_t*)this->arena_alloc(n * sizeof(char16_t),
-                                                          alignof(char16_t))
-                     : new char16_t[n];
+int HashMgr::decode_flags(char32_t** result, const std::string& flags, FileMgr* af, bool use_arena) const {
+  auto alloc = [&](int n) -> char32_t* {
+    return use_arena ? (char32_t*)this->arena_alloc(n * sizeof(char32_t),
+                                                          alignof(char32_t))
+                     : new char32_t[n];
   };
   int len;
   if (flags.empty()) {
@@ -795,8 +795,8 @@ int HashMgr::decode_flags(char16_t** result, const std::string& flags, FileMgr* 
       len >>= 1;
       *result = alloc(len);
       for (int i = 0; i < len; i++) {
-        char16_t flag = ((char16_t)((unsigned char)flags[i << 1]) << 8) |
-                              ((char16_t)((unsigned char)flags[(i << 1) | 1]));
+        char32_t flag = ((char32_t)((unsigned char)flags[i << 1]) << 8) |
+                              ((char32_t)((unsigned char)flags[(i << 1) | 1]));
 
         (*result)[i] = flag;
       }
@@ -806,18 +806,18 @@ int HashMgr::decode_flags(char16_t** result, const std::string& flags, FileMgr* 
                       // 23 233)
       len = int(1 + std::count_if(flags.begin(), flags.end(), [](char c) { return c == ','; }));
       *result = alloc(len);
-      char16_t* dest = *result;
+      char32_t* dest = *result;
       const char* src = flags.c_str();
       for (size_t p = 0; p < flags.size(); ++p) {
         if (flags[p] == ',') {
           int i = atoi(src);
-          if ((i > std::numeric_limits<char16_t>::max() || i < 0) && af != nullptr) {
+          if ((i > std::numeric_limits<char32_t>::max() || i < 0) && af != nullptr) {
             HUNSPELL_WARNING(
                 stderr, "error: line %d: flag id %d is out of range\n",
                 af->getlinenum(), i);
              i = 0;
           }
-          *dest = (char16_t)i;
+          *dest = (char32_t)i;
           if (*dest == 0 && af != nullptr)
             HUNSPELL_WARNING(stderr, "error: line %d: 0 is wrong flag id\n",
                              af->getlinenum());
@@ -826,29 +826,29 @@ int HashMgr::decode_flags(char16_t** result, const std::string& flags, FileMgr* 
         }
       }
       int i = atoi(src);
-      if ((i > std::numeric_limits<char16_t>::max() || i < 0) && af) {
+      if ((i > std::numeric_limits<char32_t>::max() || i < 0) && af) {
         HUNSPELL_WARNING(stderr,
                          "error: line %d: flag id %d is out of range\n",
                          af->getlinenum(), i);
         i = 0;
       }
-      *dest = (char16_t)i;
+      *dest = (char32_t)i;
       if (*dest == 0 && af)
         HUNSPELL_WARNING(stderr, "error: line %d: 0 is wrong flag id\n",
                          af->getlinenum());
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      std::vector<char16_t> w;
+      std::vector<char32_t> w;
       u8_u16(w, flags);
       len = w.size();
       *result = alloc(len);
 #if defined(_WIN32) || (defined(__BYTE_ORDER__) && (__BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__))  || defined(__LITTLE_ENDIAN__)
-      memcpy(*result, w.data(), len * sizeof(char16_t));
+      memcpy(*result, w.data(), len * sizeof(char32_t));
 #else
-      char16_t* dest = *result;
-      for (const char16_t wc : w) {
-        *dest = (char16_t)wc;
+      char32_t* dest = *result;
+      for (const char32_t wc : w) {
+        *dest = (char32_t)wc;
         dest++;
       }
 #endif
@@ -857,7 +857,7 @@ int HashMgr::decode_flags(char16_t** result, const std::string& flags, FileMgr* 
     default: {  // Ispell's one-character flags (erfg -> e r f g)
       len = flags.size();
       *result = alloc(len);
-      char16_t* dest = *result;
+      char32_t* dest = *result;
       for (const char flag : flags) {
         *dest = (unsigned char)flag;
         dest++;
@@ -867,7 +867,7 @@ int HashMgr::decode_flags(char16_t** result, const std::string& flags, FileMgr* 
   return len;
 }
 
-bool HashMgr::decode_flags(std::vector<char16_t>& result, const std::string& flags, FileMgr* af) const {
+bool HashMgr::decode_flags(std::vector<char32_t>& result, const std::string& flags, FileMgr* af) const {
   if (flags.empty()) {
     return false;
   }
@@ -881,8 +881,8 @@ bool HashMgr::decode_flags(std::vector<char16_t>& result, const std::string& fla
       size_t origsize = result.size();
       result.resize(origsize + len);
       for (size_t i = 0; i < len; ++i) {
-        result[origsize + i] = ((char16_t)((unsigned char)flags[i << 1]) << 8) |
-                               ((char16_t)((unsigned char)flags[(i << 1) | 1]));
+        result[origsize + i] = ((char32_t)((unsigned char)flags[i << 1]) << 8) |
+                               ((char32_t)((unsigned char)flags[(i << 1) | 1]));
       }
       break;
     }
@@ -892,13 +892,13 @@ bool HashMgr::decode_flags(std::vector<char16_t>& result, const std::string& fla
       for (const char* p = src; *p; p++) {
         if (*p == ',') {
           int i = atoi(src);
-          if (i > std::numeric_limits<char16_t>::max() || i < 0) {
+          if (i > std::numeric_limits<char32_t>::max() || i < 0) {
             HUNSPELL_WARNING(
                 stderr, "error: line %d: flag id %d is out of range\n",
                 af->getlinenum(), i);
             i = 0;
           }
-          result.push_back((char16_t)i);
+          result.push_back((char32_t)i);
           if (result.back() == 0)
             HUNSPELL_WARNING(stderr, "error: line %d: 0 is wrong flag id\n",
                              af->getlinenum());
@@ -906,20 +906,20 @@ bool HashMgr::decode_flags(std::vector<char16_t>& result, const std::string& fla
         }
       }
       int i = atoi(src);
-      if (i > std::numeric_limits<char16_t>::max() || i < 0) {
+      if (i > std::numeric_limits<char32_t>::max() || i < 0) {
         HUNSPELL_WARNING(stderr,
                          "error: line %d: flag id %d is out of range\n",
                          af->getlinenum(), i);
         i = 0;
       }
-      result.push_back((char16_t)i);
+      result.push_back((char32_t)i);
       if (result.back() == 0)
         HUNSPELL_WARNING(stderr, "error: line %d: 0 is wrong flag id\n",
                          af->getlinenum());
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      std::vector<char16_t> w;
+      std::vector<char32_t> w;
       u8_u16(w, flags);
       size_t len = w.size(), origsize = result.size();
       result.resize(origsize + len);
@@ -927,7 +927,7 @@ bool HashMgr::decode_flags(std::vector<char16_t>& result, const std::string& fla
       memcpy(result.data() + origsize, w.data(), len * sizeof(short));
 #else
       for (size_t i = 0; i < len; ++i)
-        result[origsize + i] = (char16_t)w[i];
+        result[origsize + i] = (char32_t)w[i];
 #endif
       break;
     }
@@ -941,27 +941,27 @@ bool HashMgr::decode_flags(std::vector<char16_t>& result, const std::string& fla
   return true;
 }
 
-char16_t HashMgr::decode_flag(const std::string& f) const {
-  char16_t s = 0;
+char32_t HashMgr::decode_flag(const std::string& f) const {
+  char32_t s = 0;
   int i;
   switch (flag_mode) {
     case FLAG_LONG:
       if (f.size() >= 2)
-        s = ((char16_t)((unsigned char)f[0]) << 8) | ((char16_t)((unsigned char)f[1]));
+        s = ((char32_t)((unsigned char)f[0]) << 8) | ((char32_t)((unsigned char)f[1]));
       break;
     case FLAG_NUM:
       i = atoi(f.c_str());
-      if (i > std::numeric_limits<char16_t>::max() || i < 0) {
+      if (i > std::numeric_limits<char32_t>::max() || i < 0) {
         HUNSPELL_WARNING(stderr, "error: flag id %d is out of range\n", i);
         i = 0;
       }
-      s = (char16_t)i;
+      s = (char32_t)i;
       break;
     case FLAG_UNI: {
-      std::vector<char16_t> w;
+      std::vector<char32_t> w;
       u8_u16(w, f);
       if (!w.empty())
-        s = (char16_t)w[0];
+        s = (char32_t)w[0];
       break;
     }
     default:
@@ -973,7 +973,7 @@ char16_t HashMgr::decode_flag(const std::string& f) const {
   return s;
 }
 
-std::string HashMgr::encode_flag(char16_t f) const {
+std::string HashMgr::encode_flag(char32_t f) const {
   if (f == 0)
     return "(NULL)";
   std::string ch;
@@ -987,18 +987,18 @@ std::string HashMgr::encode_flag(char16_t f) const {
 #if defined(_WIN32) || (defined(__BYTE_ORDER__) && (__BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__))  || defined(__LITTLE_ENDIAN__)
 
 #if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
-    auto wc = std::bit_cast<char16_t>(f);
+    auto wc = std::bit_cast<char32_t>(f);
 #else
-    char16_t wc;
-    memcpy(&wc, &f, sizeof(char16_t));
+    char32_t wc;
+    memcpy(&wc, &f, sizeof(char32_t));
 #endif
 
 #else
-    char16_t wc;
+    char32_t wc;
     wc.h = (unsigned char)(f >> 8);
     wc.l = (unsigned char)(f & 0xff);
 #endif
-    const std::vector<char16_t> w = { wc };
+    const std::vector<char32_t> w = { wc };
     u16_u8(ch, w);
   } else {
     ch.push_back((unsigned char)(f));
@@ -1171,7 +1171,7 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
   /* now parse the numaliasf lines to read in the remainder of the table */
   for (int j = 0; j < numaliasf; ++j) {
     std::string nl;
-    char16_t* alias = nullptr;
+    char32_t* alias = nullptr;
     unsigned aliaslen = 0;
     i = 0;
     if (af->getline(nl)) {
@@ -1191,7 +1191,7 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
           case 1: {
             std::string piece(start_piece, iter);
             aliaslen =
-                (char16_t)decode_flags(&alias, piece, af, /* arena = */ true);
+                (char32_t)decode_flags(&alias, piece, af, /* arena = */ true);
             std::sort(alias, alias + aliaslen);
             break;
           }
@@ -1223,7 +1223,7 @@ int HashMgr::is_aliasf() const {
   return !aliasf.empty();
 }
 
-int HashMgr::get_aliasf(int index, char16_t** fvec, FileMgr* af) const {
+int HashMgr::get_aliasf(int index, char32_t** fvec, FileMgr* af) const {
   if (index > 0 && static_cast<size_t>(index) <= aliasflen.size()) {
     *fvec = aliasf[index - 1];
     return aliasflen[index - 1];

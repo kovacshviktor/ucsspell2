@@ -97,7 +97,7 @@
 
 #define MAXACC 1000
 
-#define FLAG char16_t
+#define FLAG char32_t
 #define FLAG_NULL 0x00
 #define FREE_FLAG(a) a = 0
 

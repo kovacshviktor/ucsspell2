@@ -94,16 +94,16 @@ class HashMgr {
   flag flag_mode;
   int complexprefixes;
   int utf8;
-  char16_t forbiddenword;
+  char32_t forbiddenword;
   int langnum;
   std::string enc;
   std::string lang;
   const struct cs_info* csconv;
   std::string ignorechars;
-  std::vector<char16_t> ignorechars_utf16;
+  std::vector<char32_t> ignorechars_utf16;
   std::u32string ignorechars_utf32;
-  std::vector<char16_t*> aliasf; // flag vector `compression' with aliases
-  std::vector<char16_t> aliasflen;
+  std::vector<char32_t*> aliasf; // flag vector `compression' with aliases
+  std::vector<char32_t> aliasflen;
   std::vector<char*> aliasm; // morphological desciption `compression' with aliases
   // reptable created from REP table of aff file and from "ph:" fields
   // of the dic file. It contains phonetic and other common misspellings
@@ -122,23 +122,23 @@ class HashMgr {
   int add_with_flags(const std::string& word, const std::string& flags, const std::string& desc = "");
   int add_with_affix(const std::string& word, const std::string& pattern);
   int remove(const std::string& word);
-  int decode_flags(char16_t** result, const std::string& flags, FileMgr* af) const;
-  bool decode_flags(std::vector<char16_t>& result, const std::string& flags, FileMgr* af) const;
-  char16_t decode_flag(const std::string& flag) const;
-  std::string encode_flag(char16_t flag) const;
+  int decode_flags(char32_t** result, const std::string& flags, FileMgr* af) const;
+  bool decode_flags(std::vector<char32_t>& result, const std::string& flags, FileMgr* af) const;
+  char32_t decode_flag(const std::string& flag) const;
+  std::string encode_flag(char32_t flag) const;
   int is_aliasf() const;
-  int get_aliasf(int index, char16_t** fvec, FileMgr* af) const;
+  int get_aliasf(int index, char32_t** fvec, FileMgr* af) const;
   int is_aliasm() const;
   char* get_aliasm(int index) const;
   const std::vector<replentry>& get_reptable() const;
 
  private:
   int get_clen_and_captype(const std::string& word, int* captype);
-  int get_clen_and_captype(const std::string& word, int* captype, std::vector<char16_t> &workbuf);
+  int get_clen_and_captype(const std::string& word, int* captype, std::vector<char32_t> &workbuf);
   int load_tables(const char* tpath, const char* key);
   int add_word(const std::string& word,
                int wcl,
-               char16_t* ap,
+               char32_t* ap,
                int al,
                const std::string* desc,
                bool onlyupcase,
@@ -148,7 +148,7 @@ class HashMgr {
   bool parse_aliasf(const std::string& line, FileMgr* af);
   int add_hidden_capitalized_word(const std::string& word,
                                   int wcl,
-                                  char16_t* flags,
+                                  char32_t* flags,
                                   int al,
                                   const std::string* dp,
                                   int captype);
@@ -156,10 +156,10 @@ class HashMgr {
   bool parse_reptable(const std::string& line, FileMgr* af);
   void remove_forbidden_flag(const std::string& word);
   void free_table();
-  void release_flags(char16_t* astr, bool owned);
+  void release_flags(char32_t* astr, bool owned);
 
   // Only internal consumers are allowed to arena-allocate.
-  int decode_flags(char16_t** result, const std::string& flags, FileMgr* af, bool use_arena) const;
+  int decode_flags(char32_t** result, const std::string& flags, FileMgr* af, bool use_arena) const;
 
   // Bump-pointer arena for load-time hentry/flag/aliasm allocations. Freed in
   // bulk at destruction. arena_free is a no-op that tracks outstanding allocs

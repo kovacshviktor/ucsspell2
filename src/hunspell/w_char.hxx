@@ -53,29 +53,29 @@ struct __attribute__((packed)) w_char {
   unsigned char l;
   unsigned char h;
 
-  operator char16_t() const
+  operator char32_t() const
   {
 #if defined(_WIN32) || (defined(__BYTE_ORDER__) && (__BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__))  || defined(__LITTLE_ENDIAN__)
     //use little-endian optimized version
 #if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
-    return std::bit_cast<char16_t>(*this);
+    return std::bit_cast<char32_t>(*this);
 #else
-    char16_t u;
-    memcpy(&u, this, sizeof(char16_t));
+    char32_t u;
+    memcpy(&u, this, sizeof(char32_t));
     return u;
 #endif
 
 #else
-    return ((char16_t)h << 8) | (char16_t)l;
+    return ((char32_t)h << 8) | (char32_t)l;
 #endif
   }
 
   friend bool operator<(const w_char a, const w_char b) {
-    return (char16_t)a < (char16_t)b;
+    return (char32_t)a < (char32_t)b;
   }
 
   friend bool operator==(const w_char a, const w_char b) {
-    return (char16_t)a == (char16_t)b;
+    return (char32_t)a == (char32_t)b;
   }
 
   friend bool operator!=(const w_char a, const w_char b) {
