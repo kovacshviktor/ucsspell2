@@ -133,8 +133,8 @@ class PfxEntry : public AffEntry {
 
   inline const char* getMorph() { return morphcode; }
 
-  inline const char32_t* getCont() { return contclass; }
-  inline char32_t getContLen() { return contclasslen; }
+  inline const char16_t* getCont() { return contclass; }
+  inline char16_t getContLen() { return contclasslen; }
 
   inline PfxEntry* getNext() { return next; }
   inline PfxEntry* getNextNE() { return nextne; }
@@ -223,8 +223,8 @@ class SfxEntry : public AffEntry {
 
   inline const char* getMorph() { return morphcode; }
 
-  inline const char32_t* getCont() { return contclass; }
-  inline char32_t getContLen() { return contclasslen; }
+  inline const char16_t* getCont() { return contclass; }
+  inline char16_t getContLen() { return contclasslen; }
   inline const char* getAffix() { return appnd.c_str(); }
 
   inline int getKeyLen() { return appnd.size(); }
