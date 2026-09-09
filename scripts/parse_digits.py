@@ -49,17 +49,14 @@ def generate_cpp_header(number_list, output_file="../src/hunspell/ucs_digits_dat
         f.write("#ifndef UCS_DIGITS_DATA_HXX\n")
         f.write("#define UCS_DIGITS_DATA_HXX\n\n")
         f.write("#include <cstddef>\n\n")
-        f.write("namespace ucs {\n\n")
         f.write(f"// Total number code points: {len(number_list)}\n")
         f.write("constexpr char32_t UNICODE_DIGITS[] = {\n")
-        
         for code_point, code_hex, char_name, category in number_list:
             f.write(f"    0x{code_hex:>04s}, // [{category}] {char_name}\n")
             
         f.write("};\n\n")
         f.write("constexpr size_t NUM_UNICODE_DIGITS = ")
         f.write("sizeof(UNICODE_DIGITS) / sizeof(UNICODE_DIGITS[0]);\n\n")
-        f.write("} // namespace ucs\n\n")
         f.write("#endif // UCS_DIGITS_DATA_HXX\n")
 
     print(f"Done! C++ header written to '{output_file}'.")
