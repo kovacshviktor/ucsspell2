@@ -80,7 +80,7 @@
 #include "csutil.hxx"
 #include "ucs2.hxx"
 
-const unsigned short W_VLINE = {'\0', '|'};
+const unsigned short W_VLINE[] = {'\0', '|'};
 
 #define MAX_CHAR_DISTANCE 4
 #define MAXWORDUTF8LEN (MAXWORDLEN * 3)
@@ -689,12 +689,12 @@ int SuggestMgr::badcharkey_utf(std::vector<std::string>& wlst,
       // character, so give up once the overall time budget is spent
       if (std::chrono::steady_clock::now() - suggest_start > TIMELIMIT_SUGGESTION_MS)
         return wlst.size();
-      if ((loc > 0) && ckey_utf[loc - 1] != W_VLINE) {
+      if ((loc > 0) && (ckey_utf[loc - 1] != W_VLINE[0]) && (ckey_utf[loc-1] != W_VLINE[1])) {
         candidate_utf[i] = ckey_utf[loc - 1];
         u16_u8(candidate, candidate_utf);
         testsug(wlst, candidate, cpdsuggest, nullptr, nullptr, info);
       }
-      if (((loc + 1) < ckeyl) && (ckey_utf[loc + 1] != W_VLINE)) {
+      if (((loc + 1) < ckeyl) && (ckey_utf[loc + 1] != W_VLINE[0]) && (ckey_utf[loc+1] != W_VLINE[1])) {
         candidate_utf[i] = ckey_utf[loc + 1];
         u16_u8(candidate, candidate_utf);
         testsug(wlst, candidate, cpdsuggest, nullptr, nullptr, info);
