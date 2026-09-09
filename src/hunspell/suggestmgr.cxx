@@ -79,7 +79,7 @@
 #include "htypes.hxx"
 #include "csutil.hxx"
 #include "ucs2.hxx"
-;
+
 const unsigned short W_VLINE = {'\0', '|'};
 
 #define MAX_CHAR_DISTANCE 4
@@ -401,7 +401,7 @@ void SuggestMgr::capchars_utf(std::vector<std::string>& wlst,
                               const std::vector<unsigned short>& word,
                               int cpdsuggest, int& info) {
   std::vector<unsigned short> candidate_utf(word);
-  mkallcap_utf(candidate_utf, langnum);
+  mkallcap_ucs16(candidate_utf, langnum);
   std::string candidate;
   u16_u8(candidate, candidate_utf);
   testsug(wlst, candidate, cpdsuggest, nullptr, nullptr, info);
@@ -672,7 +672,7 @@ int SuggestMgr::badcharkey_utf(std::vector<std::string>& wlst,
   for (size_t i = 0, wl = word.size(); i < wl; ++i) {
     unsigned short tmpc = candidate_utf[i];
     // check with uppercase letters
-    candidate_utf[i] = upper_utf(candidate_utf[i], 1);
+    candidate_utf[i] = unicodetolower(candidate_utf[i], 1);
     if (tmpc != candidate_utf[i]) {
       u16_u8(candidate, candidate_utf);
       testsug(wlst, candidate, cpdsuggest, nullptr, nullptr, info);
@@ -1251,7 +1251,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
   if (ph) {
     if (utf8) {
       u8_u16(w_candidate, word);
-      mkallcap_utf(w_candidate, langnum);
+      mkallcap_ucs16(w_candidate, langnum);
       u16_u8(candidate, w_candidate);
     } else {
       candidate.assign(word);
@@ -1307,7 +1307,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         int leftcommon = leftcommonsubstring(w_word, w_f);
         if (low) {
           // lowering dictionary word
-          mkallsmall_utf(w_f, langnum);
+          mkallsmall_ucs16(w_f, langnum);
         }
         sc = ngram(3, w_word, w_f, NGRAM_LONGER_WORSE) + leftcommon;
       } else {
@@ -1332,7 +1332,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
           int leftcommon = leftcommonsubstring(w_word, w_f);
           if (low) {
             // lowering dictionary word
-            mkallsmall_utf(w_f, langnum);
+            mkallsmall_ucs16(w_f, langnum);
           }
           sc2 = ngram(3, w_word, w_f, NGRAM_LONGER_WORSE) + leftcommon;
         } else {
@@ -1351,7 +1351,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       if (ph && (sc > 2) && (abs(n - (int)hp->clen) <= 3)) {
         if (utf8) {
           u8_u16(w_candidate, HENTRY_WORD(hp));
-          mkallcap_utf(w_candidate, langnum);
+          mkallcap_ucs16(w_candidate, langnum);
           u16_u8(candidate, w_candidate);
         } else {
           candidate = HENTRY_WORD(hp);
@@ -1409,13 +1409,13 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
     if (utf8) {
       w_mw = w_word;
       for (int k = sp; k < n; k += 4) {
-        w_mw[k].l = '*';
-        w_mw[k].h = 0;
+        w_mw[k] = '*';
+        w_mw[k] = 0;
       }
 
       if (low) {
         // lowering dictionary word
-        mkallsmall_utf(w_mw, langnum);
+        mkallsmall_ucs16(w_mw, langnum);
       }
 
       thresh += ngram(n, w_word, w_mw, NGRAM_ANY_MISMATCH);
@@ -1470,7 +1470,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
           int leftcommon = leftcommonsubstring(w_word, w_f);
           if (low) {
             // lowering dictionary word
-            mkallsmall_utf(w_f, langnum);
+            mkallsmall_ucs16(w_f, langnum);
           }
 
           sc = ngram(n, w_word, w_f, NGRAM_ANY_MISMATCH) + leftcommon;
@@ -1544,7 +1544,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
       int len;
       if (utf8) {
         len = u8_u16(w_gl, guess[i]);
-        mkallsmall_utf(w_gl, langnum);
+        mkallsmall_ucs16(w_gl, langnum);
         u16_u8(gl, w_gl);
       } else {
         gl.assign(guess[i]);
@@ -1569,7 +1569,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         if (low) {
           w_f = w_word;
           // lowering dictionary word
-          mkallsmall_utf(w_f, langnum);
+          mkallsmall_ucs16(w_f, langnum);
           re += ngram(2, w_gl, w_f, NGRAM_ANY_MISMATCH | NGRAM_WEIGHTED);
         } else {
           re += ngram(2, w_gl, w_word, NGRAM_ANY_MISMATCH | NGRAM_WEIGHTED);
@@ -1629,7 +1629,7 @@ void SuggestMgr::ngsuggest(std::vector<std::string>& wlst,
         int len;
         if (utf8) {
           len = u8_u16(w_gl, rootsphon[i]);
-          mkallsmall_utf(w_gl, langnum);
+          mkallsmall_ucs16(w_gl, langnum);
           u16_u8(gl, w_gl);
         } else {
           gl.assign(rootsphon[i]);
@@ -2179,9 +2179,9 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
   int num = 0, diff = 0, diffpos[2];
   *is_swap = 0;
   if (utf8) {
-    std::vector<unsigned short> su1;
-    std::vector<unsigned short> su2;
-    int l1 = u8_u16(su1, s1), l2 = u8_u16(su2, s2);
+    std::u32string su1;
+    std::u32string su2;
+    int l1 = u8_u32(su1, s1), l2 = u8_u32(su2, s2);
 
     if (l1 <= 0 || l2 <= 0)
       return 0;
