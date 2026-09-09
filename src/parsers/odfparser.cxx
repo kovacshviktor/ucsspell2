@@ -71,7 +71,7 @@ ODFParser::ODFParser(const char* wordchars)
   : XMLParser(wordchars) {
 }
 
-ODFParser::ODFParser(const w_char* wordchars, int len)
+ODFParser::ODFParser(const unsigned short* wordchars, int len)
   : XMLParser(wordchars, len) {
 }
 

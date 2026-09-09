@@ -68,7 +68,7 @@ TextParser::TextParser(const char* wordchars) {
   init(wordchars);
 }
 
-TextParser::TextParser(const w_char* wordchars, int len) {
+TextParser::TextParser(const unsigned short* wordchars, int len) {
   init(wordchars, len);
 }
 
@@ -121,7 +121,7 @@ void TextParser::init(const char* wordchars) {
   }
 }
 
-void TextParser::init(const w_char* wc_utf8, int len) {
+void TextParser::init(const unsigned short* wc_utf8, int len) {
   actual = 0;
   head = 0;
   token = 0;
@@ -133,7 +133,7 @@ void TextParser::init(const w_char* wc_utf8, int len) {
 
   // build a cache for the simple cases
   wordcharacters.resize(0x80);
-  w_char wc2;
+  unsigned short wc2;
   wc2.h = 0;
   for (unsigned char idx = 0; idx < 0x80; ++idx) {
     wc2.l = idx;
