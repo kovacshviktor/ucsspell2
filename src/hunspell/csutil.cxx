@@ -2507,7 +2507,7 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   return HUHCAP;
 }
 
-int get_captype_utf32(const std::u32string& word) {
+int get_captype_utf32(const std::u32string& word,int lang_script_num) {
   // now determine the capitalization type of the first nl letters
   size_t ncap = 0;
   size_t nneutral = 0;
@@ -2516,16 +2516,16 @@ int get_captype_utf32(const std::u32string& word) {
   auto it = word.begin(), it_end = word.end();
   while (it != it_end) {
     const auto idx = *it;
-    const auto lwridx = uc_tolower(idx);
+    const auto lwridx = uc_tolower(idx,lang_script_num);
     if (idx != lwridx)
       ncap++;
-    if (uc_toupper(idx) == lwridx)
+    if (uc_toupper(idx,lang_script_num) == lwridx)
       nneutral++;
     ++it;
   }
   if (ncap) {
     const auto idx = word[0];
-    firstcap = (idx != uc_tolower(idx));
+    firstcap = (idx != uc_tolower(idx,lang_script_num));
   }
 
   // now finally set the captype

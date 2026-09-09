@@ -224,14 +224,14 @@ struct cs_info {
 
 LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetoupper(unsigned short c,
                                                        int langnum);
-LIBHUNSPELL_DLL_EXPORTED char32_t uc_toupper(char32_t cp);
+LIBHUNSPELL_DLL_EXPORTED char32_t uc_toupper(char32_t cp,int lang_script_num);
 
 LIBHUNSPELL_DLL_EXPORTED w_char upper_utf(w_char u, int langnum);
 LIBHUNSPELL_DLL_EXPORTED w_char lower_utf(w_char u, int langnum);
 
 LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetolower(unsigned short c,
                                                        int langnum);
-LIBHUNSPELL_DLL_EXPORTED char32_t uc_tolower(char32_t cp);
+LIBHUNSPELL_DLL_EXPORTED char32_t uc_tolower(char32_t cp,int lang_script_num);
 LIBHUNSPELL_DLL_EXPORTED int unicodeisalpha(unsigned short c);
 
 LIBHUNSPELL_DLL_EXPORTED const struct cs_info* get_current_cs(const std::string& es);
@@ -294,7 +294,7 @@ LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const std::vector<w_char>& q, int 
 LIBHUNSPELL_DLL_EXPORTED int get_captype_ucs16(const std::vector<unsigned short>& q, int langnum);
 
 //get type of capitalization (BMP & SMP)
-LIBHUNSPELL_DLL_EXPORTED int get_captype_utf32(const std::u32string& word);
+LIBHUNSPELL_DLL_EXPORTED int get_captype_utf32(const std::u32string& word,int lang_script_num);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf(
@@ -310,7 +310,7 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
 
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf32(
   std::string& word, 
-  const std::u32string& ignored_chars);
+  const std::u32string& ignored_chars, int lang_script_num);
 
 
 LIBHUNSPELL_DLL_EXPORTED bool parse_string(const std::string& line,
@@ -344,10 +344,10 @@ LIBHUNSPELL_DLL_EXPORTED void store_pointer(char* dest, char* source);
 // conversion function for protected memory
 LIBHUNSPELL_DLL_EXPORTED char* get_stored_pointer(const char* s);
 // utf-32 type small/capital conversions
-LIBHUNSPELL_DLL_EXPORTED std::u32string& mkinitcap_u32(std::u32string& u);
-LIBHUNSPELL_DLL_EXPORTED std::u32string& mkinitsmall_u32(std::u32string& u);
-LIBHUNSPELL_DLL_EXPORTED std::u32string& mkallsmall_u32(std::u32string& u);
-LIBHUNSPELL_DLL_EXPORTED std::u32string& mkallcap_u32(std::u32string& u);
+LIBHUNSPELL_DLL_EXPORTED std::u32string& mkinitcap_u32(std::u32string& u,int lang_script_num);
+LIBHUNSPELL_DLL_EXPORTED std::u32string& mkinitsmall_u32(std::u32string& u,int lang_script_num);
+LIBHUNSPELL_DLL_EXPORTED std::u32string& mkallsmall_u32(std::u32string& u,int lang_script_num);
+LIBHUNSPELL_DLL_EXPORTED std::u32string& mkallcap_u32(std::u32string& u,int lang_script_num);
 
 // to avoid unnecessary string copies and Unicode conversions
 // we simply check the ignored_chars characters in the word

@@ -186,14 +186,15 @@ inline char32_t cast_from_wchrs(w_char lead, w_char trail){
     unsigned short l = (unsigned short)trail;
     return UCS_GET_SUPPLEMENTARY(h,l);
 }
-    inline char32_t uc_to_case(char32_t cp, bool uc_to_lower, int langnum){
+    inline char32_t uc_to_case(char32_t cp, bool uc_to_lower, int lang_script_num){
         if(uc_to_lower){
             if(UCS_IS_SINGLE(cp)){
-                
+                unsigned short cp_tmp = static_cast<unsigned short>(cp);
+                unicodetolower(cp_tmp,lang_script_num);   
             }
-            return uc_tolower(cp);
+            return uc_tolower(cp, lang_script_num);
         }
-        return uc_toupper(cp);
+        return uc_toupper(cp,lang_script_num);
     }
     std::vector<std::string> init_utf8_vector(const char32_t* data, size_t count);
     std::string codepoint_to_utf8(char32_t cp);

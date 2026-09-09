@@ -511,30 +511,30 @@ uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data) {
     return hash;
 }
 
-std::u32string& mkallsmall_u32(std::u32string& u) {
+std::u32string& mkallsmall_u32(std::u32string& u,int lang_script_num) {
   for (auto& cp : u) {
-    cp = uc_tolower(cp);
+    cp = uc_tolower(cp,lang_script_num);
   }
   return u;
 }
  
-std::u32string& mkallcap_u32(std::u32string& u) {
+std::u32string& mkallcap_u32(std::u32string& u,int lang_script_num) {
   for (auto& cp : u) {
-    cp = uc_toupper(cp);
+    cp = uc_toupper(cp,lang_script_num);
   }
   return u;
 }
 
-std::u32string& mkinitcap_u32(std::u32string& u) {
+std::u32string& mkinitcap_u32(std::u32string& u,int lang_script_num) {
   if (!u.empty()) {
-    u[0] = uc_toupper(u[0]);
+    u[0] = uc_toupper(u[0],lang_script_num);
   }
   return u;
 }
 
-std::u32string& mkinitsmall_u32(std::u32string& u){
+std::u32string& mkinitsmall_u32(std::u32string& u, int lang_script_num){
   if(!u.empty()){
-    u[0] = uc_tolower(u[0]);
+    u[0] = uc_tolower(u[0],lang_script_num);
   }
   return u;
 }
@@ -612,10 +612,10 @@ std::vector<unsigned short>& mkallcap_ucs16(std::vector<unsigned short>& u,int  
 }
 
 
-char32_t uc_toupper(char32_t cp) {
+char32_t uc_toupper(char32_t cp, int langnum) {
     // BMP
     if (cp < 0x10000) {
-        return static_cast<char32_t>(unicodetoupper(static_cast<unsigned short>(cp), LANG_xx));
+        return static_cast<char32_t>(unicodetoupper(static_cast<unsigned short>(cp), langnum));
     }
     // SMP area upper bound check
     if (cp > 0x1ffff) {
@@ -626,10 +626,10 @@ char32_t uc_toupper(char32_t cp) {
     return 0x10000 | ucs_to_upper[index];
 }
 
-char32_t uc_tolower(char32_t cp) {
+char32_t uc_tolower(char32_t cp,int lang_script_num) {
     // BMP    
     if (cp < 0x10000) {
-        return static_cast<char32_t>(unicodetolower(static_cast<unsigned short>(cp), LANG_xx));
+        return static_cast<char32_t>(unicodetolower(static_cast<unsigned short>(cp), lang_script_num));
     }
     // SMP area upper bound check
     if (cp > 0x1ffff) {
