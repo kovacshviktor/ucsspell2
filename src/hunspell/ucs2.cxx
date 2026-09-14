@@ -71,7 +71,7 @@ using namespace std;
 
 
 
-std::string codepoint_to_utf8(char32_t cp) {
+std::string codepoint_to_utf8(uint32_t cp) {
     std::string out;
     if (cp <= 0x7F) {
         out.push_back(static_cast<char>(cp));
@@ -91,10 +91,10 @@ std::string codepoint_to_utf8(char32_t cp) {
     return out;
 }    
 
-// Helper to populate vector<string> from char32_t array
+// Helper to populate vector<string> from uint32_t array
 
 
-    std::vector<std::string> init_utf8_vector(const char32_t* data, size_t count) {
+    std::vector<std::string> init_utf8_vector(const uint32_t* data, size_t count) {
         std::vector<std::string> result;
         result.reserve(count);
         for (size_t i = 0; i < count; ++i) {
@@ -122,7 +122,7 @@ std::string codepoint_to_utf8(char32_t cp) {
         SMP_RESERVED_LOWER16_CODEPOINTS, SMP_RESERVED_LOWER16_CODEPOINTS + NUM_SMP_RESERVED
     );
 
-bool is_reserved_code(char32_t cp) {
+bool is_reserved_code(uint32_t cp) {
     // BMP range: U+0000..U+FFFF
     if (cp < 0x10000) {
         uint16_t bmp_char = static_cast<uint16_t>(cp);
@@ -145,13 +145,13 @@ bool is_u16_simple_only(const std::vector<w_char>& src){
     return true;
 }
 
-std::string& u32_u8(std::string& dest, const std::u32string& src){
+std::string& u32_u8(std::string& dest, const std::vector<uint32_t>& src){
     dest.clear();
     dest.reserve(src.size());
     auto u32 = src.begin(), u32_max = src.end();
     
     while (u32 < u32_max){
-        char32_t cp = *u32;
+        uint32_t cp = *u32;
         if (cp >= 0 && cp <= 0x10FFFF && !(cp >= 0xD800 && cp <= 0xDFFF)) {
             if (cp <= 0x7F) {
                 dest.push_back(static_cast<char>(cp));
@@ -178,7 +178,7 @@ std::string& u32_u8(std::string& dest, const std::u32string& src){
     return dest;
 }
 
-int u8_u32(std::u32string& dest, const std::string& src){
+int u8_u32(std::vector<uint32_t>& dest, const std::string& src){
     dest.clear();
     dest.reserve(src.size());
     size_t ix = 0;
@@ -186,7 +186,7 @@ int u8_u32(std::u32string& dest, const std::string& src){
     
     while (ix < length) {
         unsigned char c = static_cast<unsigned char>(src[ix++]);
-        char32_t cp = 0;
+        uint32_t cp = 0;
         size_t extra_bytes = 0;
 
         if (c <= 0x7F) {
@@ -235,19 +235,19 @@ int u8_u32(std::u32string& dest, const std::string& src){
     return dest.size();
 }
 
-std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>& src){
+std::vector<uint32_t>& u16_u32(std::vector<uint32_t>& dest, const std::vector<unsigned short>& src){
     dest.clear();
     auto u16 = src.begin();
     auto u16_end = src.end();
     unsigned short lead;
     unsigned short trail;
     unsigned short unichar;
-    char32_t codepoint;
+    uint32_t codepoint;
     
     while (u16 < u16_end) {
         unichar = (unsigned short)(*u16);
         if (UCS_IS_SINGLE(unichar)){
-            codepoint = (char32_t)unichar;
+            codepoint = (uint32_t)unichar;
             ++u16;
         } else if (UCS_IS_LEAD(unichar)){
             lead = unichar;
@@ -277,11 +277,11 @@ std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>&
     return dest;
 }
 
-std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::u32string& src) {
+std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::vector<uint32_t>& src) {
     dest.clear();
     auto u32 = src.begin();
     auto u32_end = src.end();
-    char32_t c;
+    uint32_t c;
     while (u32 < u32_end) {
         c = (*u32);
         if (c <= 0xFFFF) {
@@ -511,28 +511,28 @@ uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data) {
     return hash;
 }
 
-std::u32string& mkallsmall_u32(std::u32string& u,int lang_script_num) {
+std::vector<uint32_t>& mkallsmall_u32(std::vector<uint32_t>& u,int lang_script_num) {
   for (auto& cp : u) {
     cp = uc_tolower(cp,lang_script_num);
   }
   return u;
 }
  
-std::u32string& mkallcap_u32(std::u32string& u,int lang_script_num) {
+std::vector<uint32_t>& mkallcap_u32(std::vector<uint32_t>& u,int lang_script_num) {
   for (auto& cp : u) {
     cp = uc_toupper(cp,lang_script_num);
   }
   return u;
 }
 
-std::u32string& mkinitcap_u32(std::u32string& u,int lang_script_num) {
+std::vector<uint32_t>& mkinitcap_u32(std::vector<uint32_t>& u,int lang_script_num) {
   if (!u.empty()) {
     u[0] = uc_toupper(u[0],lang_script_num);
   }
   return u;
 }
 
-std::u32string& mkinitsmall_u32(std::u32string& u, int lang_script_num){
+std::vector<uint32_t>& mkinitsmall_u32(std::vector<uint32_t>& u, int lang_script_num){
   if(!u.empty()){
     u[0] = uc_tolower(u[0],lang_script_num);
   }
@@ -540,7 +540,7 @@ std::u32string& mkinitsmall_u32(std::u32string& u, int lang_script_num){
 }
 
 std::vector<unsigned short>& mkcase_indexed_ucs16(std::vector<unsigned short>& u, size_t& index, bool uc_to_lower,int langnum){
-    char32_t cp;
+    uint32_t cp;
     if((index < u.size()) && (!u.empty())){
         if(UCS_IS_SINGLE(u[index])){
             if (uc_to_lower){
@@ -612,10 +612,10 @@ std::vector<unsigned short>& mkallcap_ucs16(std::vector<unsigned short>& u,int  
 }
 
 
-char32_t uc_toupper(char32_t cp, int langnum) {
+uint32_t uc_toupper(uint32_t cp, int langnum) {
     // BMP
     if (cp < 0x10000) {
-        return static_cast<char32_t>(unicodetoupper(static_cast<unsigned short>(cp), langnum));
+        return static_cast<uint32_t>(unicodetoupper(static_cast<unsigned short>(cp), langnum));
     }
     // SMP area upper bound check
     if (cp > 0x1ffff) {
@@ -626,10 +626,10 @@ char32_t uc_toupper(char32_t cp, int langnum) {
     return 0x10000 | ucs_to_upper[index];
 }
 
-char32_t uc_tolower(char32_t cp,int lang_script_num) {
+uint32_t uc_tolower(uint32_t cp,int lang_script_num) {
     // BMP    
     if (cp < 0x10000) {
-        return static_cast<char32_t>(unicodetolower(static_cast<unsigned short>(cp), lang_script_num));
+        return static_cast<uint32_t>(unicodetolower(static_cast<unsigned short>(cp), lang_script_num));
     }
     // SMP area upper bound check
     if (cp > 0x1ffff) {

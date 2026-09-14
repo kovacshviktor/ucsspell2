@@ -103,12 +103,12 @@
     #define UCS_IS_SINGLE(c)     (((c) < 0xd800) || ((c) > 0xdfff)) 
     #define UCS_IS_LEAD(c)       (((c) >= 0xd800) && ((c) <= 0xdbff))
     #define UCS_IS_TRAIL(c)      (((c) >= 0xdc00) && ((c) <= 0xdfff))
-    #define UCS_GET_SUPPLEMENTARY(l, t) (char32_t)((((static_cast<uint32_t>(l) - 0xd800) << 10) | (static_cast<uint32_t>(t) - 0xdc00)) + 0x10000)
+    #define UCS_GET_SUPPLEMENTARY(l, t) (uint32_t)((((static_cast<uint32_t>(l) - 0xd800) << 10) | (static_cast<uint32_t>(t) - 0xdc00)) + 0x10000)
     #define UCS_LEAD(c)  ((uint16_t)((((c) - 0x10000) >> 10) + 0xD800))
     #define UCS_TRAIL(c) ((uint16_t)((((c) - 0x10000) & 0x3FF) + 0xDC00))
     #define UCS_IS_UNICODE_CHAR(c) (((c) >= 0 ) && ((c) <= 0x10ffff))
-    #define UCS_FROM_LEAD(l) (char32_t)((((l) - 0xd800) << 10) + 0x10000)
-    #define UCS_ADD_TRAIL(cp,t) (char32_t)(((cp)) | ((t) - 0xdc00)) 
+    #define UCS_FROM_LEAD(l) (uint32_t)((((l) - 0xd800) << 10) + 0x10000)
+    #define UCS_ADD_TRAIL(cp,t) (uint32_t)(((cp)) | ((t) - 0xdc00)) 
     #define UCS_IS_ERROR(c) ((c) == 0xfffd)   
     
     inline w_char uchar_to_w_char(unsigned short uni16) {
@@ -121,11 +121,11 @@
     
 
 /**
- * Reads a UTF-8 character and returns its char32_t codepoint.
+ * Reads a UTF-8 character and returns its uint32_t codepoint.
  * Advances the source pointer (src) to the beginning of the next character.
  * Returns the replacement character (0xFFFD) if an invalid UTF-8 sequence is encountered.
  */
-inline char32_t utf8_to_utf32_step(const char*& src) {
+inline uint32_t utf8_to_utf32_step(const char*& src) {
     if (!src || *src == '\0') return 0;
 
     uint8_t b1 = static_cast<uint8_t>(*src++);
@@ -140,7 +140,7 @@ inline char32_t utf8_to_utf32_step(const char*& src) {
         if ((static_cast<uint8_t>(*src) & 0xC0) != 0x80) return 0xFFFD; // Invalid continuation byte
         uint8_t b2 = static_cast<uint8_t>(*src++);
         
-        char32_t cp = ((b1 & 0x1F) << 6) | (b2 & 0x3F);
+        uint32_t cp = ((b1 & 0x1F) << 6) | (b2 & 0x3F);
         return (cp < 0x80) ? 0xFFFD : cp; // Filter overlong encoding
     }
     
@@ -153,7 +153,7 @@ inline char32_t utf8_to_utf32_step(const char*& src) {
         uint8_t b2 = static_cast<uint8_t>(*src++);
         uint8_t b3 = static_cast<uint8_t>(*src++);
         
-        char32_t cp = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
+        uint32_t cp = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
         
         // Filter overlong encoding (< 0x800) and UTF-16 surrogates (0xD800 - 0xDFFF)
         if (cp < 0x800 || (cp >= 0xD800 && cp <= 0xDFFF)) return 0xFFFD;
@@ -171,7 +171,7 @@ inline char32_t utf8_to_utf32_step(const char*& src) {
         uint8_t b3 = static_cast<uint8_t>(*src++);
         uint8_t b4 = static_cast<uint8_t>(*src++);
         
-        char32_t cp = ((b1 & 0x07) << 18) | ((b2 & 0x3F) << 12) | ((b3 & 0x3F) << 6) | (b4 & 0x3F);
+        uint32_t cp = ((b1 & 0x07) << 18) | ((b2 & 0x3F) << 12) | ((b3 & 0x3F) << 6) | (b4 & 0x3F);
         
         // Filter overlong encoding (< 0x10000) and values above Unicode limit (0x10FFFF)
         if (cp < 0x10000 || cp > 0x10FFFF) return 0xFFFD;
@@ -181,12 +181,12 @@ inline char32_t utf8_to_utf32_step(const char*& src) {
     // Invalid lead byte (e.g., standalone continuation byte 0x80-0xBF or out-of-range 0xF5-0xFF)
     return 0xFFFD;
 }
-inline char32_t cast_from_wchrs(w_char lead, w_char trail){
+inline uint32_t cast_from_wchrs(w_char lead, w_char trail){
     unsigned short h = (unsigned short)lead;
     unsigned short l = (unsigned short)trail;
     return UCS_GET_SUPPLEMENTARY(h,l);
 }
-    inline char32_t uc_to_case(char32_t cp, bool uc_to_lower, int lang_script_num){
+    inline uint32_t uc_to_case(uint32_t cp, bool uc_to_lower, int lang_script_num){
         if(uc_to_lower){
             if(UCS_IS_SINGLE(cp)){
                 unsigned short cp_tmp = static_cast<unsigned short>(cp);
@@ -196,18 +196,18 @@ inline char32_t cast_from_wchrs(w_char lead, w_char trail){
         }
         return uc_toupper(cp,lang_script_num);
     }
-    std::vector<std::string> init_utf8_vector(const char32_t* data, size_t count);
-    std::string codepoint_to_utf8(char32_t cp);
+    std::vector<std::string> init_utf8_vector(const uint32_t* data, size_t count);
+    std::string codepoint_to_utf8(uint32_t cp);
     extern std::vector<std::string> utf8punctuation_marks;
     extern std::vector<std::string> utf8numbers;
     extern std::vector<uint16_t> utfbmp_reserved_codes;
     extern std::vector<uint16_t> utfsmp_reserved_codes;
-    bool is_reserved_code(char32_t cp);
+    bool is_reserved_code(uint32_t cp);
     bool is_u16_simple_only(const std::vector<w_char>& src);
-    std::u32string& u16_u32(std::u32string& dest, const std::vector<unsigned short>& src);
-    std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::u32string& src);
-    std::string& u32_u8(std::string& dest, const std::u32string& src);
-    int u8_u32(std::u32string& dest, const std::string& src);
+    std::vector<uint32_t>& u16_u32(std::vector<uint32_t>& dest, const std::vector<unsigned short>& src);
+    std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::vector<uint32_t>& src);
+    std::string& u32_u8(std::string& dest, const std::vector<uint32_t>& src);
+    int u8_u32(std::vector<uint32_t>& dest, const std::string& src);
     std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<unsigned short>& src);
     std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest, const std::vector<w_char>& src);
     uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data);

@@ -2179,8 +2179,8 @@ int SuggestMgr::commoncharacterpositions(const char* s1,
   int num = 0, diff = 0, diffpos[2];
   *is_swap = 0;
   if (utf8) {
-    std::u32string su1;
-    std::u32string su2;
+    std::vector<uint32_t> su1;
+    std::vector<uint32_t> su2;
     int l1 = u8_u32(su1, s1), l2 = u8_u32(su2, s2);
 
     if (l1 <= 0 || l2 <= 0)

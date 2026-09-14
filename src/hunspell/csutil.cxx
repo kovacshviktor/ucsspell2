@@ -2507,7 +2507,7 @@ int get_captype_utf8(const std::vector<w_char>& word, int langnum) {
   return HUHCAP;
 }
 
-int get_captype_utf32(const std::u32string& word,int lang_script_num) {
+int get_captype_utf32(const std::vector<uint32_t>& word,int lang_script_num) {
   // now determine the capitalization type of the first nl letters
   size_t ncap = 0;
   size_t nneutral = 0;
@@ -2558,13 +2558,13 @@ size_t remove_ignored_chars_utf(std::string& word,
 }
  
 size_t remove_ignored_chars_utf32(std::string& word,
-                                const std::u32string& ignored_chars) {
-  std::u32string w;
-  std::u32string w2;
+                                const std::vector<uint32_t>& ignored_chars) {
+  std::vector<uint32_t> w;
+  std::vector<uint32_t> w2;
   u8_u32(w, word);
 
   std::copy_if(w.begin(), w.end(), std::back_inserter(w2),
-  [&ignored_chars](char32_t wc) {
+  [&ignored_chars](uint32_t wc) {
     return !std::binary_search(ignored_chars.begin(), ignored_chars.end(), wc);
   });
 
@@ -2574,15 +2574,15 @@ size_t remove_ignored_chars_utf32(std::string& word,
 
 size_t remove_ignored_chars_ucs16(std::string& word,
   const std::vector<unsigned short>& ignored_chars){
-    std::u32string shadow_u32;
-    std::u32string shadow2_u32;
-    std::u32string shadow_u32_ignored_chars;
+    std::vector<uint32_t> shadow_u32;
+    std::vector<uint32_t> shadow2_u32;
+    std::vector<uint32_t> shadow_u32_ignored_chars;
     std::vector<unsigned short> shadow_ucs16;
     u16_u32(shadow_u32_ignored_chars,ignored_chars);
     u8_u32(shadow_u32,word);
 
     std::copy_if(shadow_u32.begin(),shadow_u32.end(),std::back_inserter(shadow2_u32),
-    [&ignored_chars](char32_t wc) {
+    [&ignored_chars](uint32_t wc) {
       return !std::binary_search(ignored_chars.begin(),ignored_chars.end(), wc);
     });
     
@@ -2653,7 +2653,7 @@ bool parse_array_ucs16(const std::string& line,
   std::vector<unsigned short>& out_utf16,
   int utf8,
   int ln){
-    std::u32string shadow_32;
+    std::vector<uint32_t> shadow_32;
     if (!parse_string(line, out, ln))
       return false;
     if (utf8){

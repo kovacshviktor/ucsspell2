@@ -9,7 +9,7 @@
 
 
 // Total punctuation code points: 856
-constexpr char32_t UNICODE_PUNCTUATIONS[] = {
+constexpr uint32_t UNICODE_PUNCTUATIONS[] = {
     0x0021, // [Po] EXCLAMATION MARK
     0x0022, // [Po] QUOTATION MARK
     0x0023, // [Po] NUMBER SIGN

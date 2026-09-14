@@ -9,7 +9,7 @@
 
 
 // Total number code points: 1924
-constexpr char32_t UNICODE_DIGITS[] = {
+constexpr uint32_t UNICODE_DIGITS[] = {
     0x0030, // [Nd] DIGIT ZERO
     0x0031, // [Nd] DIGIT ONE
     0x0032, // [Nd] DIGIT TWO
