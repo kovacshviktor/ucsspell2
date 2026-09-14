@@ -178,7 +178,7 @@ std::string& u32_u8(std::string& dest, const std::vector<uint32_t>& src){
     return dest;
 }
 
-int u8_utf32(std::vector<uint32_t>& dest, const std::string& src){
+int u8_u32(std::vector<uint32_t>& dest, const std::string& src){
     dest.clear();
     dest.reserve(src.size());
     size_t ix = 0;
@@ -201,13 +201,13 @@ int u8_utf32(std::vector<uint32_t>& dest, const std::string& src){
             cp = c & 0x07;
             extra_bytes = 3;
         } else {
-            HUNSPELL_WARNING(stderr, "UTF-8 encoding error in u8_utf32 function. Invalid lead byte.");
+            HUNSPELL_WARNING(stderr, "UTF-8 encoding error in u8_u32 function. Invalid lead byte.");
             dest.clear();
             cp = 0xfffd;
         }
 
         if (ix + extra_bytes > length) {
-            HUNSPELL_WARNING(stderr, "UTF-8 encoding error in u8_utf32 function. Truncated byte sequence.");
+            HUNSPELL_WARNING(stderr, "UTF-8 encoding error in u8_u32 function. Truncated byte sequence.");
             dest.clear();
             cp = 0xfffd;
         }
@@ -215,7 +215,7 @@ int u8_utf32(std::vector<uint32_t>& dest, const std::string& src){
         for (size_t i = 0; i < extra_bytes; ++i) {
             unsigned char b = static_cast<unsigned char>(src[ix++]);
             if ((b & 0xC0) != 0x80) {
-                HUNSPELL_WARNING(stderr, "UTF-8 encoding error in u8_utf32 function. Invalid trail byte.");
+                HUNSPELL_WARNING(stderr, "UTF-8 encoding error in u8_u32 function. Invalid trail byte.");
                 dest.clear();
                 cp = 0xfffd;
             }
@@ -223,7 +223,7 @@ int u8_utf32(std::vector<uint32_t>& dest, const std::string& src){
         }
 
         if (cp > 0x10FFFF || (cp >= 0xD800 && cp <= 0xDFFF)) {
-            HUNSPELL_WARNING(stderr, "UTF-8 encoding error in u8_utf32 function. Out of range codepoint.");
+            HUNSPELL_WARNING(stderr, "UTF-8 encoding error in u8_u32 function. Out of range codepoint.");
             dest.clear();
             cp = 0xfffd;
         }

@@ -207,7 +207,7 @@ inline uint32_t cast_from_wchrs(w_char lead, w_char trail){
     std::vector<uint32_t>& u16_utf32(std::vector<uint32_t>& dest, const std::vector<unsigned short>& src);
     std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::vector<uint32_t>& src);
     std::string& u32_u8(std::string& dest, const std::vector<uint32_t>& src);
-    int u8_utf32(std::vector<uint32_t>& dest, const std::string& src);
+    int u8_u32(std::vector<uint32_t>& dest, const std::string& src);
     std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<unsigned short>& src);
     std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest, const std::vector<w_char>& src);
     uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data);
