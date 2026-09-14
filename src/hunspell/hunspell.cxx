@@ -248,9 +248,9 @@ void HunspellImpl::clean_ignore(std::string& dest,
   const char* ignoredchars = pAMgr ? pAMgr->get_ignore() : nullptr;
   if (ignoredchars != nullptr) {
     if (utf8) {
-      const std::vector<unsigned short>& ignoredchars_utf16 =
+      const std::vector<unsigned short>& ignoredchars_utf32 =
           pAMgr->get_ignore_utf16();
-      remove_ignored_chars_u32(dest, ignoredchars_utf16);
+      remove_ignored_chars_utf32(dest, ignoredchars_utf32);
     } else {
       remove_ignored_chars(dest, ignoredchars);
     }
@@ -304,7 +304,7 @@ size_t HunspellImpl::cleanword2(std::string& dest,
   nl = dest.size();
   if (utf8) {
     u8_u16(dest_utf, dest,false);
-    *pcaptype = get_captype_u32(dest_utf, langnum);
+    *pcaptype = get_captype_utf32(dest_utf, langnum);
   } else {
     *pcaptype = get_captype(dest, csconv);
   }
@@ -393,7 +393,7 @@ void HunspellImpl::mkallcap(std::string& u8) {
     std::vector<unsigned short> u16;
     u8_u16(u16, u8,false);
     
-    ::mkallcap_u32(u16, langnum);
+    ::mkallcap_utf32(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkallcap(u8, csconv);
@@ -402,7 +402,7 @@ void HunspellImpl::mkallcap(std::string& u8) {
 
 int HunspellImpl::mkallsmall2(std::string& u8, std::vector<unsigned short>& u16) {
   if (utf8) {
-    ::mkallsmall_u32(u16, langnum);
+    ::mkallsmall_utf32(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkallsmall(u8, csconv);
@@ -1335,7 +1335,7 @@ std::vector<std::string> HunspellImpl::suggest_internal(const std::string& word,
         if (utf8) {
           std::vector<unsigned short> postdotu;
           u8_u16(postdotu, postdot,false);
-          captype_ = get_captype_u32(postdotu, langnum);
+          captype_ = get_captype_utf32(postdotu, langnum);
         } else {
           captype_ = get_captype(postdot, csconv);
         }
@@ -1612,7 +1612,7 @@ void HunspellImpl::mkinitcap(std::string& u8) {
   if (utf8) {
     std::vector<unsigned short> u16;
     u8_u16(u16, u8, false);
-    ::mkinitcap_u32(u16, langnum);
+    ::mkinitcap_utf32(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkinitcap(u8, csconv);
@@ -1621,7 +1621,7 @@ void HunspellImpl::mkinitcap(std::string& u8) {
 
 int HunspellImpl::mkinitcap2(std::string& u8, std::vector<unsigned short>& u16) {
   if (utf8) {
-    ::mkinitcap_u32(u16, langnum);
+    ::mkinitcap_utf32(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkinitcap(u8, csconv);
@@ -1631,7 +1631,7 @@ int HunspellImpl::mkinitcap2(std::string& u8, std::vector<unsigned short>& u16) 
 
 int HunspellImpl::mkinitsmall2(std::string& u8, std::vector<unsigned short>& u16) {
   if (utf8) {
-    ::mkinitsmall_u32(u16, langnum);
+    ::mkinitsmall_utf32(u16, langnum);
     u16_u8(u8, u16);
   } else {
     ::mkinitsmall(u8, csconv);
@@ -2177,9 +2177,9 @@ std::vector<std::string> HunspellImpl::suffix_suggest(const std::string& root_wo
   if (ignoredchars != nullptr) {
     w2.assign(root_word);
     if (utf8 == 1) {
-      const std::vector<unsigned short>& ignoredchars_utf16 =
+      const std::vector<unsigned short>& ignoredchars_utf32 =
           pAMgr->get_ignore_utf16();
-      remove_ignored_chars_u32(w2, ignoredchars_utf16);
+      remove_ignored_chars_utf32(w2, ignoredchars_utf32);
     } else {
       remove_ignored_chars(w2, ignoredchars);
     }

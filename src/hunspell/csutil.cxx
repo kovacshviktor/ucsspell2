@@ -2660,10 +2660,10 @@ size_t remove_ignored_chars_utf(std::string& word,
 }
  
 size_t remove_ignored_chars_utf32(std::string& word,
-                                const std::vector<uint32_t>& ignored_chars) {
+                                const std::vector<uint32_t>& ignored_chars,int lang_script_num) {
   std::vector<uint32_t> w;
   std::vector<uint32_t> w2;
-  u8_u32(w, word);
+  u8_utf32(w, word);
 
   std::copy_if(w.begin(), w.end(), std::back_inserter(w2),
   [&ignored_chars](uint32_t wc) {
@@ -2732,7 +2732,7 @@ bool parse_array(const std::string& line,
   return true;
 }
 
-bool parse_array_u32(const std::string& line,
+bool parse_array_utf32(const std::string& line,
   std::string& out,
   std::vector<unsigned short>& out_utf16,
   int utf8,
@@ -2741,7 +2741,7 @@ bool parse_array_u32(const std::string& line,
     if (!parse_string(line, out, ln))
       return false;
     if (utf8){
-      u8_u32(shadow_32,out);
+      u8_utf32(shadow_32,out);
       std::sort(shadow_32.begin(),shadow_32.end());
       u32_u16(out_utf16,shadow_32);
     }

@@ -317,10 +317,10 @@ LIBHUNSPELL_DLL_EXPORTED void store_pointer(char* dest, char* source);
 // conversion function for protected memory
 LIBHUNSPELL_DLL_EXPORTED char* get_stored_pointer(const char* s);
 // utf-32 type small/capital conversions
-LIBHUNSPELL_DLL_EXPORTED std::vector<uint32_t>& mkinitcap_u32(std::vector<uint32_t>& u,int lang_script_num);
-LIBHUNSPELL_DLL_EXPORTED std::vector<uint32_t>& mkinitsmall_u32(std::vector<uint32_t>& u,int lang_script_num);
-LIBHUNSPELL_DLL_EXPORTED std::vector<uint32_t>& mkallsmall_u32(std::vector<uint32_t>& u,int lang_script_num);
-LIBHUNSPELL_DLL_EXPORTED std::vector<uint32_t>& mkallcap_u32(std::vector<uint32_t>& u,int lang_script_num);
+LIBHUNSPELL_DLL_EXPORTED std::vector<uint32_t>& mkinitcap_utf32(std::vector<uint32_t>& u,int lang_script_num);
+LIBHUNSPELL_DLL_EXPORTED std::vector<uint32_t>& mkinitsmall_utf32(std::vector<uint32_t>& u,int lang_script_num);
+LIBHUNSPELL_DLL_EXPORTED std::vector<uint32_t>& mkallsmall_utf32(std::vector<uint32_t>& u,int lang_script_num);
+LIBHUNSPELL_DLL_EXPORTED std::vector<uint32_t>& mkallcap_utf32(std::vector<uint32_t>& u,int lang_script_num);
 
 // to avoid unnecessary string copies and Unicode conversions
 // we simply check the ignored_chars characters in the word
