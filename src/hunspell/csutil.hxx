@@ -152,20 +152,14 @@ LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
                                      std::ios_base::openmode mode);
 
 // convert UTF-16 characters to UTF-8
-[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,
                                              const std::vector<w_char>& src);
 
-LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest,const std::vector<unsigned short>& src);                                             
 // convert UTF-8 characters to UTF-16
-[[deprecated("Use std::vector<unsigned short>& overload instead.")]]
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
                                     const std::string& src,
                                     bool only_convert_first_letter = false);
 
-LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<unsigned short>& dest,
-                              const std::string& src,
-                              bool only_convert_first_letter = false);                                    
 
 inline bool is_utf8_cont(char c) {
   return (static_cast<unsigned char>(c) & 0xc0) == 0x80;
@@ -210,7 +204,7 @@ LIBHUNSPELL_DLL_EXPORTED void line_uniq_app(std::string& text, char breakchar);
 LIBHUNSPELL_DLL_EXPORTED size_t reverseword(std::string& word);
 
 // reverse word
-LIBHUNSPELL_DLL_EXPORTED size_t reverseword_utf(std::string&);
+LIBHUNSPELL_DLL_EXPORTED size_t reverseword_utf(std::string& word);
 
 // remove duplicates
 LIBHUNSPELL_DLL_EXPORTED void uniqlist(std::vector<std::string>& list);
@@ -262,36 +256,23 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mkinitcap(std::string& s,
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitcap_utf(std::vector<w_char>& u, int langnum);
 
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitcap_ucs16(std::vector<unsigned short>& u, int langnum);
 // convert UTF-8 string to little
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallsmall_utf(std::vector<w_char>& u, int langnum);
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower, int langnum);
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower, int langnum);
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallsmall_ucs16(std::vector<unsigned short>& u, int langnum);
 // convert first letter of UTF-8 string to little
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitsmall_utf(std::vector<w_char>& u, int langnum);
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkinitsmall_ucs16(std::vector<unsigned short>& u, int langnum);
 // convert UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
 
-LIBHUNSPELL_DLL_EXPORTED std::vector<unsigned short>&
-mkallcap_ucs16(std::vector<unsigned short>&u, int langnum);
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(const std::string& q, const cs_info*);
 
 // get type of capitalization (UTF-8)
 LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(const std::vector<w_char>& q, int langnum);
-LIBHUNSPELL_DLL_EXPORTED int get_captype_ucs16(const std::vector<unsigned short>& q, int langnum);
 
 //get type of capitalization (BMP & SMP)
 LIBHUNSPELL_DLL_EXPORTED int get_captype_utf32(const std::vector<uint32_t>& word,int lang_script_num);
@@ -300,9 +281,6 @@ LIBHUNSPELL_DLL_EXPORTED int get_captype_utf32(const std::vector<uint32_t>& word
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf(
     std::string& word,
     const std::vector<w_char>& ignored_chars);
-LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_ucs16(
-  std::string& word,
-  const std::vector<unsigned short>& ignored_chars);
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars(
     std::string& word,
@@ -322,11 +300,6 @@ LIBHUNSPELL_DLL_EXPORTED bool parse_array(const std::string& line,
                  int utf8,
                  int ln);
 
-LIBHUNSPELL_DLL_EXPORTED bool parse_array_ucs16(const std::string& line,
-  std::string& out,
-  std::vector<unsigned short> out_utf16,
-  int utf8,
-  int ln);
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char* r);
 
 // append the field of each compound word part of desc except the last, return the offset of that

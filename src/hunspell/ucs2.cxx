@@ -539,7 +539,7 @@ std::vector<uint32_t>& mkinitsmall_u32(std::vector<uint32_t>& u, int lang_script
   return u;
 }
 
-std::vector<unsigned short>& mkcase_indexed_ucs16(std::vector<unsigned short>& u, size_t& index, bool uc_to_lower,int langnum){
+std::vector<unsigned short>& mkcase_indexed_u32(std::vector<unsigned short>& u, size_t& index, bool uc_to_lower,int langnum){
     uint32_t cp;
     if((index < u.size()) && (!u.empty())){
         if(UCS_IS_SINGLE(u[index])){
@@ -578,37 +578,37 @@ std::vector<unsigned short>& mkcase_indexed_ucs16(std::vector<unsigned short>& u
     return u;    
 }
 
-std::vector<unsigned short>& mkallcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower, int langnum){
+std::vector<unsigned short>& mkallcase_u32(std::vector<unsigned short>& u, bool uc_to_lower, int langnum){
     if(!u.empty()){
         for(size_t i=0; i < u.size(); i++){
-            u = mkcase_indexed_ucs16(u, i, uc_to_lower, langnum);
+            u = mkcase_indexed_u32(u, i, uc_to_lower, langnum);
         }
     }
     return u; 
 }
 
-std::vector<unsigned short>& mkinitcase_ucs16(std::vector<unsigned short>& u, bool uc_to_lower, int langnum){
+std::vector<unsigned short>& mkinitcase_u32(std::vector<unsigned short>& u, bool uc_to_lower, int langnum){
     size_t i = 0;
     if(!u.empty()){
-        u = mkcase_indexed_ucs16(u, i, uc_to_lower, langnum);
+        u = mkcase_indexed_u32(u, i, uc_to_lower, langnum);
     }
     return u;
 }
 
-std::vector<unsigned short>& mkinitsmall_ucs16(std::vector<unsigned short>& u,int langnum){
-    return mkinitcase_ucs16(u, UCS_TO_LOWER,langnum);
+std::vector<unsigned short>& mkinitsmall_u32(std::vector<unsigned short>& u,int langnum){
+    return mkinitcase_u32(u, UCS_TO_LOWER,langnum);
 }
 
-std::vector<unsigned short>& mkallsmall_ucs16(std::vector<unsigned short>& u, int langnum){
-    return mkallcase_ucs16(u, UCS_TO_LOWER,langnum);
+std::vector<unsigned short>& mkallsmall_u32(std::vector<unsigned short>& u, int langnum){
+    return mkallcase_u32(u, UCS_TO_LOWER,langnum);
 }
 
-std::vector<unsigned short>& mkinitcap_ucs16(std::vector<unsigned short>& u, int langnum){
-    return mkinitcase_ucs16(u, UCS_TO_UPPER, langnum);
+std::vector<unsigned short>& mkinitcap_u32(std::vector<unsigned short>& u, int langnum){
+    return mkinitcase_u32(u, UCS_TO_UPPER, langnum);
 }
 
-std::vector<unsigned short>& mkallcap_ucs16(std::vector<unsigned short>& u,int  langnum){
-    return mkallcase_ucs16(u, UCS_TO_UPPER, langnum);
+std::vector<unsigned short>& mkallcap_u32(std::vector<unsigned short>& u,int  langnum){
+    return mkallcase_u32(u, UCS_TO_UPPER, langnum);
 }
 
 

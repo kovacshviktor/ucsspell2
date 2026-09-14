@@ -188,7 +188,7 @@ int HashMgr::add_word(const std::string& in_word,
 
     if (!ignorechars.empty()) {
       if (utf8) {
-        wcl = remove_ignored_chars_ucs16(*word_copy, ignorechars_utf16);
+        wcl = remove_ignored_chars_u32(*word_copy, ignorechars_utf16);
       } else {
         remove_ignored_chars(*word_copy, ignorechars);
       }
@@ -320,8 +320,8 @@ int HashMgr::add_word(const std::string& in_word,
               std::string ph_capitalized;
               if (utf8) {
                 u8_u16(w, ph);
-                if (get_captype_ucs16(w, langnum) == NOCAP) {
-                  mkinitcap_ucs16(w, langnum);
+                if (get_captype_u32(w, langnum) == NOCAP) {
+                  mkinitcap_u32(w, langnum);
                   u16_u8(ph_capitalized, w);
                 }
               } else if (get_captype(ph, csconv) == NOCAP)
@@ -342,7 +342,7 @@ int HashMgr::add_word(const std::string& in_word,
                   std::string wordpart_lower(wordpart);
                   if (utf8) {
                     u8_u16(w, wordpart_lower);
-                    mkallsmall_ucs16(w, langnum);
+                    mkallsmall_u32(w, langnum);
                     u16_u8(wordpart_lower, w);
                   } else {
                     mkallsmall(wordpart_lower, csconv);
@@ -471,8 +471,8 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
       std::string st;
       std::vector<unsigned short> w;
       u8_u16(w, word);
-      mkallsmall_ucs16(w, langnum);
-      mkinitcap_ucs16(w, langnum);
+      mkallsmall_u32(w, langnum);
+      mkinitcap_u32(w, langnum);
       u16_u8(st, w);
       return add_word(st, wcl, flags2, flagslen + 1, dp, true, INITCAP, false);
     } else {
@@ -491,7 +491,7 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::ve
   int len;
   if (utf8) {
     len = u8_u16(workbuf, word);
-    *captype = get_captype_ucs16(workbuf, langnum);
+    *captype = get_captype_u32(workbuf, langnum);
   } else {
     len = word.size();
     *captype = get_captype(word, csconv);
@@ -1081,7 +1081,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
     /* parse in the ignored characters (for example, Arabic optional diacritics
      * characters */
     if (line.compare(0, 6, "IGNORE", 6) == 0) {
-      if (!parse_array_ucs16(line, ignorechars, ignorechars_utf16,
+      if (!parse_array_u32(line, ignorechars, ignorechars_utf16,
                        utf8, afflst->getlinenum())) {
         delete afflst;
         return 1;

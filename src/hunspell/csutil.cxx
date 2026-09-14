@@ -2572,24 +2572,6 @@ size_t remove_ignored_chars_utf32(std::string& word,
   return w2.size();
 }
 
-size_t remove_ignored_chars_ucs16(std::string& word,
-  const std::vector<unsigned short>& ignored_chars){
-    std::vector<uint32_t> shadow_u32;
-    std::vector<uint32_t> shadow2_u32;
-    std::vector<uint32_t> shadow_u32_ignored_chars;
-    std::vector<unsigned short> shadow_ucs16;
-    u16_u32(shadow_u32_ignored_chars,ignored_chars);
-    u8_u32(shadow_u32,word);
-
-    std::copy_if(shadow_u32.begin(),shadow_u32.end(),std::back_inserter(shadow2_u32),
-    [&ignored_chars](uint32_t wc) {
-      return !std::binary_search(ignored_chars.begin(),ignored_chars.end(), wc);
-    });
-    
-    u32_u8(word,shadow2_u32);
-    u32_u16(shadow_ucs16,shadow2_u32);
-    return shadow_ucs16.size();
-}
 
 // strip all ignored characters in the string
 size_t remove_ignored_chars(std::string& word,
@@ -2648,7 +2630,7 @@ bool parse_array(const std::string& line,
   return true;
 }
 
-bool parse_array_ucs16(const std::string& line,
+bool parse_array_u32(const std::string& line,
   std::string& out,
   std::vector<unsigned short>& out_utf16,
   int utf8,

@@ -212,5 +212,5 @@ inline uint32_t cast_from_wchrs(w_char lead, w_char trail){
     std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest, const std::vector<w_char>& src);
     uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data);
     uint32_t fnv1a_32_utf8(const std::string& str);
-    std::vector<unsigned short>& mkcase_indexed_ucs16(std::vector<unsigned short>& u,size_t& index,bool uc_to_lower);
+    std::vector<unsigned short>& mkcase_indexed_u32(std::vector<unsigned short>& u,size_t& index,bool uc_to_lower);
 #endif // UCSSPELL_UCS2_HXX
