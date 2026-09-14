@@ -2734,16 +2734,14 @@ bool parse_array(const std::string& line,
 
 bool parse_array_utf32(const std::string& line,
   std::string& out,
-  std::vector<unsigned short>& out_utf16,
+  std::vector<uint32_t>& out_utf32,
   int utf8,
   int ln){
-    std::vector<uint32_t> shadow_32;
     if (!parse_string(line, out, ln))
       return false;
     if (utf8){
-      u8_u32(shadow_32,out);
-      std::sort(shadow_32.begin(),shadow_32.end());
-      u32_u16(out_utf16,shadow_32);
+      u8_u32(out_utf32,out);
+      std::sort(out_utf32.begin(),out_utf32.end());
     }
     return true;
   }

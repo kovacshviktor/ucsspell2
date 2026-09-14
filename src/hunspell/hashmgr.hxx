@@ -100,10 +100,9 @@ class HashMgr {
   std::string lang;
   const struct cs_info* csconv;
   std::string ignorechars;
-  std::vector<unsigned short> ignorechars_utf16;
   std::vector<uint32_t> ignorechars_utf32;
-  std::vector<unsigned short*> aliasf; // flag vector `compression' with aliases
-  std::vector<unsigned short> aliasflen;
+  std::vector<uint32_t*> aliasf; // flag vector `compression' with aliases
+  std::vector<uint32_t> aliasflen;
   std::vector<char*> aliasm; // morphological desciption `compression' with aliases
   // reptable created from REP table of aff file and from "ph:" fields
   // of the dic file. It contains phonetic and other common misspellings
@@ -123,7 +122,9 @@ class HashMgr {
   int add_with_affix(const std::string& word, const std::string& pattern);
   int remove(const std::string& word);
   int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) const;
-  bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const;
+  int decode_flags_utf32(uint32_t** result, const std::string& flags, FileMgr* af) const;
+  bool decode_flags_utf32(std::vector<uint32_t>& result, const std::string& flags, FileMgr* af) const;
+  bool decode_flags()
   unsigned short decode_flag(const std::string& flag) const;
   std::string encode_flag(unsigned short flag) const;
   int is_aliasf() const;
@@ -134,7 +135,7 @@ class HashMgr {
 
  private:
   int get_clen_and_captype(const std::string& word, int* captype);
-  int get_clen_and_captype(const std::string& word, int* captype, std::vector<unsigned short> &workbuf);
+  int get_clen_and_captype(const std::string& word, int* captype, std::vector<uint32_t> &workbuf);
   int load_tables(const char* tpath, const char* key);
   int add_word(const std::string& word,
                int wcl,

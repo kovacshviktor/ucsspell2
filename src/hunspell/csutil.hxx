@@ -160,6 +160,9 @@ LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
                                     const std::string& src,
                                     bool only_convert_first_letter = false);
 
+LIBHUNSPELL_DLL_EXPORTED  std::string& u32_u8(std::string& dest, const std::vector<uint32_t>& src);
+LIBHUNSPELL_DLL_EXPORTED int u8_u32(std::vector<uint32_t>& dest, const std::string& src);
+
 
 inline bool is_utf8_cont(char c) {
   return (static_cast<unsigned char>(c) & 0xc0) == 0x80;
@@ -299,6 +302,12 @@ LIBHUNSPELL_DLL_EXPORTED bool parse_array(const std::string& line,
                  std::vector<w_char>& out_utf16,
                  int utf8,
                  int ln);
+
+LIBHUNSPELL_DLL_EXPORTED bool parse_array_utf32(const std::string& line,
+                std::string& out,
+                std::vector<uint32_t>& out_utf32,
+                int utf8,
+                int ln);
 
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char* r);
 

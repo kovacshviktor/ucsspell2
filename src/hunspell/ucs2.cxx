@@ -235,7 +235,7 @@ int u8_u32(std::vector<uint32_t>& dest, const std::string& src){
     return dest.size();
 }
 
-std::vector<uint32_t>& u16_utf32(std::vector<uint32_t>& dest, const std::vector<unsigned short>& src){
+std::vector<uint32_t>& u16_utf32(std::vector<uint32_t>& dest, const std::vector<w_char>& src){
     dest.clear();
     auto u16 = src.begin();
     auto u16_end = src.end();
@@ -277,7 +277,7 @@ std::vector<uint32_t>& u16_utf32(std::vector<uint32_t>& dest, const std::vector<
     return dest;
 }
 
-std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const std::vector<uint32_t>& src) {
+std::vector<w_char>& u32_u16(std::vector<w_char>& dest, const std::vector<uint32_t>& src) {
     dest.clear();
     auto u32 = src.begin();
     auto u32_end = src.end();
@@ -297,7 +297,7 @@ std::vector<unsigned short>& u32_u16(std::vector<unsigned short>& dest, const st
     return dest;
 }
 
-std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<unsigned short>& src){
+std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<w_char>& src){
     w_char dest_w_char;
     dest.clear();
     dest.reserve(src.size());
@@ -309,7 +309,7 @@ std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<
     return dest;
 } 
 
-int u8_u16(std::vector<unsigned short>& dest, const std::string& src, bool only_convert_first_letter) {
+int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_first_letter) {
     if (src.empty()) {
         dest.clear();
         return 0;
@@ -431,7 +431,7 @@ int u8_u16(std::vector<unsigned short>& dest, const std::string& src, bool only_
     return size;
 }
 
-std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest,const std::vector<w_char>& src){
+std::vector<w_char>& w_char_ushort(std::vector<w_char>& dest,const std::vector<w_char>& src){
     dest.clear();
     dest.reserve(src.size());
     for(const auto& item: src){
@@ -441,7 +441,7 @@ std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest,con
     return dest;
 }
 
-std::string& u16_u8(std::string& dest, const std::vector<unsigned short>& src) {
+std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
   dest.clear();
   dest.reserve(src.size() * 3 / 2); // Approximate UTF-8 byte estimate
 

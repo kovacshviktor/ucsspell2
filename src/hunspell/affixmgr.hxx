@@ -163,7 +163,7 @@ class AffixMgr {
   int cpdwordmax;
   int cpdmaxsyllable;
   std::string cpdvowels; // vowels (for calculating of Hungarian compounding limit,
-  std::vector<unsigned short> cpdvowels_utf16; //vowels for UTF-8 encoding
+  std::vector<uint32_t> cpdvowels_utf32; //vowels for UTF-8 encoding
   std::string cpdsyllablenum; // syllable count incrementing flag
   const char* pfxappnd;  // BUG: not stateless
   const char* sfxappnd;  // BUG: not stateless
@@ -174,9 +174,9 @@ class AffixMgr {
   PfxEntry* pfx;         // BUG: not stateless
   int checknum;
   std::string wordchars; // letters + spec. word characters
-  std::vector<unsigned short> wordchars_utf16;
+  std::vector<uint32_t> wordchars_utf32;
   std::string ignorechars; // letters + spec. word characters
-  std::vector<unsigned short> ignorechars_utf16;
+  std::vector<uint32_t> ignorechars_utf32;
   std::string version;   // affix and dictionary file version string
   std::string lang; // language
   int langnum;
@@ -369,9 +369,9 @@ class AffixMgr {
   const std::string& get_key_string();
   const std::string& get_try_string() const;
   const std::string& get_wordchars() const;
-  const std::vector<unsigned short>& get_wordchars_utf16() const;
+  const std::vector<uint32_t>& get_wordchars_utf32() const;
   const char* get_ignore() const;
-  const std::vector<unsigned short>& get_ignore_utf16() const;
+  const std::vector<uint32_t>& get_ignore_utf32() const;
   int get_compound() const;
   FLAG get_compoundflag() const;
   FLAG get_forbiddenword() const;

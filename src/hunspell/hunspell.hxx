@@ -227,8 +227,8 @@ class LIBHUNSPELL_DLL_EXPORTED Hunspell {
   /* get extra word characters definied in affix file for tokenization */
   const char* get_wordchars() const;
   const std::string& get_wordchars_cpp() const;
-  const std::vector<unsigned short>& get_wordchars_utf16() const;
-
+  const std::vector<w_char>& get_wordchars_utf16() const;
+  const std::vector<uint32_t>& get_wordchars_utf32() const;
   struct cs_info* get_csconv();
 
   /* version of the hunspell library itself, for example "1.7.3" */

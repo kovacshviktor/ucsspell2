@@ -571,7 +571,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
 
     /* parse in the extra word characters */
     if (line.compare(0, 9, "WORDCHARS", 9) == 0) {
-      if (!parse_array_utf32(line, wordchars, wordchars_utf16,
+      if (!parse_array_utf32(line, wordchars, wordchars_utf32,
                        utf8, afflst->getlinenum())) {
         finishFileMgr(afflst);
         return 1;
@@ -581,7 +581,7 @@ int AffixMgr::parse_file(const char* affpath, const char* key) {
     /* parse in the ignored characters (for example, Arabic optional diacretics
      * charachters */
     if (line.compare(0, 6, "IGNORE", 6) == 0) {
-      if (!parse_array_utf32(line, ignorechars, ignorechars_utf16,
+      if (!parse_array_utf32(line, ignorechars, ignorechars_utf32,
                        utf8, afflst->getlinenum())) {
         finishFileMgr(afflst);
         return 1;
@@ -1510,12 +1510,12 @@ int AffixMgr::cpdcase_check(const std::string& word, int pos) {
     for (p = wordp + pos - 1; p > wordp && is_utf8_cont(*p); p--)
       ;
     std::string pair(p);
-    std::vector<unsigned short> pair_u;
-    u8_u16(pair_u, pair,false);
-    unsigned short a = pair_u.size() > 1 ? (unsigned short)pair_u[1] : 0,
-                   b = !pair_u.empty() ? (unsigned short)pair_u[0] : 0;
-    if (((unicodetoupper(a, langnum) == a && unicodetolower(a, langnum) != a) ||
-         (unicodetoupper(b, langnum) == b && unicodetolower(b, langnum) != b)) &&
+    std::vector<uint32_t> pair_u;
+    u8_u32(pair_u, pair);
+    uint32_t a = pair_u.size() > 1 ? pair_u[1] : 0,
+                   b = !pair_u.empty() ? pair_u[0] : 0;
+    if (((uc_toupper(a, langnum) == a && uc_tolower(a, langnum) != a) ||
+         (uc_toupper(b, langnum) == b && uc_tolower(b, langnum) != b)) &&
         (a != '-') && (b != '-'))
       return 1;
   } else {
@@ -1698,12 +1698,12 @@ short AffixMgr::get_syllable(const std::string& word) {
           [&](char c) {
             return std::binary_search(cpdvowels.begin(), cpdvowels.end(), c);
           });
-  } else if (!cpdvowels_utf16.empty()) {
-    std::vector<unsigned short> w;
-    u8_u16(w, word,false);
+  } else if (!cpdvowels_utf32.empty()) {
+    std::vector<uint32_t> w;
+    u8_u32(w, word);
     num = (short)std::count_if(w.begin(), w.end(),
-          [&](unsigned short wc) {
-            return std::binary_search(cpdvowels_utf16.begin(), cpdvowels_utf16.end(), wc);
+          [&](uint32_t wc) {
+            return std::binary_search(cpdvowels_utf32.begin(), cpdvowels_utf32.end(), wc);
           });
   }
 
@@ -3816,8 +3816,8 @@ const char* AffixMgr::get_ignore() const {
 }
 
 // return the preferred ignore string for suggestions
-const std::vector<unsigned short>& AffixMgr::get_ignore_utf16() const {
-  return ignorechars_utf16;
+const std::vector<uint32_t>& AffixMgr::get_ignore_utf32() const {
+  return ignorechars_utf32;
 }
 
 // return the keyboard string for suggestions
@@ -3837,8 +3837,8 @@ const std::string& AffixMgr::get_wordchars() const {
   return wordchars;
 }
 
-const std::vector<unsigned short>& AffixMgr::get_wordchars_utf16() const {
-  return wordchars_utf16;
+const std::vector<uint32_t>& AffixMgr::get_wordchars_utf32() const {
+  return wordchars_utf32;
 }
 
 // is there compounding?
@@ -3990,8 +3990,8 @@ bool AffixMgr::parse_cpdsyllable(const std::string& line, FileMgr* af) {
           std::sort(cpdvowels.begin(), cpdvowels.end());
         } else {
           std::string piece(start_piece, iter);
-          u8_u16(cpdvowels_utf16, piece, false);
-          std::sort(cpdvowels_utf16.begin(), cpdvowels_utf16.end());
+          u8_u32(cpdvowels_utf32, piece);
+          std::sort(cpdvowels_utf32.begin(), cpdvowels_utf32.end());
         }
         np++;
         break;
@@ -4836,7 +4836,7 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8) {
-                remove_ignored_chars_utf32(entry->appnd, ignorechars_utf16);
+                remove_ignored_chars_utf32(entry->appnd, ignorechars_utf32,langnum);
               } else { 
                 remove_ignored_chars(entry->appnd, ignorechars);
               }
@@ -4872,7 +4872,7 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
               if (utf8 == 1) {
-                remove_ignored_chars_utf32(entry->appnd, ignorechars_utf16);
+                remove_ignored_chars_utf32(entry->appnd, ignorechars_utf32,langnum);
               } else {
                 remove_ignored_chars(entry->appnd, ignorechars);
               }

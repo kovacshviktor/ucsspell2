@@ -188,7 +188,7 @@ int HashMgr::add_word(const std::string& in_word,
 
     if (!ignorechars.empty()) {
       if (utf8) {
-        wcl = remove_ignored_chars_utf32(*word_copy, ignorechars_utf16);
+        wcl = remove_ignored_chars_utf32(*word_copy, ignorechars_utf32);
       } else {
         remove_ignored_chars(*word_copy, ignorechars);
       }
@@ -276,7 +276,7 @@ int HashMgr::add_word(const std::string& in_word,
         if (std::string(start_piece, iter).find(MORPH_PHON) == 0) {
           std::string ph = std::string(start_piece, iter).substr(sizeof MORPH_PHON - 1);
           if (!ph.empty()) {
-            std::vector<unsigned short> w;
+            std::vector<uint32_t> w;
             size_t strippatt;
             std::string wordpart;
             // dictionary based REP replacement, separated by "->"
@@ -319,10 +319,10 @@ int HashMgr::add_word(const std::string& in_word,
             if (captype == INITCAP) {
               std::string ph_capitalized;
               if (utf8) {
-                u8_u16(w, ph);
+                u8_u32(w, ph);
                 if (get_captype_utf32(w, langnum) == NOCAP) {
                   mkinitcap_utf32(w, langnum);
-                  u16_u8(ph_capitalized, w);
+                  u32_u8(ph_capitalized, w);
                 }
               } else if (get_captype(ph, csconv) == NOCAP)
                   mkinitcap(ph_capitalized, csconv);
@@ -341,9 +341,9 @@ int HashMgr::add_word(const std::string& in_word,
                 if (langnum == LANG_de || langnum == LANG_hu) {
                   std::string wordpart_lower(wordpart);
                   if (utf8) {
-                    u8_u16(w, wordpart_lower);
+                    u8_u32(w, wordpart_lower);
                     mkallsmall_utf32(w, langnum);
-                    u16_u8(wordpart_lower, w);
+                    u32_u8(wordpart_lower, w);
                   } else {
                     mkallsmall(wordpart_lower, csconv);
                   }
@@ -469,11 +469,11 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
     }
     if (utf8) {
       std::string st;
-      std::vector<unsigned short> w;
-      u8_u16(w, word);
+      std::vector<uint32_t> w;
+      u8_u32(w, word);
       mkallsmall_utf32(w, langnum);
       mkinitcap_utf32(w, langnum);
-      u16_u8(st, w);
+      u32_u8(st, w);
       return add_word(st, wcl, flags2, flagslen + 1, dp, true, INITCAP, false);
     } else {
       std::string new_word(word);
@@ -487,10 +487,10 @@ int HashMgr::add_hidden_capitalized_word(const std::string& word,
 }
 
 // detect captype and modify word length for UTF-8 encoding
-int HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::vector<unsigned short> &workbuf) {
+int HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::vector<uint32_t> &workbuf) {
   int len;
   if (utf8) {
-    len = u8_u16(workbuf, word);
+    len = u8_u32(workbuf, word);
     *captype = get_captype_utf32(workbuf, langnum);
   } else {
     len = word.size();
@@ -500,7 +500,7 @@ int HashMgr::get_clen_and_captype(const std::string& word, int* captype, std::ve
 }
 
 int HashMgr::get_clen_and_captype(const std::string& word, int* captype) {
-  std::vector<unsigned short> workbuf;
+  std::vector<uint32_t> workbuf;
   return get_clen_and_captype(word, captype, workbuf);
 }
 
@@ -651,7 +651,7 @@ int HashMgr::load_tables(const char* tpath, const char* key) {
   // loop through all words on much list and add to hash
   // table and create word and affix strings
 
-  std::vector<unsigned short> workbuf;
+  std::vector<uint32_t> workbuf;
 
   int nLineCount(0);
   while (dict->getline(ts)) {
@@ -775,6 +775,10 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
   return decode_flags(result, flags, af, /* arena = */ false);
 }
 
+int HashMgr::decode_falgs_utf32(uint32_t** result,const std::string& flags,FileMgr* af) const {
+  
+}
+
 int HashMgr::decode_flags(unsigned short** result, const std::string& flags, FileMgr* af, bool use_arena) const {
   auto alloc = [&](int n) -> unsigned short* {
     return use_arena ? (unsigned short*)this->arena_alloc(n * sizeof(unsigned short),
@@ -839,7 +843,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      std::vector<unsigned short> w;
+      std::vector<w_char> w;
       u8_u16(w, flags);
       len = w.size();
       *result = alloc(len);
@@ -867,7 +871,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
   return len;
 }
 
-bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const {
+bool HashMgr::decode_flags(std::vector<uint32_t>& result, const std::string& flags, FileMgr* af) const {
   if (flags.empty()) {
     return false;
   }
@@ -881,8 +885,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       size_t origsize = result.size();
       result.resize(origsize + len);
       for (size_t i = 0; i < len; ++i) {
-        result[origsize + i] = ((unsigned short)((unsigned char)flags[i << 1]) << 8) |
-                               ((unsigned short)((unsigned char)flags[(i << 1) | 1]));
+        result[origsize + i] = ((unsigned short)((unsigned char)flags[i << 1]) << 8) | ((unsigned short)((unsigned char)flags[(i << 1) | 1]));
       }
       break;
     }
@@ -892,7 +895,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       for (const char* p = src; *p; p++) {
         if (*p == ',') {
           int i = atoi(src);
-          if (i > std::numeric_limits<unsigned short>::max() || i < 0) {
+          if (i > std::numeric_limits<uint32_t>::max() || i < 0) {
             HUNSPELL_WARNING(
                 stderr, "error: line %d: flag id %d is out of range\n",
                 af->getlinenum(), i);
@@ -919,7 +922,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      std::vector<unsigned short> w;
+      std::vector<w_char> w;
       u8_u16(w, flags);
       size_t len = w.size(), origsize = result.size();
       result.resize(origsize + len);
@@ -958,7 +961,7 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
       s = (unsigned short)i;
       break;
     case FLAG_UNI: {
-      std::vector<unsigned short> w;
+      std::vector<w_char> w;
       u8_u16(w, f);
       if (!w.empty())
         s = (unsigned short)w[0];
@@ -998,7 +1001,7 @@ std::string HashMgr::encode_flag(unsigned short f) const {
     wc.h = (unsigned char)(f >> 8);
     wc.l = (unsigned char)(f & 0xff);
 #endif
-    const std::vector<unsigned short> w = { wc };
+    const std::vector<w_char> w = { wc };
     u16_u8(ch, w);
   } else {
     ch.push_back((unsigned char)(f));
@@ -1081,7 +1084,7 @@ int HashMgr::load_config(const char* affpath, const char* key) {
     /* parse in the ignored characters (for example, Arabic optional diacritics
      * characters */
     if (line.compare(0, 6, "IGNORE", 6) == 0) {
-      if (!parse_array_utf32(line, ignorechars, ignorechars_utf16,
+      if (!parse_array_utf32(line, ignorechars, ignorechars_utf32,
                        utf8, afflst->getlinenum())) {
         delete afflst;
         return 1;
@@ -1171,7 +1174,7 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
   /* now parse the numaliasf lines to read in the remainder of the table */
   for (int j = 0; j < numaliasf; ++j) {
     std::string nl;
-    unsigned short* alias = nullptr;
+    uint32_t* alias = nullptr;
     unsigned aliaslen = 0;
     i = 0;
     if (af->getline(nl)) {
