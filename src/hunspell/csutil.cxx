@@ -151,9 +151,31 @@ void myopen(std::ifstream& stream, const char* path, std::ios_base::openmode mod
 #endif
 
 std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
-  std::vector<unsigned short> ushort_shadow;
-  w_char_ushort(ushort_shadow,src);
-  u16_u8(dest,ushort_shadow);
+  dest.clear();
+  dest.reserve(src.size());
+  auto p = src.begin(), end = src.end();
+  while (p < end) {
+    uint16_t cp = static_cast<uint16_t>(((p->h) << 8) | (p->l));
+    if (cp < 0x80) {
+      dest.push_back(static_cast<char>(cp));
+    } else if (cp < 0x800) {
+      dest.push_back(static_cast<char>(0xc0 | (cp >> 6)));
+      dest.push_back(static_cast<char>(0x80 | (cp & 0x3f)));
+    } else if (UCS_IS_SINGLE(cp)) {
+      dest.push_back(static_cast<char>(0xe0 | (cp >> 12)));
+      dest.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3f)));
+      dest.push_back(static_cast<char>(0x80 | (cp & 0x3f)));
+    } else if (UCS_IS_LEAD(cp)){
+      p++;
+      uint16_t tail_cp = static_cast<uint16_t>(((p->h) << 8) | (p->l));
+      uint32_t uc32_cp = UCS_GET_SUPPLEMENTARY(cp,tail_cp);
+      dest.push_back(0xf0 | ((cp >> 18) & 0x07));
+      dest.push_back(0x80 | ((cp >> 12) & 0x3f));
+      dest.push_back(0x80 | ((cp >> 6) & 0x3f));
+      dest.push_back(0x80 | (cp & 0x3f));
+    }
+    p++;
+  }
   return dest;
 }
 
@@ -167,12 +189,92 @@ static void warn_missing_cont(const std::string& src, std::string::const_iterato
 }
 
 int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_first_letter) {
-  std::vector<unsigned short> ushort_shadow;
-  int ushort_length = u8_u16(ushort_shadow,src,only_convert_first_letter);
-  ushort_w_char(dest,ushort_shadow);
-  return ushort_length;
-}
+  // faster to oversize initially, assign to elements and resize to what's used
+  // than to reserve and push_back
+  dest.resize(only_convert_first_letter ? 2 : src.size());
+  auto out = dest.begin();
+  auto p = src.begin(), end = src.end();
+  while (p < end) {
+    uint8_t b0 = static_cast<uint8_t>(*p);
+    uint16_t cp;
+    if (b0 < 0x80) {
+      // 1-byte ASCII
+      cp = b0;
+    } else if (b0 < 0xc0) {
+      // continuation byte at lead position
+      HUNSPELL_WARNING(stderr,
+                       "UTF-8 encoding error. Unexpected continuation bytes "
+                       "in %ld. character position\n%s\n",
+                       static_cast<long>(std::distance(src.begin(), p)),
+                       src.c_str());
+      cp = 0xfffd;
+    } else if (b0 < 0xe0) {
+      // 2-byte sequence: 110xxxxx 10yyyyyy
+      if (p + 1 < end && is_utf8_cont(p[1])) {
+        cp = ((b0 & 0x1f) << 6) | (static_cast<uint8_t>(p[1]) & 0x3f);
+        ++p;  // step past lead; loop bottom steps past cont
+      } else {
+        warn_missing_cont(src, p);
+        cp = 0xfffd;
+      }
+    } else if (b0 < 0xf0) {
+      // 3-byte sequence: 1110xxxx 10yyyyyy 10zzzzzz
+      if (p + 1 < end && is_utf8_cont(p[1])) {
+        uint8_t b1 = static_cast<uint8_t>(p[1]);
+        ++p;  // step past lead
+        if (p + 1 < end && is_utf8_cont(p[1])) {
+          cp = ((b0 & 0x0f) << 12) | ((b1 & 0x3f) << 6) | (static_cast<uint8_t>(p[1]) & 0x3f);
+          ++p;  // step past first cont; loop bottom steps past second cont
+        } else {
+          warn_missing_cont(src, p);
+          cp = 0xfffd;
+        }
+      } else {
+        warn_missing_cont(src, p);
+        cp = 0xfffd;
+      }
+    } else if ((b0 & 0xf8) == 0xf0) {
+      // 4 byte sequence: 11110xxx 10yyyyyy 10zzzzzz 10uuuuuu
+      if ((p + 3) < end){
+        if (is_utf8_cont(p[1]) && is_utf8_cont(p[2]) && is_utf8_cont(p[3])){
+          uint32_t cp32 = ((b0 & 0x07) << 18) | ((p[1] & 0x3f) << 12) | ((p[2] & 0x3f) << 6) | (p[3] & 0x3f);
+          cp = UCS_LEAD(cp32);
+          out->h = static_cast<unsigned char>(cp >> 8);
+          out->l = static_cast<unsigned char>(cp);
+          cp = UCS_TRAIL(cp32);
+          p +=3;
+          ++out;
+        } else { 
+          warn_missing_cont(src,p);
+          cp = 0xfffd;
+        }
+      } else {
+        warn_missing_cont(src,p);
+        cp = 0xfffd;
+      }
+    } else {
+      HUNSPELL_WARNING(stderr,
+                       "This UTF-8 encoding can't convert to UTF-16:\n%s\n",
+                       src.c_str());
+      out->h = 0xff;
+      out->l = 0xfd;
+      ++out;
+      dest.resize(out - dest.begin());
+      return -1;
+    }
 
+    out->h = static_cast<unsigned char>(cp >> 8);
+    out->l = static_cast<unsigned char>(cp);
+    ++out;
+    if (only_convert_first_letter)
+      break;
+    ++p;  // consume lead byte
+  }
+
+  int size = static_cast<int>(out - dest.begin());
+  dest.resize(size);
+  return size;
+}
 
 namespace {
 class is_any_of {
