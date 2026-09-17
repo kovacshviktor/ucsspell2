@@ -3313,11 +3313,11 @@ struct hentry* AffixMgr::affix_check(const std::string& word,
                              int start,
                              int len,
                              AffixScratch& scratch,
-                             const unsigned short needflag = (unsigned short)0,
-                             char in_compound = IN_CPD_NOT,
-                             const FLAG avoidflag = FLAG_NULL,
-                             PfxEntry** found_pfx = nullptr,
-                             SfxEntry** found_sfx = nullptr) {
+                             const unsigned short needflag,
+                             char in_compound,
+                             const FLAG avoidflag,
+                             PfxEntry** found_pfx,
+                             SfxEntry** found_sfx) {
 
   TraceCtx* t = trace_on(scratch.trace);
   // the affixes that built the word are reported before the members holding them are cleared
