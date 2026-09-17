@@ -1053,7 +1053,7 @@ int AffixMgr::process_sfx_order() {
 }
 
 // add flags to the result for dictionary debugging
-std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
+std::string& AffixMgr::debugflag(std::string& result, uint32_t flag) {
   std::string st = encode_flag(flag);
   result.push_back(MSEP_FLD);
   result.append(MORPH_FLAG);
@@ -2028,10 +2028,10 @@ struct hentry* AffixMgr::compound_check(const std::string& word,
                 (rv = affix_check(st, 0, i, scratch)) &&
                 (sfx && sfx->getCont() &&
                  (  // XXX hardwired Hungarian dic. codes
-                     TESTAFF(sfx->getCont(), (unsigned short)'x',
+                     TESTAFF(sfx->getCont(), (uint32_t)'x',
                              sfx->getContLen()) ||
                      TESTAFF(
-                         sfx->getCont(), (unsigned short)'%',
+                         sfx->getCont(), (uint32_t)'%',
                          sfx->getContLen()))))) {  // first word is ok condition
 
           // LANG_hu section: spec. Hungarian rule
@@ -2625,8 +2625,8 @@ int AffixMgr::compound_check_morph(const std::string& word,
           // LANG_hu section: spec. Hungarian rule
           || ((!rv) && (langnum == LANG_hu) && hu_mov_rule && (rv = affix_check(st, 0, i, scratch)) &&
               (sfx && sfx->getCont() &&
-               (TESTAFF(sfx->getCont(), (unsigned short)'x', sfx->getContLen()) ||
-                TESTAFF(sfx->getCont(), (unsigned short)'%', sfx->getContLen()))))
+               (TESTAFF(sfx->getCont(), (uint32_t)'x', sfx->getContLen()) ||
+                TESTAFF(sfx->getCont(), (uint32_t)'%', sfx->getContLen()))))
           // END of LANG_hu section
       ) {
         // LANG_hu section: spec. Hungarian rule
@@ -3494,8 +3494,8 @@ static int morphcmp(const char* s, const char* t) {
 
 std::string AffixMgr::morphgen(const char* ts,
                                int wl,
-                               const unsigned short* ap,
-                               unsigned short al,
+                               const uint32_t* ap,
+                               uint32_t al,
                                const char* morph,
                                const char* targetmorph,
                          int level,
@@ -3598,8 +3598,8 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
                               int maxn,
                               const char* ts,
                               int wl,
-                              const unsigned short* ap,
-                              unsigned short al,
+                              const uint32_t* ap,
+                              uint32_t al,
                               const char* bad,
                               int badl,
                               const char* phon) {
@@ -3804,7 +3804,7 @@ int AffixMgr::get_checksharps() const {
   return checksharps;
 }
 
-std::string AffixMgr::encode_flag(unsigned short aflag) const {
+std::string AffixMgr::encode_flag(uint32_t aflag) const {
   return pHMgr->encode_flag(aflag);
 }
 
@@ -3937,7 +3937,7 @@ int AffixMgr::get_sugswithdots() const {
 }
 
 /* parse flag */
-bool AffixMgr::parse_flag(const std::string& line, unsigned short* out, FileMgr* af) {
+bool AffixMgr::parse_flag(const std::string& line, uint32_t* out, FileMgr* af) {
   if (*out != FLAG_NULL && !(*out >= DEFAULTFLAGS)) {
     HUNSPELL_WARNING(
         stderr,
@@ -4636,7 +4636,7 @@ public:
     entries.clear();
   }
   void initialize(int numents,
-                  char opts, unsigned short aflag) {
+                  char opts, uint32_t aflag) {
     entries.reserve(std::min(numents, 16384));
 
     if (m_at == 'P') {
@@ -4678,7 +4678,7 @@ bool AffixMgr::parse_affix(const std::string& line,
                           char* dupflags) {
   int numents = 0;  // number of AffEntry structures to parse
 
-  unsigned short aflag = 0;  // affix char identifier
+  uint32_t aflag = 0;  // affix char identifier
 
   char ff = 0;
   char xprod = 0;

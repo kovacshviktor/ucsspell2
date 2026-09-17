@@ -206,7 +206,7 @@ class AffixMgr {
                              int start,
                              int len,
                              AffixScratch& scratch,
-                             const unsigned short needflag = (unsigned short)0,
+                             const uint32_t needflag = (uint32_t)0,
                              char in_compound = IN_CPD_NOT,
                              const FLAG avoidflag = FLAG_NULL,
                              PfxEntry** found_pfx = nullptr,
@@ -282,8 +282,8 @@ class AffixMgr {
 
   std::string morphgen(const char* ts,
                        int wl,
-                       const unsigned short* ap,
-                       unsigned short al,
+                       const uint32_t* ap,
+                       uint32_t al,
                        const char* morph,
                        const char* targetmorph,
                        int level,
@@ -293,8 +293,8 @@ class AffixMgr {
                       int maxn,
                       const char* ts,
                       int wl,
-                      const unsigned short* ap,
-                      unsigned short al,
+                      const uint32_t* ap,
+                      uint32_t al,
                       const char* bad,
                       int,
                       const char*);
@@ -398,12 +398,12 @@ class AffixMgr {
   FLAG get_warn() const;
   int get_forbidwarn() const;
   int get_checksharps() const;
-  std::string encode_flag(unsigned short aflag) const;
+  std::string encode_flag(uint32_t aflag) const;
   int get_fullstrip() const;
 
  private:
   int parse_file(const char* affpath, const char* key);
-  bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
+  bool parse_flag(const std::string& line, uint32_t* out, FileMgr* af);
   bool parse_num(const std::string& line, int* out, FileMgr* af);
   bool parse_cpdsyllable(const std::string& line, FileMgr* af);
   bool parse_convtable(const std::string& line,
@@ -425,7 +425,7 @@ class AffixMgr {
                          char in_compound,
                          const TraceCtx* t) const;
 
-  std::string& debugflag(std::string& result, unsigned short flag);
+  std::string& debugflag(std::string& result, uint32_t flag);
   int condlen(const std::string& s);
   int encodeit(AffEntry& entry, const std::string& cs);
   int build_pfxtree(PfxEntry* pfxptr);
