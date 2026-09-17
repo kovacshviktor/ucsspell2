@@ -95,7 +95,7 @@ int TextParser::is_wordchar(const char* w) {
 
 const char* TextParser::get_latin1(const char* s) {
   if (s[0] == '&') {
-    uint32_t i = 0;
+    unsigned int i = 0;
     while ((i < LATIN1_LEN) && strncmp(LATIN1[i], s, strlen(LATIN1[i])) != 0)
       i++;
     if (i != LATIN1_LEN)
@@ -116,7 +116,7 @@ void TextParser::init(const char* wordchars) {
   wordcharacters.resize(256, 0);
   if (!wordchars)
     wordchars = "qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM";
-  for (uint32_t j = 0; j < strlen(wordchars); ++j) {
+  for (unsigned int j = 0; j < strlen(wordchars); ++j) {
     wordcharacters[(wordchars[j] + 256) % 256] = 1;
   }
 }

@@ -985,7 +985,7 @@ nextline:
               if (wlst.empty()) {
                 fprintf(stdout, "# %s %d", token.c_str(), char_offset);
               } else {
-                fprintf(stdout, "& %s %u %d: ", token.c_str(), static_cast<uint32_t>(wlst.size()), char_offset);
+                fprintf(stdout, "& %s %u %d: ", token.c_str(), static_cast<unsigned int>(wlst.size()), char_offset);
                 fprintf(stdout, "%s", wlst[0].c_str());
               }
               for (size_t j = 1; j < wlst.size(); ++j) {
@@ -1032,7 +1032,7 @@ nextline:
                         char_offset);
               } else {
                 fprintf(stdout, "& %s %u %d: ", token_ui.c_str(),
-                        static_cast<uint32_t>(wlst.size()), char_offset);
+                        static_cast<unsigned int>(wlst.size()), char_offset);
                 fprintf(stdout, "%s", wlst[0].c_str());
               }
               for (size_t j = 1; j < wlst.size(); ++j) {
