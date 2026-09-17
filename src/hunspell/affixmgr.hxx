@@ -403,7 +403,7 @@ class AffixMgr {
 
  private:
   int parse_file(const char* affpath, const char* key);
-  bool parse_flag(const std::string& line, uint32_t* out, FileMgr* af);
+  bool parse_flag(const std::string& line, unsigned short* out, FileMgr* af);
   bool parse_num(const std::string& line, int* out, FileMgr* af);
   bool parse_cpdsyllable(const std::string& line, FileMgr* af);
   bool parse_convtable(const std::string& line,
