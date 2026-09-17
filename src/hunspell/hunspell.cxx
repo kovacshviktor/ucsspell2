@@ -118,7 +118,7 @@ public:
                                   std::chrono::steady_clock::time_point suggest_start);
  const std::string& get_wordchars_cpp() const;
  const std::vector<w_char>& get_wordchars_utf16() const;
- const std::vector<uint32_t>& get_wordchars_utf32()
+ const std::vector<uint32_t>& get_wordchars_utf32() const;
  const std::string& get_dict_encoding() const;
  int add(const std::string& word);
  int add_with_flags(const std::string& word, const std::string& flags, const std::string& desc = "");
