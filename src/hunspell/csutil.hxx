@@ -81,6 +81,7 @@
 #include <cassert>
 #include <cstring>
 #include <algorithm>
+#include <cstdint>
 #include "w_char.hxx"
 #include "htypes.hxx"
 
