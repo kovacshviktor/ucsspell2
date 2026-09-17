@@ -147,6 +147,7 @@
     #define UCS_FASTCALL
 #endif
 
+uint32_t uc_to_case(uint32_t cp, bool uc_to_lower, int lang_script_num);
 // fix long pathname problem of WIN32 by using w_char std::fstream::open override
 LIBHUNSPELL_DLL_EXPORTED void myopen(std::ifstream& stream, const char* path,
                                      std::ios_base::openmode mode);
@@ -162,6 +163,7 @@ LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
 
 LIBHUNSPELL_DLL_EXPORTED  std::string& u32_u8(std::string& dest, const std::vector<uint32_t>& src);
 LIBHUNSPELL_DLL_EXPORTED int u8_u32(std::vector<uint32_t>& dest, const std::string& src);
+
 
 
 inline bool is_utf8_cont(char c) {
