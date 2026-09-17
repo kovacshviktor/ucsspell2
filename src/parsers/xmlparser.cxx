@@ -39,6 +39,7 @@
 #include <cstring>
 #include <cstdio>
 #include <ctype.h>
+#include <cstdint>
 
 #include "../hunspell/csutil.hxx"
 #include "xmlparser.hxx"
@@ -75,7 +76,7 @@ XMLParser::XMLParser(const char* wordchars)
     , pattern_num(0), pattern2_num(0), pattern3_num(0), prevstate(0), checkattr(0), quotmark(0) {
 }
 
-XMLParser::XMLParser(const unsigned short* wordchars, int len)
+XMLParser::XMLParser(const uint32_t* wordchars, int len)
     : TextParser(wordchars, len)
     , pattern_num(0), pattern2_num(0), pattern3_num(0), prevstate(0), checkattr(0), quotmark(0) {
 }
