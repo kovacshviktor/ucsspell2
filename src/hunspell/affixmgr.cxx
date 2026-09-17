@@ -3310,14 +3310,14 @@ std::string AffixMgr::suffix_check_morph(const std::string& word,
 
 // check if word with affixes is correctly spelled
 struct hentry* AffixMgr::affix_check(const std::string& word,
-                                     int start,
-                                     int len,
-                                     AffixScratch& scratch,
-                                     const FLAG needflag,
-                                     char in_compound,
-                                     const FLAG avoidflag,
-                                     PfxEntry** found_pfx,
-                                     SfxEntry** found_sfx) {
+                             int start,
+                             int len,
+                             AffixScratch& scratch,
+                             const unsigned short needflag = (unsigned short)0,
+                             char in_compound = IN_CPD_NOT,
+                             const FLAG avoidflag = FLAG_NULL,
+                             PfxEntry** found_pfx = nullptr,
+                             SfxEntry** found_sfx = nullptr) {
 
   TraceCtx* t = trace_on(scratch.trace);
   // the affixes that built the word are reported before the members holding them are cleared
@@ -3494,8 +3494,8 @@ static int morphcmp(const char* s, const char* t) {
 
 std::string AffixMgr::morphgen(const char* ts,
                                int wl,
-                               const uint32_t* ap,
-                               uint32_t al,
+                               const unsigned short* ap,
+                               unsigned short al,
                                const char* morph,
                                const char* targetmorph,
                          int level,
@@ -3937,7 +3937,7 @@ int AffixMgr::get_sugswithdots() const {
 }
 
 /* parse flag */
-bool AffixMgr::parse_flag(const std::string& line, uint32_t* out, FileMgr* af) {
+bool AffixMgr::parse_flag(const std::string& line, unsigned short* out, FileMgr* af) {
   if (*out != FLAG_NULL && !(*out >= DEFAULTFLAGS)) {
     HUNSPELL_WARNING(
         stderr,
