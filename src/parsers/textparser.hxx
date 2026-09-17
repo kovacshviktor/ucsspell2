@@ -44,7 +44,7 @@
 #ifndef MAXLNLEN
 #define MAXLNLEN 8192
 #endif
-
+#include <cstdint>
 #include "../hunspell/w_char.hxx"
 
 #include <vector>
@@ -59,7 +59,7 @@ class TextParser {
   std::vector<int> wordcharacters;// for detection of the word boundaries
   std::string line[MAXPREVLINE];  // parsed and previous lines
   std::vector<bool> urlline;      // mask for url detection
-  std::vector<w_char> wc;
+  std::vector<uint32_t> wc;
   int checkurl;
   int actual;  // actual line
   size_t head; // head position
@@ -67,11 +67,11 @@ class TextParser {
   int state;   // state of automata
   int utf8;    // UTF-8 character encoding
   int next_char(const char* line, size_t* pos);
-  const unsigned short* wordchars_utf16;
+  const uint32_t* wordchars_utf32;
   int wclen;
 
  public:
-  TextParser(const unsigned short* wordchars, int len);
+  TextParser(const uint32_t* wordchars, int len);
   explicit TextParser(const char* wc);
   virtual ~TextParser();
 
@@ -94,7 +94,7 @@ class TextParser {
   bool alloc_token(size_t token, size_t* head, std::string& out);
 private:
   void init(const char*);
-  void init(const unsigned short* wordchars, int len);
+  void init(const uint32_t* wordchars, int len);
 };
 
 #endif

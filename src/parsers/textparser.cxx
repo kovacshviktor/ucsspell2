@@ -68,7 +68,7 @@ TextParser::TextParser(const char* wordchars) {
   init(wordchars);
 }
 
-TextParser::TextParser(const unsigned short* wordchars, int len) {
+TextParser::TextParser(const uint32_t* wordchars, int len) {
   init(wordchars, len);
 }
 
@@ -82,12 +82,12 @@ int TextParser::is_wordchar(const char* w) {
     const bool use_cache = cache_index < 0x80;
     if (use_cache)
       return wordcharacters[cache_index];
-    if (u8_u32(wc, w, true) < 1)
+    if (u8_u32(wc, w/*, true*/) < 1)
         return 0;
     unsigned short idx = (unsigned short)wc[0];
     return unicodeisalpha(idx) ||
-           (wordchars_utf16 &&
-            std::binary_search(wordchars_utf16, wordchars_utf16 + wclen, wc[0]));
+           (wordchars_utf32 &&
+            std::binary_search(wordchars_utf32, wordchars_utf32 + wclen, wc[0]));
   } else {
     return wordcharacters[cache_index];
   }
@@ -111,7 +111,7 @@ void TextParser::init(const char* wordchars) {
   state = 0;
   utf8 = 0;
   checkurl = 0;
-  wordchars_utf16 = nullptr;
+  wordchars_utf32 = nullptr;
   wclen = 0;
   wordcharacters.resize(256, 0);
   if (!wordchars)
@@ -121,14 +121,14 @@ void TextParser::init(const char* wordchars) {
   }
 }
 
-void TextParser::init(const unsigned short* wc_utf8, int len) {
+void TextParser::init(const uint32_t* wc_utf8, int len) {
   actual = 0;
   head = 0;
   token = 0;
   state = 0;
   utf8 = 1;
   checkurl = 0;
-  wordchars_utf16 = wc_utf8;
+  wordchars_utf32 = wc_utf8;
   wclen = len;
 
   // build a cache for the simple cases
@@ -138,8 +138,8 @@ void TextParser::init(const unsigned short* wc_utf8, int len) {
   for (unsigned char idx = 0; idx < 0x80; ++idx) {
     wc2 = idx;
     int cache = unicodeisalpha(idx) ||
-                (wordchars_utf16 &&
-                 std::binary_search(wordchars_utf16, wordchars_utf16 + wclen, wc2));
+                (wordchars_utf32 &&
+                 std::binary_search(wordchars_utf32, wordchars_utf32 + wclen, wc2));
     wordcharacters[idx] = cache;
   }
 }
