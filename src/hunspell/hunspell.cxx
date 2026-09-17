@@ -1606,6 +1606,11 @@ const std::string& HunspellImpl::get_wordchars_cpp() const {
   return pAMgr->get_wordchars();
 }
 
+const std::vector<w_char>& HunspellImpl::get_wordchars_utf16() const {
+  std::vector<w_char> shadow_copy;
+  return u32_u16(shadow_copy,pAMgr->get_wordchars_utf32());
+}
+
 const std::vector<uint32_t>& HunspellImpl::get_wordchars_utf32() const {
   return pAMgr->get_wordchars_utf32();
 }

@@ -194,8 +194,6 @@ inline uint32_t cast_from_wchrs(w_char lead, w_char trail){
     extern std::vector<uint16_t> utfsmp_reserved_codes;
     bool is_reserved_code(uint32_t cp);
     bool is_u16_simple_only(const std::vector<w_char>& src);
-    std::vector<uint32_t>& u16_utf32(std::vector<uint32_t>& dest, const std::vector<w_char>& src);
-    std::vector<w_char>& u32_u16(std::vector<w_char>& dest, const std::vector<uint32_t>& src);
     std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<w_char>& src);
     std::vector<w_char>& w_char_ushort(std::vector<w_char>& dest, const std::vector<w_char>& src);
     uint32_t fnv1a_32_utf32(const std::vector<uint32_t>& data);

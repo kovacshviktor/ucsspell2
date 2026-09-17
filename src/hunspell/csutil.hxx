@@ -165,6 +165,8 @@ LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest,
 LIBHUNSPELL_DLL_EXPORTED  std::string& u32_u8(std::string& dest, const std::vector<uint32_t>& src);
 LIBHUNSPELL_DLL_EXPORTED int u8_u32(std::vector<uint32_t>& dest, const std::string& src);
 
+LIBHUNSPELL_DLL_EXPORTED  std::vector<uint32_t>& u16_utf32(std::vector<uint32_t>& dest, const std::vector<w_char>& src);
+LIBHUNSPELL_DLL_EXPORTED  std::vector<w_char>& u32_u16(std::vector<w_char>& dest, const std::vector<uint32_t>& src);
 
 
 inline bool is_utf8_cont(char c) {
