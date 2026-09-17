@@ -4851,20 +4851,20 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (pHMgr->is_aliasf()) {
               int index = atoi(dash_str.c_str());
-              entry->contclasslen = (unsigned short)pHMgr->get_aliasf(
+              entry->contclasslen = (uint32_t)pHMgr->get_aliasf(
                   index, &(entry->contclass), af);
               if (!entry->contclasslen)
                 HUNSPELL_WARNING(stderr,
                                  "error: bad affix flag alias: \"%s\"\n",
                                  dash_str.c_str());
             } else {
-              entry->contclasslen = (unsigned short)pHMgr->decode_flags(
+              entry->contclasslen = (uint32_t)pHMgr->decode_flags(
                   &(entry->contclass), dash_str, af);
               std::sort(entry->contclass, entry->contclass + entry->contclasslen);
             }
 
             havecontclass = 1;
-            for (unsigned short _i = 0; _i < entry->contclasslen; _i++) {
+            for (uint32_t _i = 0; _i < entry->contclasslen; _i++) {
               contclasses[(entry->contclass)[_i]] = 1;
             }
           } else {
@@ -5079,12 +5079,12 @@ int AffixMgr::redundant_condition(char ft,
   return 0;
 }
 
-std::vector<std::string> AffixMgr::get_suffix_words(unsigned short* suff,
+std::vector<std::string> AffixMgr::get_suffix_words(uint32_t* suff,
                                int len,
                                const std::string& root_word) {
   std::vector<std::string> slst;
   AffixScratch scratch;
-  unsigned short* start_ptr = suff;
+  uint32_t* start_ptr = suff;
   for (auto ptr : sStart) {
     while (ptr) {
       suff = start_ptr;
