@@ -293,8 +293,8 @@ class AffixMgr {
                       int maxn,
                       const char* ts,
                       int wl,
-                      const uint32_t* ap,
-                      uint32_t al,
+                      const unsigned short* ap,
+                      unsigned short al,
                       const char* bad,
                       int,
                       const char*);
@@ -353,7 +353,7 @@ class AffixMgr {
                            const std::string* partresult,
                            AffixScratch& scratch);
 
-  std::vector<std::string> get_suffix_words(uint32_t* suff,
+  std::vector<std::string> get_suffix_words(short unsigned* suff,
                        int len,
                        const std::string& root_word);
 
@@ -398,7 +398,7 @@ class AffixMgr {
   FLAG get_warn() const;
   int get_forbidwarn() const;
   int get_checksharps() const;
-  std::string encode_flag(uint32_t aflag) const;
+  std::string encode_flag(unsigned short aflag) const;
   int get_fullstrip() const;
 
  private:
@@ -425,7 +425,7 @@ class AffixMgr {
                          char in_compound,
                          const TraceCtx* t) const;
 
-  std::string& debugflag(std::string& result, uint32_t flag);
+  std::string& debugflag(std::string& result, unsigned short flag);
   int condlen(const std::string& s);
   int encodeit(AffEntry& entry, const std::string& cs);
   int build_pfxtree(PfxEntry* pfxptr);

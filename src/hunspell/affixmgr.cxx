@@ -1053,7 +1053,7 @@ int AffixMgr::process_sfx_order() {
 }
 
 // add flags to the result for dictionary debugging
-std::string& AffixMgr::debugflag(std::string& result, uint32_t flag) {
+std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
   std::string st = encode_flag(flag);
   result.push_back(MSEP_FLD);
   result.append(MORPH_FLAG);
@@ -3598,8 +3598,8 @@ int AffixMgr::expand_rootword(struct guessword* wlst,
                               int maxn,
                               const char* ts,
                               int wl,
-                              const uint32_t* ap,
-                              uint32_t al,
+                              const unsigned short* ap,
+                              unsigned short al,
                               const char* bad,
                               int badl,
                               const char* phon) {
@@ -3804,7 +3804,7 @@ int AffixMgr::get_checksharps() const {
   return checksharps;
 }
 
-std::string AffixMgr::encode_flag(uint32_t aflag) const {
+std::string AffixMgr::encode_flag(unsigned short aflag) const {
   return pHMgr->encode_flag(aflag);
 }
 
@@ -5079,12 +5079,12 @@ int AffixMgr::redundant_condition(char ft,
   return 0;
 }
 
-std::vector<std::string> AffixMgr::get_suffix_words(uint32_t* suff,
+std::vector<std::string> AffixMgr::get_suffix_words(unsigned short* suff,
                                int len,
                                const std::string& root_word) {
   std::vector<std::string> slst;
   AffixScratch scratch;
-  uint32_t* start_ptr = suff;
+  unsigned short* start_ptr = suff;
   for (auto ptr : sStart) {
     while (ptr) {
       suff = start_ptr;
