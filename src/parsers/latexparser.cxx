@@ -152,7 +152,7 @@ LaTeXParser::LaTeXParser(const unsigned short* wordchars, int len)
 LaTeXParser::~LaTeXParser() = default;
 
 int LaTeXParser::look_pattern(int col) {
-  for (unsigned int i = 0; i < PATTERN_LEN; i++) {
+  for (uint32_t i = 0; i < PATTERN_LEN; i++) {
     const char* j = line[actual].c_str() + head;
     const char* k = PATTERN[i].pat[col];
     if (!k)

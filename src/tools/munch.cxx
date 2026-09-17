@@ -439,14 +439,14 @@ void encodeit(struct affent* ptr, char* cs) {
       if (grp == 1) {
         if (neg == 0) {
           for (j = 0; j < nm; j++) {
-            k = (unsigned int)mbr[j];
+            k = (uint32_t)mbr[j];
             ptr->conds[k] = ptr->conds[k] | (1 << n);
           }
         } else {
           for (j = 0; j < SET_SIZE; j++)
             ptr->conds[j] = ptr->conds[j] | (1 << n);
           for (j = 0; j < nm; j++) {
-            k = (unsigned int)mbr[j];
+            k = (uint32_t)mbr[j];
             ptr->conds[k] = ptr->conds[k] & ~(1 << n);
           }
         }
@@ -461,7 +461,7 @@ void encodeit(struct affent* ptr, char* cs) {
           for (j = 0; j < SET_SIZE; j++)
             ptr->conds[j] = ptr->conds[j] | (1 << n);
         } else {
-          ptr->conds[(unsigned int)c] = ptr->conds[(unsigned int)c] | (1 << n);
+          ptr->conds[(uint32_t)c] = ptr->conds[(uint32_t)c] | (1 << n);
         }
       }
       n++;

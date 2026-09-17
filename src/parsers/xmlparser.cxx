@@ -82,8 +82,8 @@ XMLParser::XMLParser(const unsigned short* wordchars, int len)
 
 XMLParser::~XMLParser() = default;
 
-int XMLParser::look_pattern(const char* p[][2], unsigned int len, int column) {
-  for (unsigned int i = 0; i < len; i++) {
+int XMLParser::look_pattern(const char* p[][2], uint32_t len, int column) {
+  for (uint32_t i = 0; i < len; i++) {
     const char* j = line[actual].c_str() + head;
     const char* k = p[i][column];
     while ((*k != '\0') && (tolower(*j) == *k)) {
@@ -102,11 +102,11 @@ int XMLParser::look_pattern(const char* p[][2], unsigned int len, int column) {
  */
 
 bool XMLParser::next_token(const char* PATTERN[][2],
-                           unsigned int PATTERN_LEN,
+                           uint32_t PATTERN_LEN,
                            const char* PATTERN2[][2],
-                           unsigned int PATTERN_LEN2,
+                           uint32_t PATTERN_LEN2,
                            const char* PATTERN3[][2],
-                           unsigned int PATTERN_LEN3,
+                           uint32_t PATTERN_LEN3,
                            std::string& t) {
   t.clear();
   const char* latin1;
@@ -220,10 +220,10 @@ bool XMLParser::next_token(std::string& t) {
 // remove in-word patterns
 std::string XMLParser::get_word2(
         const char* PATTERN3[][2],
-        unsigned int PATTERN_LEN3,
+        uint32_t PATTERN_LEN3,
         const std::string &tok) {
   std::string word = tok;
-  for (unsigned int i = 0; i < PATTERN_LEN3; i++) {
+  for (uint32_t i = 0; i < PATTERN_LEN3; i++) {
     size_t pos;
     while ((pos = word.find(PATTERN3[i][0])) != word.npos) {
       size_t endpos = word.find(PATTERN3[i][1], pos);
