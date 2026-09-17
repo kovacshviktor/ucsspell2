@@ -341,7 +341,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
       } else {
         iconv(conv, (ICONV_CONST char**)&wchars, &c1, &dest, &c2);
         iconv_close(conv);
-        u8_u16(new_wordchars_utf16, text_conv);
+        u8_u32(new_wordchars_utf16, text_conv);
         std::sort(new_wordchars_utf16.begin(), new_wordchars_utf16.end());
         wordchars_utf16 = new_wordchars_utf16.data();
         wordchars_utf16_len = new_wordchars_utf16.size();
@@ -370,7 +370,7 @@ TextParser* get_parser(int format, const char* extension, Hunspell* pMS) {
         size_t res = iconv(conv, (ICONV_CONST char**)&ch8bit, &c1, &dest, &c2);
         if (res != (size_t)-1) {
           std::vector<w_char> w;
-          u8_u16(w, std::string(u8, dest));
+          u8_u32(w, std::string(u8, dest));
           unsigned short idx = w.empty() ? 0 : (w[0].h << 8) + w[0].l;
           if (unicodeisalpha(idx)) {
             *pletters = (char)i;
@@ -1255,7 +1255,7 @@ void dialogscreen(TextParser* parser,
 std::string lower_first_char(const std::string& token, const char* ioenc, int langnum) {
   std::string utf8str = chenc(token, ioenc, "UTF-8");
   std::vector<w_char> u;
-  u8_u16(u, utf8str);
+  u8_u32(u, utf8str);
   if (!u.empty()) {
     unsigned short idx = (u[0].h << 8) + u[0].l;
     idx = unicodetolower(idx, langnum);
@@ -1263,7 +1263,7 @@ std::string lower_first_char(const std::string& token, const char* ioenc, int la
     u[0].l = (unsigned char)(idx & 0x00FF);
   }
   std::string scratch;
-  u16_u8(scratch, u);
+  u32_u8(scratch, u);
   return chenc(scratch, "UTF-8", ioenc);
 }
 

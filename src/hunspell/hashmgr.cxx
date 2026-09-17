@@ -188,7 +188,7 @@ int HashMgr::add_word(const std::string& in_word,
 
     if (!ignorechars.empty()) {
       if (utf8) {
-        wcl = remove_ignored_chars_utf32(*word_copy, ignorechars_utf32);
+        wcl = remove_ignored_chars_utf32(*word_copy, ignorechars_utf32,langnum);
       } else {
         remove_ignored_chars(*word_copy, ignorechars);
       }
@@ -775,9 +775,6 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
   return decode_flags(result, flags, af, /* arena = */ false);
 }
 
-int HashMgr::decode_falgs_utf32(uint32_t** result,const std::string& flags,FileMgr* af) const {
-  
-}
 
 int HashMgr::decode_flags(unsigned short** result, const std::string& flags, FileMgr* af, bool use_arena) const {
   auto alloc = [&](int n) -> unsigned short* {
@@ -844,14 +841,14 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
     }
     case FLAG_UNI: {  // UTF-8 characters
       std::vector<w_char> w;
-      u8_u16(w, flags);
+      u8_u32(w, flags);
       len = w.size();
       *result = alloc(len);
 #if defined(_WIN32) || (defined(__BYTE_ORDER__) && (__BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__))  || defined(__LITTLE_ENDIAN__)
       memcpy(*result, w.data(), len * sizeof(unsigned short));
 #else
       unsigned short* dest = *result;
-      for (const unsigned short wc : w) {
+      for (const w_char wc : w) {
         *dest = (unsigned short)wc;
         dest++;
       }
@@ -871,7 +868,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
   return len;
 }
 
-bool HashMgr::decode_flags(std::vector<uint32_t>& result, const std::string& flags, FileMgr* af) const {
+bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const {
   if (flags.empty()) {
     return false;
   }
@@ -885,7 +882,8 @@ bool HashMgr::decode_flags(std::vector<uint32_t>& result, const std::string& fla
       size_t origsize = result.size();
       result.resize(origsize + len);
       for (size_t i = 0; i < len; ++i) {
-        result[origsize + i] = ((unsigned short)((unsigned char)flags[i << 1]) << 8) | ((unsigned short)((unsigned char)flags[(i << 1) | 1]));
+        result[origsize + i] = ((unsigned short)((unsigned char)flags[i << 1]) << 8) |
+                               ((unsigned short)((unsigned char)flags[(i << 1) | 1]));
       }
       break;
     }
@@ -895,7 +893,7 @@ bool HashMgr::decode_flags(std::vector<uint32_t>& result, const std::string& fla
       for (const char* p = src; *p; p++) {
         if (*p == ',') {
           int i = atoi(src);
-          if (i > std::numeric_limits<uint32_t>::max() || i < 0) {
+          if (i > std::numeric_limits<unsigned short>::max() || i < 0) {
             HUNSPELL_WARNING(
                 stderr, "error: line %d: flag id %d is out of range\n",
                 af->getlinenum(), i);
@@ -923,7 +921,7 @@ bool HashMgr::decode_flags(std::vector<uint32_t>& result, const std::string& fla
     }
     case FLAG_UNI: {  // UTF-8 characters
       std::vector<w_char> w;
-      u8_u16(w, flags);
+      u8_u32(w, flags);
       size_t len = w.size(), origsize = result.size();
       result.resize(origsize + len);
 #if defined(_WIN32) || (defined(__BYTE_ORDER__) && (__BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__))  || defined(__LITTLE_ENDIAN__)
@@ -962,7 +960,7 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
       break;
     case FLAG_UNI: {
       std::vector<w_char> w;
-      u8_u16(w, f);
+      u8_u32(w, f);
       if (!w.empty())
         s = (unsigned short)w[0];
       break;
@@ -990,19 +988,19 @@ std::string HashMgr::encode_flag(unsigned short f) const {
 #if defined(_WIN32) || (defined(__BYTE_ORDER__) && (__BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__))  || defined(__LITTLE_ENDIAN__)
 
 #if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
-    auto wc = std::bit_cast<unsigned short>(f);
+    auto wc = std::bit_cast<w_char>(f);
 #else
-    unsigned short wc;
+    w_char wc;
     memcpy(&wc, &f, sizeof(unsigned short));
 #endif
 
 #else
-    unsigned short wc;
+    w_char wc;
     wc.h = (unsigned char)(f >> 8);
     wc.l = (unsigned char)(f & 0xff);
 #endif
     const std::vector<w_char> w = { wc };
-    u16_u8(ch, w);
+    u32_u8(ch, w);
   } else {
     ch.push_back((unsigned char)(f));
   }
@@ -1174,7 +1172,7 @@ bool HashMgr::parse_aliasf(const std::string& line, FileMgr* af) {
   /* now parse the numaliasf lines to read in the remainder of the table */
   for (int j = 0; j < numaliasf; ++j) {
     std::string nl;
-    uint32_t* alias = nullptr;
+    unsigned short* alias = nullptr;
     unsigned aliaslen = 0;
     i = 0;
     if (af->getline(nl)) {

@@ -309,129 +309,7 @@ std::vector<w_char>& ushort_w_char(std::vector<w_char>& dest, const std::vector<
     return dest;
 } 
 
-int u8_u16(std::vector<w_char>& dest, const std::string& src, bool only_convert_first_letter) {
-    if (src.empty()) {
-        dest.clear();
-        return 0;
-    }
-
-    // Allocate sufficient capacity: 2 elements for first letter (SMP surrogate pair), or src.size()
-    dest.resize(only_convert_first_letter ? 2 : src.size());
-    auto out = dest.begin();
-    auto p = src.begin(), end = src.end();
-
-    while (p < end) {
-        uint8_t b0 = static_cast<uint8_t>(*p);
-        uint32_t cp;
-
-        if (b0 < 0x80) {
-            // 1-byte ASCII
-            cp = b0;
-        } else if (b0 < 0xc0) {
-            // Continuation byte at lead position
-            HUNSPELL_WARNING(stderr,
-                             "UTF-8 encoding error. Unexpected continuation bytes "
-                             "in %ld. character position\n%s\n",
-                             static_cast<long>(std::distance(src.begin(), p)),
-                             src.c_str());
-            cp = 0xfffd;
-        } else if (b0 < 0xe0) {
-            // 2-byte sequence
-            if (p + 1 < end && is_utf8_cont(p[1])) {
-                cp = ((b0 & 0x1f) << 6) | (static_cast<uint8_t>(p[1]) & 0x3f);
-                ++p;
-            } else {
-                HUNSPELL_WARNING(stderr,
-                                 "UTF-8 encoding error. Missing continuation byte in "
-                                 "%ld. character position:\n%s\n",
-                                 static_cast<long>(std::distance(src.begin(), p)),
-                                 src.c_str());
-                cp = 0xfffd;
-            }
-        } else if (b0 < 0xf0) {
-            // 3-byte sequence
-            if (p + 1 < end && is_utf8_cont(p[1])) {
-                uint8_t b1 = static_cast<uint8_t>(p[1]);
-                ++p;
-                if (p + 1 < end && is_utf8_cont(p[1])) {
-                    cp = ((b0 & 0x0f) << 12) | ((b1 & 0x3f) << 6) | (static_cast<uint8_t>(p[1]) & 0x3f);
-                    ++p;
-                } else {
-                    HUNSPELL_WARNING(stderr,
-                                     "UTF-8 encoding error. Missing continuation byte in "
-                                     "%ld. character position:\n%s\n",
-                                     static_cast<long>(std::distance(src.begin(), p)),
-                                     src.c_str());
-                    cp = 0xfffd;
-                }
-            } else {
-                HUNSPELL_WARNING(stderr,
-                                 "UTF-8 encoding error. Missing continuation byte in "
-                                 "%ld. character position:\n%s\n",
-                                 static_cast<long>(std::distance(src.begin(), p)),
-                                 src.c_str());
-                cp = 0xfffd;
-            }
-        } else if (b0 < 0xf5) {
-            // 4-byte sequence (U+10000 - U+10FFFF)
-            if (p + 1 < end && is_utf8_cont(p[1])) {
-                uint8_t b1 = static_cast<uint8_t>(p[1]);
-                ++p;
-                if (p + 1 < end && is_utf8_cont(p[1])) {
-                    uint8_t b2 = static_cast<uint8_t>(p[1]);
-                    ++p;
-                    if (p + 1 < end && is_utf8_cont(p[1])) {
-                        cp = ((b0 & 0x07) << 18) | ((b1 & 0x3f) << 12) | ((b2 & 0x3f) << 6) | (static_cast<uint8_t>(p[1]) & 0x3f);
-                        ++p;
-                    } else {
-                        HUNSPELL_WARNING(stderr,
-                                         "UTF-8 encoding error. Missing continuation byte in "
-                                         "%ld. character position:\n%s\n",
-                                         static_cast<long>(std::distance(src.begin(), p)),
-                                         src.c_str());
-                        cp = 0xfffd;
-                    }
-                } else {
-                    HUNSPELL_WARNING(stderr,
-                                     "UTF-8 encoding error. Missing continuation byte in "
-                                     "%ld. character position:\n%s\n",
-                                     static_cast<long>(std::distance(src.begin(), p)),
-                                     src.c_str());
-                    cp = 0xfffd;
-                }
-            } else {
-                HUNSPELL_WARNING(stderr,
-                                 "UTF-8 encoding error. Missing continuation byte in "
-                                 "%ld. character position:\n%s\n",
-                                 static_cast<long>(std::distance(src.begin(), p)),
-                                 src.c_str());
-                cp = 0xfffd;
-            }
-        } else {
-            // Invalid lead byte
-            cp = 0xfffd;
-        }
-
-        // Write code points
-        if (cp < 0x10000) {
-            *out++ = static_cast<unsigned short>(cp);
-        } else {
-            // Encode SMP code point as UTF-16 surrogate pair
-            *out++ = static_cast<unsigned short>(UCS_LEAD(cp));
-            *out++ = static_cast<unsigned short>(UCS_TRAIL(cp));
-        }
-
-        if (only_convert_first_letter)
-            break;
-        ++p;
-    }
-    
-    int size = static_cast<int>(out - dest.begin());
-    dest.resize(size);
-    return size;
-}
-
-std::vector<w_char>& w_char_ushort(std::vector<w_char>& dest,const std::vector<w_char>& src){
+std::vector<unsigned short>& w_char_ushort(std::vector<unsigned short>& dest,const std::vector<w_char>& src){
     dest.clear();
     dest.reserve(src.size());
     for(const auto& item: src){
@@ -441,7 +319,7 @@ std::vector<w_char>& w_char_ushort(std::vector<w_char>& dest,const std::vector<w
     return dest;
 }
 
-std::string& u16_u8(std::string& dest, const std::vector<w_char>& src) {
+std::string& u32_u8(std::string& dest, const std::vector<w_char>& src) {
   dest.clear();
   dest.reserve(src.size() * 3 / 2); // Approximate UTF-8 byte estimate
 

@@ -2726,7 +2726,7 @@ bool parse_array(const std::string& line,
     return false;
 
   if (utf8) {
-    u8_u16(out_utf16, out);
+    u8_u16(out_utf16, out,ln);
     std::sort(out_utf16.begin(), out_utf16.end());
   }
   return true;

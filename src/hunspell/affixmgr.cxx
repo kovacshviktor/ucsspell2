@@ -4871,7 +4871,7 @@ bool AffixMgr::parse_affix(const std::string& line,
             entry->appnd = std::string(start_piece, iter);
 
             if (!ignorechars.empty() && !has_no_ignored_chars(entry->appnd, ignorechars)) {
-              if (utf8 == 1) {
+              if (utf8) {
                 remove_ignored_chars_utf32(entry->appnd, ignorechars_utf32,langnum);
               } else {
                 remove_ignored_chars(entry->appnd, ignorechars);

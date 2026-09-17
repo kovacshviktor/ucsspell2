@@ -263,10 +263,11 @@ mkinitcap_utf(std::vector<w_char>& u, int langnum);
 
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallsmall_utf(std::vector<w_char>& u, int langnum);
-// convert first letter of UTF-8 string to little
 
+// convert first letter of UTF-8 string to little
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkinitsmall_utf(std::vector<w_char>& u, int langnum);
+
 // convert UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>&
 mkallcap_utf(std::vector<w_char>& u, int langnum);
@@ -297,6 +298,7 @@ LIBHUNSPELL_DLL_EXPORTED size_t remove_ignored_chars_utf32(
 LIBHUNSPELL_DLL_EXPORTED bool parse_string(const std::string& line,
                                            std::string& out,
                                            int ln);
+
 LIBHUNSPELL_DLL_EXPORTED bool parse_array(const std::string& line,
                  std::string& out,
                  std::vector<w_char>& out_utf16,

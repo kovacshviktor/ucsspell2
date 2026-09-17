@@ -122,13 +122,12 @@ class HashMgr {
   int add_with_affix(const std::string& word, const std::string& pattern);
   int remove(const std::string& word);
   int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) const;
-  int decode_flags_utf32(uint32_t** result, const std::string& flags, FileMgr* af) const;
-  bool decode_flags_utf32(std::vector<uint32_t>& result, const std::string& flags, FileMgr* af) const;
-  bool decode_flags()
+  bool decode_flags(std::vector<unsigned short>& result,const std::string& flags, FileMgr* af) const;
+  bool decode_flags() const;
   unsigned short decode_flag(const std::string& flag) const;
   std::string encode_flag(unsigned short flag) const;
   int is_aliasf() const;
-  int get_aliasf(int index, unsigned short** fvec, FileMgr* af) const;
+  int get_aliasf(int index, uint32_t** fvec, FileMgr* af) const;
   int is_aliasm() const;
   char* get_aliasm(int index) const;
   const std::vector<replentry>& get_reptable() const;

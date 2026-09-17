@@ -82,7 +82,7 @@ int TextParser::is_wordchar(const char* w) {
     const bool use_cache = cache_index < 0x80;
     if (use_cache)
       return wordcharacters[cache_index];
-    if (u8_u16(wc, w, true) < 1)
+    if (u8_u32(wc, w, true) < 1)
         return 0;
     unsigned short idx = (unsigned short)wc[0];
     return unicodeisalpha(idx) ||
