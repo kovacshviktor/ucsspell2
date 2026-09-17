@@ -85,7 +85,7 @@ const unsigned short W_VLINE[] = {'\0', '|'};
 #define MAX_CHAR_DISTANCE 4
 #define MAXWORDUTF8LEN (MAXWORDLEN * 3)
 
-SuggestMgr::SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* aptr) {
+SuggestMgr::SuggestMgr(const std::string& tryme, uint32_t maxn, AffixMgr* aptr) {
   // register affix manager and check in string of chars to
   // try when building candidate suggestions
   pAMgr = aptr;

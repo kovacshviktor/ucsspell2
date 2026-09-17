@@ -104,7 +104,7 @@ class SuggestMgr {
   bool lang_with_dash_usage;
 
   AffixMgr* pAMgr;
-  unsigned int maxSug;
+  uint32_t maxSug;
   const struct cs_info* csconv;
   int utf8;
   int langnum;
@@ -115,7 +115,7 @@ class SuggestMgr {
   std::chrono::steady_clock::time_point suggest_start;
 
  public:
-  SuggestMgr(const std::string& tryme, unsigned int maxn, AffixMgr* aptr);
+  SuggestMgr(const std::string& tryme, uint32_t maxn, AffixMgr* aptr);
   SuggestMgr(const SuggestMgr&) = delete;
   SuggestMgr& operator=(const SuggestMgr&) = delete;
   ~SuggestMgr();

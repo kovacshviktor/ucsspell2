@@ -2380,7 +2380,7 @@ const struct cs_info* get_current_cs(const std::string& es) {
   auto encoder = encoding->NewEncoder();
   auto decoder = encoding->NewDecoderWithoutBOMHandling();
 
-  for (unsigned int i = 0; i <= 0xff; ++i) {
+  for (uint32_t i = 0; i <= 0xff; ++i) {
     bool success = false;
     // We want to find the upper/lowercase equivalents of each byte
     // in this 1-byte character encoding.  Call our encoding/decoding
