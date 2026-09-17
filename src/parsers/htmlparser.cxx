@@ -77,7 +77,7 @@ HTMLParser::HTMLParser(const char* wordchars)
   : XMLParser(wordchars) {
 }
 
-HTMLParser::HTMLParser(const unsigned short* wordchars, int len)
+HTMLParser::HTMLParser(const uint32_t* wordchars, int len)
   : XMLParser(wordchars, len) {
 }
 

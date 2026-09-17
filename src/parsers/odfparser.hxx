@@ -48,7 +48,7 @@
 class ODFParser : public XMLParser {
  public:
   explicit ODFParser(const char* wc);
-  ODFParser(const unsigned short* wordchars, int len);
+  ODFParser(const uint32_t* wordchars, int len);
   virtual bool next_token(std::string&);
   virtual std::string get_word(const std::string &tok);
   virtual ~ODFParser();

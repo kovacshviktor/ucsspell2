@@ -37,7 +37,7 @@
 
 #ifndef HTMLPARSER_HXX_
 #define HTMLPARSER_HXX_
-
+#include <cstdint>
 #include "xmlparser.hxx"
 
 /*
@@ -48,7 +48,7 @@
 class HTMLParser : public XMLParser {
  public:
   explicit HTMLParser(const char* wc);
-  HTMLParser(const unsigned short* wordchars, int len);
+  HTMLParser(const uint32_t* wordchars, int len);
   virtual bool next_token(std::string&);
   virtual ~HTMLParser();
 };

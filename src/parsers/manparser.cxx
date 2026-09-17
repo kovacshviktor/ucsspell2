@@ -51,7 +51,7 @@ ManParser::ManParser(const char* wordchars)
   : TextParser(wordchars) {
 }
 
-ManParser::ManParser(const unsigned short* wordchars, int len)
+ManParser::ManParser(const uint32_t* wordchars, int len)
   : TextParser(wordchars, len) {
 }
 

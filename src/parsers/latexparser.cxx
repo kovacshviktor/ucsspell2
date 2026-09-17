@@ -144,7 +144,7 @@ LaTeXParser::LaTeXParser(const char* wordchars)
     , pattern_num(0), depth(0), arg(0), opt(0) {
 }
 
-LaTeXParser::LaTeXParser(const unsigned short* wordchars, int len)
+LaTeXParser::LaTeXParser(const uint32_t* wordchars, int len)
     : TextParser(wordchars, len)
     , pattern_num(0), depth(0), arg(0), opt(0) {
 }

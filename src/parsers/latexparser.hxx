@@ -53,7 +53,7 @@ class LaTeXParser : public TextParser {
 
  public:
   explicit LaTeXParser(const char* wc);
-  LaTeXParser(const unsigned short* wordchars, int len);
+  LaTeXParser(const uint32_t* wordchars, int len);
   virtual ~LaTeXParser();
 
   virtual bool next_token(std::string&);
