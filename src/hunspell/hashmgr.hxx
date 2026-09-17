@@ -101,8 +101,8 @@ class HashMgr {
   const struct cs_info* csconv;
   std::string ignorechars;
   std::vector<uint32_t> ignorechars_utf32;
-  std::vector<uint32_t*> aliasf; // flag vector `compression' with aliases
-  std::vector<uint32_t> aliasflen;
+  std::vector<unsigned short*> aliasf; // flag vector `compression' with aliases
+  std::vector<unsigned short> aliasflen;
   std::vector<char*> aliasm; // morphological desciption `compression' with aliases
   // reptable created from REP table of aff file and from "ph:" fields
   // of the dic file. It contains phonetic and other common misspellings
@@ -127,7 +127,7 @@ class HashMgr {
   unsigned short decode_flag(const std::string& flag) const;
   std::string encode_flag(unsigned short flag) const;
   int is_aliasf() const;
-  int get_aliasf(int index, uint32_t** fvec, FileMgr* af) const;
+  int get_aliasf(int index, unsigned short** fvec, FileMgr* af) const;
   int is_aliasm() const;
   char* get_aliasm(int index) const;
   const std::vector<replentry>& get_reptable() const;

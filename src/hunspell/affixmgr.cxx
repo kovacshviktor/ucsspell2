@@ -4851,7 +4851,7 @@ bool AffixMgr::parse_affix(const std::string& line,
 
             if (pHMgr->is_aliasf()) {
               int index = atoi(dash_str.c_str());
-              entry->contclasslen = (uint32_t)pHMgr->get_aliasf(
+              entry->contclasslen = (unsigned short)pHMgr->get_aliasf(
                   index, &(entry->contclass), af);
               if (!entry->contclasslen)
                 HUNSPELL_WARNING(stderr,

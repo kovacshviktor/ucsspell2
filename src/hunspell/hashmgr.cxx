@@ -840,7 +840,7 @@ int HashMgr::decode_flags(unsigned short** result, const std::string& flags, Fil
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      std::vector<w_char> w;
+      std::vector<uint32_t> w;
       u8_u32(w, flags);
       len = w.size();
       *result = alloc(len);
@@ -920,7 +920,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
       break;
     }
     case FLAG_UNI: {  // UTF-8 characters
-      std::vector<w_char> w;
+      std::vector<uint32_t> w;
       u8_u32(w, flags);
       size_t len = w.size(), origsize = result.size();
       result.resize(origsize + len);
@@ -942,6 +942,7 @@ bool HashMgr::decode_flags(std::vector<unsigned short>& result, const std::strin
   return true;
 }
 
+
 unsigned short HashMgr::decode_flag(const std::string& f) const {
   unsigned short s = 0;
   int i;
@@ -959,7 +960,7 @@ unsigned short HashMgr::decode_flag(const std::string& f) const {
       s = (unsigned short)i;
       break;
     case FLAG_UNI: {
-      std::vector<w_char> w;
+      std::vector<uint32_t> w;
       u8_u32(w, f);
       if (!w.empty())
         s = (unsigned short)w[0];
@@ -990,8 +991,8 @@ std::string HashMgr::encode_flag(unsigned short f) const {
 #if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)) && defined __cpp_lib_bit_cast && __cpp_lib_bit_cast >= 201806L
     auto wc = std::bit_cast<w_char>(f);
 #else
-    w_char wc;
-    memcpy(&wc, &f, sizeof(unsigned short));
+    uint32_t wc;
+    memcpy(&wc, &f, sizeof(uint32_t));
 #endif
 
 #else
@@ -999,10 +1000,10 @@ std::string HashMgr::encode_flag(unsigned short f) const {
     wc.h = (unsigned char)(f >> 8);
     wc.l = (unsigned char)(f & 0xff);
 #endif
-    const std::vector<w_char> w = { wc };
+    const std::vector<uint32_t> w = { wc };
     u32_u8(ch, w);
   } else {
-    ch.push_back((unsigned char)(f));
+    ch.push_back((uint32_t)(f));
   }
   return ch;
 }
